@@ -1,0 +1,21 @@
+language: perl
+
+env:
+  - PATH=/opt/rakudo/bin:/home/travis/.perl6/bin:$PATH
+
+before_install:
+  - wget https://github.com/nxadm/rakudo-pkg/releases/download/2017.06/perl6-rakudo-moarvm-ubuntu17.04_20170600-01_amd64.deb
+  - sudo dpkg -i *.deb 
+  - git clone https://github.com/ugexe/zef.git
+  - cd zef
+  - perl6 -Ilib bin/zef install . && cd ../
+
+
+install:
+    - zef install Bailador --force-test 
+    - zef install .
+
+
+script:
+  - prove -vr -e 'perl6 -Ilib' t/
+

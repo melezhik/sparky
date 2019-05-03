@@ -1,0 +1,16 @@
+
+[Unit]
+Description=sparky.web
+After=network.target
+
+[Service]
+Type=simple
+User=sparky
+WorkingDirectory=/home/sparky/sparky
+ExecStart=/usr/bin/bash --login -c "cd /home/sparky/sparky && perl6 bin/sparky-web.pl6"
+Restart=on-abort
+MemoryLimit=500M
+
+[Install]
+WantedBy=multi-user.target
+

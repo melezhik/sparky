@@ -1,0 +1,14 @@
+[Unit]
+Description=sparkyd
+After=network.target
+
+[Service]
+Type=simple
+User=sparky
+ExecStart=/usr/bin/bash --login -c 'sparkyd'
+Restart=on-abort
+#MemoryLimit=400M
+
+[Install]
+WantedBy=multi-user.target
+

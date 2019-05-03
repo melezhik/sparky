@@ -1,0 +1,40 @@
+#!perl6
+
+use Time::Crontab;
+use Sparky;
+
+sub MAIN (
+  Str  :$root = %*ENV<HOME> ~ '/.sparky/projects', 
+  Str  :$work-root = %*ENV<HOME> ~ '/.sparky/work', 
+  Int  :$timeout = %*ENV<SPARKY_TIMEOUT> || 10,
+)
+
+{
+
+  while True {
+
+    for dir($root) -> $dir {
+
+      next if "$dir".IO ~~ :f;
+      next if $dir.basename eq '.git';
+      next if $dir.basename eq '.reports';
+      next if $dir.basename eq 'db.sqlite3-journal';  
+      next unless "$dir/sparrowfile".IO ~~ :f;
+
+      mkdir $root;
+      mkdir $work-root;
+
+      my $project = $dir.IO.basename;
+
+      mkdir "$work-root/$project";
+
+      schedule-build($dir);
+
+
+    }
+    sleep($timeout);
+    
+  }
+
+} 
+

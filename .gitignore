@@ -1,0 +1,6 @@
+lib/.precomp/
+.precomp
+*.tar.gz
+Sparky-*
+.reports
+db.sqlite3

@@ -1,0 +1,8 @@
+crontab: "2 * * * *"
+sparrowdo:
+  no_sudo: true
+  no_index_update: false
+  bootstrap: false
+  format: default
+disabled: false
+keep_builds: 5

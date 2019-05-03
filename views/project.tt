@@ -1,0 +1,39 @@
+% my ( $css, $navbar, $project, $project-conf, $path, $err ) = @_;
+
+%= $css
+
+    <head>
+      %= "<title>~SPARKY CI WEB~ | project: $project </title>"
+    </head>
+
+  <script>
+  
+  function run(){
+  
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/build/project/<%= $project %>", true );
+    xhr.send("");
+  
+  }
+  
+  </script>
+  
+%= $navbar
+    
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          %= "Project: " ~ $project
+       </h3>
+      </div>
+      <div class="panel-block">
+        <a class="button is-small" onclick="run()" >Run now</a>
+      </div>
+      <div class="panel-block">
+        %= "<pre><strong>Configuration</strong>:\n\n" ~ ( $err || $project-conf ) ~ "</pre>"
+      </div>
+      <div class="panel-block">
+        % my $text = slurp $path;
+        %= "<pre><strong>Scenario</strong>:\n\n" ~ $text ~ "</pre>"
+      </div>
+    </div>

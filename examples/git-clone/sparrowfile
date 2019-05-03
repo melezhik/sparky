@@ -1,0 +1,4 @@
+#!perl6
+
+git-scm 'https://github.com/melezhik/sparrow.git';
+bash "ls -l";

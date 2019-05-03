@@ -1,0 +1,35 @@
+% my ( $css, $navbar, $project, $build_id, $dt, $path ) = @_;
+
+%= $css
+
+    <head>
+      %= "<title>~SPARKY CI WEB~ | build: $project@$build_id </title>"
+    </head>
+
+<script>
+
+function reBuild(){
+
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "/build/project/<%= $project %>", true );
+  xhr.send("");
+  
+}
+
+</script>
+
+%= $navbar
+
+    <nav class="panel">
+      <p class="panel-heading"> 
+        %= "Report: $project@$build_id at {$dt}"
+      </p>
+      <div class="panel-block">
+        <a class="button is-small" onclick="reBuild()" >Rebuild</a>
+      </div>
+      <div class="panel-block">
+        % my $text = slurp $path
+        %= "<pre>" ~ $text ~ "</pre>"
+      </div>
+    </nav>
+
