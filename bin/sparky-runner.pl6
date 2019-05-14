@@ -100,7 +100,17 @@ sub MAIN (
     $sparrowdo-run ~= " --docker=" ~ %sparrowdo-config<docker>;
   } elsif %sparrowdo-config<host> {
     $sparrowdo-run ~= " --host=" ~ %sparrowdo-config<host>;
-  } 
+  } else {
+    $sparrowdo-run ~= " --localhost";
+  }
+
+  if %sparrowdo-config<repo> {
+    $sparrowdo-run ~= " --repo=" ~ %sparrowdo-config<repo>;
+  }
+
+  if %sparrowdo-config<sync> {
+    $sparrowdo-run ~= " --sync=" ~ %sparrowdo-config<sync>;
+  }
 
   if %sparrowdo-config<no_sudo> {
     $sparrowdo-run ~= " --no_sudo";

@@ -72,7 +72,7 @@ At the moment sparky can't daemonize itself, as temporary workaround use linux `
 Or you can use Sparrowdo installer, which install service as systemd unit:
 
     $ nano utils/install-sparky-web-systemd.pl6 # change working directory and user
-    $ sparrowdo --sparrowfile=utils/install-sparkyd-systemd.pl6 --no_sudo --local_mode
+    $ sparrowdo --sparrowfile=utils/install-sparkyd-systemd.pl6 --no_sudo --localhost
 
 # Running web ui
 
@@ -91,7 +91,7 @@ For example:
 You can use Sparrowdo installer as well, which installs service as systemd unit:
 
     $ nano utils/install-sparky-web-.pl6 # change working directory, user and root directory
-    $ sparrowdo --sparrowfile=utils/install-sparky-web-systemd.pl6 --no_sudo --local_mode
+    $ sparrowdo --sparrowfile=utils/install-sparky-web-systemd.pl6 --no_sudo --localhost
 
 
 # Creating first sparky project
@@ -138,8 +138,9 @@ to _any remote host_ setting Sparrowdo related parameters in the `sparky.yaml` f
       ssh_private_key: /path/to/ssh_private/key.pem
       ssh_user: sparky
       no_index_update: true
+      sync: /tmp/repo
 
-You can read about the all [available parameters](https://github.com/melezhik/sparrowdo#sparrowdo-client-command-line-parameters) in Sparrowdo documentation.
+You can read about the all [available parameters](https://github.com/melezhik/sparrowdo#sparrowdo-cli) in Sparrowdo documentation.
 
 # Skip bootstrap
 
