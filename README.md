@@ -7,10 +7,10 @@ Sparky is a powerful pocket size task runner server in crontab style.
 The essential features of Sparky:
 
 * Defining jobs times in crontab style
-* Scenarios defined as [Sparrowdo](https://github.com/melezhik/sparrowdo) scripts
-* [Nice set](https://github.com/melezhik/sparrowdo/blob/master/core-dsl.md) of predefined tasks is available
+* Scenarios defined as [Sparrow6](https://github.com/melezhik/Sparrow6) scripts
+* [Nice set](https://github.com/melezhik/Sparrow6/blob/master/documentation/dsl.md) of predefined tasks is available
 * Everything is kept in SCM repository - easy to port, maintain and track changes
-* Tasks gets run **asynchronously** in one of 3 flavours - 1) on localhost 2) on remote machines via **ssh** 3) on **docker** instances
+* Tasks gets run **asynchronously** in one of 3 flavors - 1) on localhost 2) on remote machines via **ssh** 3) on **docker** instances
 * Nice web UI to read tasks reports is provided 
 
 
@@ -74,7 +74,7 @@ Or you can use Sparrowdo installer, which install service as systemd unit:
     $ nano utils/install-sparky-web-systemd.pl6 # change working directory and user
     $ sparrowdo --sparrowfile=utils/install-sparkyd-systemd.pl6 --no_sudo --localhost
 
-# Running web ui
+# Running Web UI
 
 And finally sparky has simple web ui to show builds statuses and reports.
 
@@ -107,7 +107,7 @@ _to know how to write Sparky scenarios_.
 
 Here is a short example.
 
-Say, we want to check out the Baildor source code from Git, install dependencies and then run unit tests:
+Say, we want to check out the Bailador source code from Git, install dependencies and then run unit tests:
 
     $ nano ~/.sparky/projects/bailador-app/sparrowfile
 
@@ -308,7 +308,7 @@ Scopes are defined at `run_scope:` parameter:
           name: Sparrow
 
 
-## An example Sparky plugins
+## An example of Sparky plugins
 
 An example Sparky plugins are:
 
