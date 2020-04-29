@@ -13,7 +13,7 @@
     "Data::Dump",
     "Number::Denominate"
   ],
-  "description" : "Sparky is a continues integration server based on Sparrow/Sparrowdo ecosystem",
+  "description" : "Sparky is a flexible and minimalist continuous integration server written in Raku",
   "license" : "Artistic-2.0",
   "name" : "Sparky",
   "perl" : "6.*",
@@ -28,6 +28,5 @@
     "source" : "https://github.com/melezhik/sparky.git"
   },
   "tags" : [ ],
-  "test-depends" : [ ],
-  "version" : "0.0.24"
+  "test-depends" : [ ]
 }

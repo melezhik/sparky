@@ -111,29 +111,60 @@ sub schedule-build ( $dir, %opts? ) is export {
     return;
   }
 
-  if %config<crontab> and ! %*ENV<SPARKY_SKIP_CRON> and ! %opts<skip-cron> {
-    my $crontab = %config<crontab>;
-    my $tc = Time::Crontab.new(:$crontab);
-    if $tc.match(DateTime.now, :truncate(True)) {
-      say "{DateTime.now} --- [$project] time is passed by cron: $crontab ...";
-    } else {
-      say "{DateTime.now} --- [$project] time is SKIPPED by cron: $crontab ... ";
-      return;
+  # check if build is triggered by file triggers
+  my $trigger-file;
+  my $run-build = False;
+
+  if "{$dir}/.triggers/".IO ~~ :d {
+
+    for dir("{$dir}/.triggers/", test => /:i '.' trg $/ ) -> $file {
+      $run-build = True;
+      move $file, "{$file}.conf";
+      $trigger-file = "{$file}.conf".IO.absolute;
+      last;
     }
-  } elsif !%config<crontab>  {
-      say "{DateTime.now} --- [$project] crontab entry not found, consider manual start or set up cron later, SKIP ... ";
-      return;
   }
 
+  if $run-build {
 
-  say "{DateTime.now} --- [$project] run ... ";
+      say "{DateTime.now} --- [$project] start build by trigger <$trigger-file> ...";
 
-  Proc::Async.new(
-    'sparky-runner.pl6',
-    "--marker=$project",
-    "--dir=$dir",
-    "--make-report"
-  ).start;
+      Proc::Async.new(
+        'sparky-runner.pl6',
+        "--marker=$project",
+        "--dir=$dir",
+        "--trigger=$trigger-file",
+        "--make-report"
+      ).start;
+  
+  } else {
+
+    if %config<crontab> and ! %*ENV<SPARKY_SKIP_CRON> and ! %opts<skip-cron> {
+      my $crontab = %config<crontab>;
+      my $tc = Time::Crontab.new(:$crontab);
+      if $tc.match(DateTime.now, :truncate(True)) {
+        say "{DateTime.now} --- [$project] build triggered by cron: $crontab ...";
+      } else {
+        say "{DateTime.now} --- [$project] build is skipped by cron: $crontab ... ";
+        return;
+      }
+    } elsif !%config<crontab>  {
+        say "{DateTime.now} --- [$project] crontab entry not found, consider manual start or set up cron later, SKIP ... ";
+        return;
+    }
+  
+  
+    say "{DateTime.now} --- [$project] start build by crontab ... ";
+  
+    Proc::Async.new(
+      'sparky-runner.pl6',
+      "--marker=$project",
+      "--dir=$dir",
+      "--make-report"
+    ).start;
+  
+
+  }
 
 }
 

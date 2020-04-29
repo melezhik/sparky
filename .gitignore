@@ -5,3 +5,6 @@ Sparky-*
 .reports
 db.sqlite3
 .cache
+.sparrowdo
+.triggers
+

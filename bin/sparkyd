@@ -1,6 +1,5 @@
 #!perl6
 
-use Time::Crontab;
 use Sparky;
 
 sub MAIN (

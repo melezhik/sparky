@@ -13,7 +13,8 @@ state $SPARKY-BUILD-ID;
 sub MAIN (
   Str  :$dir = "$*CWD",
   Bool :$make-report = False,
-  Str  :$marker
+  Str  :$marker,
+  Str  :$trigger?
 )
 {
 
@@ -102,6 +103,10 @@ sub MAIN (
     $sparrowdo-run ~= " --host=" ~ %sparrowdo-config<host>;
   } else {
     $sparrowdo-run ~= " --localhost";
+  }
+
+  if $trigger {
+    $sparrowdo-run ~= " --conf=" ~ $trigger;
   }
 
   if %sparrowdo-config<repo> {
