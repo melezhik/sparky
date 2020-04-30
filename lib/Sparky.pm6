@@ -73,7 +73,7 @@ multi sub get-dbh {
 
 }
 
-sub schedule-build ( $dir, %opts? ) is export {
+sub build-is-running ( $dir ) {
 
   my $project = $dir.IO.basename;
 
@@ -89,9 +89,18 @@ sub schedule-build ( $dir, %opts? ) is export {
 
       say "{DateTime.now} --- [$project] build already running, pid: $pid SKIP ... ";
 
-      return;
+      return True
 
+  } else {
+
+    return False
   }
+
+}
+
+sub schedule-build ( $dir, %opts? ) is export {
+
+  my $project = $dir.IO.basename;
 
   my %config = Hash.new;
 
@@ -119,7 +128,6 @@ sub schedule-build ( $dir, %opts? ) is export {
 
     for dir("{$dir}/.triggers/", test => /:i '.' trg $/ ) -> $file {
       $run-by-trigger = True;
-      move $file, "{$file}.conf";
       $trigger-file = "{$file}.conf".IO.absolute;
       last;
     }
@@ -129,13 +137,19 @@ sub schedule-build ( $dir, %opts? ) is export {
 
       say "{DateTime.now} --- [$project] build trigerred by file trigger <$trigger-file> ...";
 
-      Proc::Async.new(
-        'sparky-runner.pl6',
-        "--marker=$project",
-        "--dir=$dir",
-        "--sparrowdo-conf=$trigger-file",
-        "--make-report"
-      ).start;
+      if ! build-is-running($dir) {
+
+        move $trigger-file, "{$trigger-file}.conf";
+
+        Proc::Async.new(
+          'sparky-runner.pl6',
+          "--marker=$project",
+          "--dir=$dir",
+          "--sparrowdo-conf={$trigger-file}.conf",
+          "--make-report"
+        ).start;
+
+     }
   
   } else {
 
@@ -149,7 +163,7 @@ sub schedule-build ( $dir, %opts? ) is export {
           "--marker=$project",
           "--dir=$dir",
           "--make-report"
-        ).start;
+        ).start if ! build-is-running($dir);
       } else {
         say "{DateTime.now} --- [$project] build is skipped by cron: $crontab ... ";
         return;
