@@ -35,7 +35,7 @@ function run( project ){
           % if %r<state> == -2 {
             N/A
           % } else {
-            <a href="{%*ENV<SPARKY_HTTP_ROOT>}/report/<%= %r<project> %>/<%= %r<last_build_id> %>"><%= %r<last_build_id> %></a>
+            %= "<a href='{%*ENV<SPARKY_HTTP_ROOT>}/report/" ~ %r<project> ~ "/" ~  %r<last_build_id> ~ "'>"  ~ %r<last_build_id> ~ "</a>"
           % }
           </td>
           <td>

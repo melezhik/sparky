@@ -172,11 +172,10 @@ sub css {
   if %conf<ui> && %conf<ui><theme> {
     $theme = %conf<ui><theme>
   } else {
-    $theme = "nuclear";
+    $theme = "cosmo";
   }
 
   say "theme: $theme";
-
 
   qq:to /HERE/
 
