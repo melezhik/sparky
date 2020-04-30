@@ -1,6 +1,6 @@
 # SYNOPSIS
 
-Sparky is a powerful pocket size task runner server in crontab style.
+Sparky is a flexible and minimalist continuous integration server written in Raku.
 
 ![Nice web UI](https://raw.githubusercontent.com/melezhik/sparky/master/images/sparky-web-ui4.png) 
 
@@ -352,6 +352,10 @@ You can disable cron check to run project forcefully, by setting `SPARKY_SKIP_CR
 ## SPARKY_ROOT
 
 Sets the sparky root directory
+
+## SPARKY_HTTP_ROOT
+
+Set Sparky web application http root. Useful when proxy application through Nginx.
 
 ## SPARKY_TIMEOUT
 

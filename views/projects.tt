@@ -6,7 +6,7 @@
 function run( project ){
 
   var xhr = new XMLHttpRequest();
-  xhr.open("POST", "/build/project/" + project , true );
+  xhr.open("POST", "{%*ENV<SPARKY_HTTP_ROOT>}/build/project/" + project , true );
   xhr.send("");
 
 }
@@ -29,13 +29,13 @@ function run( project ){
         % for @rows -> %r {
         <tr>
           <td>
-          %= "<a href='/project/" ~ %r<project> ~ "'>"  ~ %r<project> ~ "</a>"
+          %= "<a href='{%*ENV<SPARKY_HTTP_ROOT>}/project/" ~ %r<project> ~ "'>"  ~ %r<project> ~ "</a>"
           </td>
           <td>
           % if %r<state> == -2 {
             N/A
           % } else {
-            <a href="/report/<%= %r<project> %>/<%= %r<last_build_id> %>"><%= %r<last_build_id> %></a>
+            <a href="{%*ENV<SPARKY_HTTP_ROOT>}/report/<%= %r<project> %>/<%= %r<last_build_id> %>"><%= %r<last_build_id> %></a>
           % }
           </td>
           <td>

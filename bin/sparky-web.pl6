@@ -190,7 +190,7 @@ sub css {
 
 sub navbar {
 
-  q:to /HERE/
+  qq:to /HERE/
 
 
     <nav class="navbar" role="navigation" aria-label="main navigation">
@@ -204,11 +204,11 @@ sub navbar {
 
       <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
-          <a class="navbar-item" href="/">
+          <a class="navbar-item" href="{%*ENV<SPARKY_HTTP_ROOT>}/">
             Projects
           </a>
 
-          <a class="navbar-item" href="/builds">
+          <a class="navbar-item" href="{%*ENV<SPARKY_HTTP_ROOT>}/builds">
             Recent Builds
           </a>
 
@@ -218,7 +218,7 @@ sub navbar {
             </a>
 
             <div class="navbar-dropdown">
-              <a class="navbar-item" href="/about">
+              <a class="navbar-item" href="{%*ENV<SPARKY_HTTP_ROOT>}/about">
                 About
               </a>
               <a class="navbar-item" href="https://github.com/melezhik/sparky">

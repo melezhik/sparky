@@ -20,10 +20,10 @@
         % for @rows -> %r {
         <tr>
           <td>
-          %= "<a href='/project/" ~ %r<project> ~ "'>"  ~ %r<project> ~ "</a>"
+          %= "<a href='{%*ENV<SPARKY_HTTP_ROOT>}/project/" ~ %r<project> ~ "'>"  ~ %r<project> ~ "</a>"
           </td>
           <td>
-          %= "<a href='/report/" ~ %r<project> ~ '/' ~ %r<id> ~ "'>"  ~ %r<id> ~ "</a>"
+          %= "<a href='{%*ENV<SPARKY_HTTP_ROOT>}/report/" ~ %r<project> ~ '/' ~ %r<id> ~ "'>"  ~ %r<id> ~ "</a>"
           </td>
           <td>
           % if %r<state> == -1 {

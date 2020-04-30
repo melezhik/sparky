@@ -1,10 +1,10 @@
-systemd-service "sparkyd-example", %(
-  user => "root",
-  workdir => "/root/projects/sparky",
-  command => "/usr/bin/bash --login -c 'sparkyd --root=/root/projects/sparky/examples 2>/var/log/sparky-example.log'"
+systemd-service "sparkyd", %(
+  user => "scheck",
+  workdir => "/home/scheck/projects/sparky",
+  command => "/usr/bin/bash --login -c 'sparkyd --root=/home/scheck/projects/RakuDist/sparky/'"
 );
 
 # start service
 
-service-start "sparkyd-example";
+service-start "sparkyd";
 
