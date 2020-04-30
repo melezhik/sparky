@@ -1,14 +1,11 @@
 language: perl
 
 env:
-  - PATH=/opt/rakudo/bin:/home/travis/.perl6/bin:$PATH
+  - PATH=~/.perl6/bin:/opt/rakudo-pkg/share/perl6/site/bin:/opt/rakudo-pkg/bin/:$PATH
 
 before_install:
   - wget https://github.com/nxadm/rakudo-pkg/releases/download/v2020.02.1-07/rakudo-pkg-Ubuntu16.04_2020.02.1-07_amd64.deb
   - sudo dpkg -i *.deb 
-  - git clone https://github.com/ugexe/zef.git
-  - cd zef
-  - perl6 -Ilib bin/zef install . && cd ../
 
 install:
 
