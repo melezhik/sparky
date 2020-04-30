@@ -113,27 +113,27 @@ sub schedule-build ( $dir, %opts? ) is export {
 
   # check if build is triggered by file triggers
   my $trigger-file;
-  my $run-build = False;
+  my $run-by-trigger = False;
 
   if "{$dir}/.triggers/".IO ~~ :d {
 
     for dir("{$dir}/.triggers/", test => /:i '.' trg $/ ) -> $file {
-      $run-build = True;
+      $run-by-trigger = True;
       move $file, "{$file}.conf";
       $trigger-file = "{$file}.conf".IO.absolute;
       last;
     }
   }
 
-  if $run-build {
+  if $run-by-trigger {
 
-      say "{DateTime.now} --- [$project] start build by trigger <$trigger-file> ...";
+      say "{DateTime.now} --- [$project] build trigerred by file trigger <$trigger-file> ...";
 
       Proc::Async.new(
         'sparky-runner.pl6',
         "--marker=$project",
         "--dir=$dir",
-        "--trigger=$trigger-file",
+        "--sparrowdo-conf=$trigger-file",
         "--make-report"
       ).start;
   
@@ -143,7 +143,13 @@ sub schedule-build ( $dir, %opts? ) is export {
       my $crontab = %config<crontab>;
       my $tc = Time::Crontab.new(:$crontab);
       if $tc.match(DateTime.now, :truncate(True)) {
-        say "{DateTime.now} --- [$project] build triggered by cron: $crontab ...";
+        say "{DateTime.now} --- [$project] build triggered by cron trigger: <$crontab> ...";
+        Proc::Async.new(
+          'sparky-runner.pl6',
+          "--marker=$project",
+          "--dir=$dir",
+          "--make-report"
+        ).start;
       } else {
         say "{DateTime.now} --- [$project] build is skipped by cron: $crontab ... ";
         return;
@@ -154,14 +160,6 @@ sub schedule-build ( $dir, %opts? ) is export {
     }
   
   
-    say "{DateTime.now} --- [$project] start build by crontab ... ";
-  
-    Proc::Async.new(
-      'sparky-runner.pl6',
-      "--marker=$project",
-      "--dir=$dir",
-      "--make-report"
-    ).start;
   
 
   }

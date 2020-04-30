@@ -14,7 +14,7 @@ sub MAIN (
   Str  :$dir = "$*CWD",
   Bool :$make-report = False,
   Str  :$marker,
-  Str  :$trigger?
+  Str  :$sparrowdo-conf?
 )
 {
 
@@ -105,8 +105,8 @@ sub MAIN (
     $sparrowdo-run ~= " --localhost";
   }
 
-  if $trigger {
-    $sparrowdo-run ~= " --conf=" ~ $trigger;
+  if $sparrowdo-conf {
+    $sparrowdo-run ~= " --conf=" ~ $sparrowdo-conf;
   }
 
   if %sparrowdo-config<repo> {

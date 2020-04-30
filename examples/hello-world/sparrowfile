@@ -1,4 +1,5 @@
 #!perl6
 
-
 bash "echo Hello World";
+say config().perl;
+sleep(20);
