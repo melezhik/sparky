@@ -14,7 +14,7 @@ sub MAIN (
   Str  :$dir = "$*CWD",
   Bool :$make-report = False,
   Str  :$marker,
-  Str  :$sparrowdo-conf?
+  Str  :$trigger?
 )
 {
 
@@ -105,9 +105,6 @@ sub MAIN (
     $sparrowdo-run ~= " --localhost";
   }
 
-  if $sparrowdo-conf {
-    $sparrowdo-run ~= " --conf=" ~ $sparrowdo-conf;
-  }
 
   if %sparrowdo-config<repo> {
     $sparrowdo-run ~= " --repo=" ~ %sparrowdo-config<repo>;
@@ -151,11 +148,33 @@ sub MAIN (
     $sparrowdo-run ~= " --bootstrap";
   }
 
+  my %trigger =  Hash.new;
+
+  if $trigger {
+    %trigger = EVALFILE($trigger);
+    unlink $trigger;
+  }
+
+  my $run-dir = $dir;
+
+  if %trigger<cwd> {
+
+    $run-dir = %trigger<cwd>;
+
+  }
+
+  if %trigger<conf> {
+
+    $sparrowdo-run ~= " --conf={%trigger<conf>}";
+
+  }
+
+
   if $make-report {
     my $report-file = "$reports-dir/build-$build_id.txt";
-    shell("cd $dir && $sparrowdo-run 1>$report-file" ~ ' 2>&1');
+    shell("cd $run-dir && $sparrowdo-run 1>$report-file" ~ ' 2>&1');
   } else{
-    shell("cd $dir && $sparrowdo-run" ~ ' 2>&1');
+    shell("cd $run-dir && $sparrowdo-run" ~ ' 2>&1');
   }
 
 

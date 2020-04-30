@@ -2,4 +2,4 @@
 
 bash "echo Hello World";
 say config().perl;
-sleep(20);
+sleep(30);

@@ -126,7 +126,7 @@ sub schedule-build ( $dir, %opts? ) is export {
 
   if "{$dir}/.triggers/".IO ~~ :d {
 
-    for dir("{$dir}/.triggers/", test => { $_.IO.extension eq "trg" } ) -> $file {
+    for dir("{$dir}/.triggers/", test => { $_.IO.extension eq "pl6" } ) -> $file {
       $run-by-trigger = True;
       $trigger-file = $file.IO.absolute;
       last;
@@ -139,13 +139,11 @@ sub schedule-build ( $dir, %opts? ) is export {
 
       if ! build-is-running($dir) {
 
-        move $trigger-file, "{$trigger-file}.conf";
-
         Proc::Async.new(
           'sparky-runner.pl6',
           "--marker=$project",
           "--dir=$dir",
-          "--sparrowdo-conf={$trigger-file}.conf",
+          "--trigger=$trigger-file",
           "--make-report"
         ).start;
 
