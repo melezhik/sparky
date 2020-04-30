@@ -28,7 +28,7 @@ function reBuild(){
         <a class="button is-small" onclick="reBuild()" >Rebuild</a>
       </div>
       <div class="panel-block">
-        % my $text = slurp $path
+        % use HTML::Escape; my $text = escape-html(slurp $path)
         %= "<pre>" ~ $text ~ "</pre>"
       </div>
     </nav>

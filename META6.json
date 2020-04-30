@@ -11,7 +11,8 @@
     "Bailador",
     "Text::Markdown",
     "Data::Dump",
-    "Number::Denominate"
+    "Number::Denominate",
+    "HTML::Escape"
   ],
   "description" : "Sparky is a flexible and minimalist continuous integration server written in Raku",
   "license" : "Artistic-2.0",
