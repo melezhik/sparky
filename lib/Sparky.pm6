@@ -126,9 +126,9 @@ sub schedule-build ( $dir, %opts? ) is export {
 
   if "{$dir}/.triggers/".IO ~~ :d {
 
-    for dir("{$dir}/.triggers/", test => /:i '.' trg $/ ) -> $file {
+    for dir("{$dir}/.triggers/", test => { $_.IO.extension eq "trg" } ) -> $file {
       $run-by-trigger = True;
-      $trigger-file = "{$file}.conf".IO.absolute;
+      $trigger-file = $file.IO.absolute;
       last;
     }
   }
