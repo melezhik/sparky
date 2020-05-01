@@ -49,6 +49,7 @@ if $engine ~~ /:i sqlite/ {
       CREATE TABLE builds (
           id          INTEGER PRIMARY KEY AUTOINCREMENT,
           project     varchar(255),
+          description TEXT,
           state       int,
           dt datetime default current_timestamp
       )
@@ -60,6 +61,7 @@ if $engine ~~ /:i sqlite/ {
       CREATE TABLE builds (
           id          SERIAL,
           project     varchar(255),
+          description text,
           state       int,
           dt timestamp default CURRENT_TIMESTAMP
       )

@@ -56,7 +56,7 @@ get '/' => sub {
       next;  
     }
 
-    $sth = $dbh.prepare("SELECT state, dt FROM builds where id = {$last_build_id}");
+    $sth = $dbh.prepare("SELECT state, description, dt FROM builds where id = {$last_build_id}");
   
     $sth.execute();
 
@@ -68,6 +68,8 @@ get '/' => sub {
 
     my $dt = @r[0]<dt>;
 
+    my $description = @r[0]<description>;
+
     #my $dt-human = denominate( DateTime.now - DateTime.new("{$dt}")) ~ " ago";
 
     my $dt-human = "{$dt}";
@@ -77,6 +79,7 @@ get '/' => sub {
       last_build_id => $last_build_id,
       state         => $state,
       dt            => $dt-human,
+      description   => $description,
     );
 
   }
@@ -114,7 +117,7 @@ get '/report/:project/:build_id' => sub ( $project, $build_id ) {
 
     my $dbh = get-dbh();
   
-    my $sth = $dbh.prepare("SELECT state, dt FROM builds where id = {$build_id}");
+    my $sth = $dbh.prepare("SELECT state, description, dt FROM builds where id = {$build_id}");
   
     $sth.execute();
 
@@ -124,11 +127,13 @@ get '/report/:project/:build_id' => sub ( $project, $build_id ) {
 
     my $dt = @r[0]<dt>;
 
+    my $description = @r[0]<description>;
+ 
     $sth.finish;
 
     $dbh.dispose;
 
-    template 'report.tt', css(), navbar(), $project, $build_id, $dt, "$reports-dir/$project/build-$build_id.txt";
+    template 'report.tt', css(), navbar(), $project, $build_id, $dt, $description, "$reports-dir/$project/build-$build_id.txt";
 
   } else {
     status(404);

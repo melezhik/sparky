@@ -38,18 +38,27 @@ sub MAIN (
 
   my $run-first-time = False;
 
+  my %trigger =  Hash.new;
+
+  if $trigger {
+    %trigger = EVALFILE($trigger);
+    unlink $trigger;
+  }
+
   if $make-report {
 
     mkdir $reports-dir;
   
     $dbh = get-dbh( $dir );
+
+    my $description = %trigger ?? %trigger<description> !! "NA";
   
     my $sth = $dbh.prepare(q:to/STATEMENT/);
-      INSERT INTO builds (project, state)
-      VALUES ( ?,?)
+      INSERT INTO builds (project, state, description)
+      VALUES ( ?,?,? )
     STATEMENT
   
-    $sth.execute($project, 0);
+    $sth.execute($project, 0, $description);
   
     $sth = $dbh.prepare(q:to/STATEMENT/);
         SELECT max(ID) AS build_id
@@ -148,12 +157,7 @@ sub MAIN (
     $sparrowdo-run ~= " --bootstrap";
   }
 
-  my %trigger =  Hash.new;
 
-  if $trigger {
-    %trigger = EVALFILE($trigger);
-    unlink $trigger;
-  }
 
   my $run-dir = $dir;
 

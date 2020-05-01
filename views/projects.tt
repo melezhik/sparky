@@ -23,6 +23,7 @@ function run( project ){
         <tr>
           <td>Project</td>
           <td>Last Build</td>
+          <td>Build Dsc</td>
           <td>State</td>
           <td>Time</td>
         </tr>
@@ -37,6 +38,9 @@ function run( project ){
           % } else {
             %= "<a href='{%*ENV<SPARKY_HTTP_ROOT>}/report/" ~ %r<project> ~ "/" ~  %r<last_build_id> ~ "'>"  ~ %r<last_build_id> ~ "</a>"
           % }
+          </td>
+          <td>
+            %= %r<description> || "NA"
           </td>
           <td>
           % if %r<state> == -1 {
