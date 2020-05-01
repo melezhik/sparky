@@ -51,14 +51,15 @@ sub MAIN (
   
     $dbh = get-dbh( $dir );
 
-    my $description = %trigger ?? %trigger<description> !! "NA";
+    my $description = %trigger<description>;
+    my $key = %trigger<key>;
   
     my $sth = $dbh.prepare(q:to/STATEMENT/);
-      INSERT INTO builds (project, state, description)
-      VALUES ( ?,?,? )
+      INSERT INTO builds (project, state, description, key)
+      VALUES ( ?,?,?,? )
     STATEMENT
   
-    $sth.execute($project, 0, $description);
+    $sth.execute($project, 0, $description, $key);
   
     $sth = $dbh.prepare(q:to/STATEMENT/);
         SELECT max(ID) AS build_id
