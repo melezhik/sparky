@@ -1,0 +1,33 @@
+% my ( $css, $navbar, @rows) = @_;
+
+%= $css
+
+    <head>
+      <title>~SPARKY CI WEB~</title>
+    </head>
+
+%= $navbar
+
+    <nav class="panel">
+      <p class="panel-heading">Builds queue</p>
+      <table class="table panel-block">
+        <tr>
+          <td>Project</td>
+          <td>Build Dsc</td>
+          <td>Time</td>
+        </tr>
+        % for @rows -> %r {
+        <tr>
+          <td>
+          %= %r<project>
+          </td>
+          <td>
+          %= %r<description> || "NA"
+          </td>
+          <td>
+          %= %r<dt>
+          </td>
+        </tr>   
+        % }
+      </table>
+  </nav>

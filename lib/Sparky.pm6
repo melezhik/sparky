@@ -9,9 +9,13 @@ my $root = %*ENV<SPARKY_ROOT> || %*ENV<HOME> ~ '/.sparky/projects';
 
 sub get-sparky-conf is export {
 
-  my $conf-file = ( %*ENV<USER> && %*ENV<USER> =! 'root' ) ?? %*ENV<HOME> ~ '/sparky.yaml' !! ( '/root/sparky.yaml' );
+  my $conf-file = %*ENV<HOME> ~ '/sparky.yaml';
 
-  my %conf = $conf-file.IO ~~ :e ?? load-yaml(slurp $conf-file) !! Hash.new;
+  my %conf = $conf-file.IO ~~ :f ?? load-yaml($conf-file.IO.slurp) !! Hash.new;
+
+  warn "sparky conf loaded: ", $conf-file;
+
+  %conf;
 
 }
 
@@ -125,7 +129,6 @@ sub schedule-build ( $dir, %opts? ) is export {
   my $run-by-trigger = False;
 
   if "{$dir}/.triggers/".IO ~~ :d {
-
     for dir("{$dir}/.triggers/", test => { $_.IO.extension eq "pl6" } ) -> $file {
       $run-by-trigger = True;
       $trigger-file = $file.IO.absolute;
@@ -171,10 +174,36 @@ sub schedule-build ( $dir, %opts? ) is export {
         return;
     }
   
-  
-  
-
   }
 
 }
 
+sub find-triggers ($root) is export {
+
+  my @triggers;
+
+  for dir($root) -> $dir {
+
+    next if "$dir".IO ~~ :f;
+    next if $dir.basename eq '.git';
+    next if $dir.basename eq '.reports';
+    next if $dir.basename eq 'db.sqlite3-journal';  
+    next unless "$dir/sparrowfile".IO ~~ :f;
+
+    my $project = $dir.IO.basename;
+
+    if "{$dir}/.triggers/".IO ~~ :d {
+      for dir("{$dir}/.triggers/", test => { $_.IO.extension eq "pl6" } ) -> $file {
+        my %trigger = EVALFILE($file);
+        %trigger<project> = $project;
+        %trigger<file> = $file;
+        %trigger<dt> = $file.IO.modified.DateTime;
+        %trigger<data> = $file.IO.slurp;
+        push @triggers, %trigger;
+      }
+    }
+
+  }
+
+  return @triggers;
+}

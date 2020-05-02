@@ -105,11 +105,17 @@ get '/builds' => sub {
   $sth.finish;
 
   $dbh.dispose;
-  
+
+
   template 'builds.tt', css(), navbar(), @rows;   
 
 }
 
+get '/queue' => sub {
+
+  template 'queue.tt', css(), navbar(), find-triggers($root);   
+
+}
 
 get '/report/:project/:build_id' => sub ( $project, $build_id ) {
 
@@ -180,8 +186,6 @@ sub css {
     $theme = "cosmo";
   }
 
-  say "theme: $theme";
-
   qq:to /HERE/
 
   <meta charset="utf-8">
@@ -214,6 +218,10 @@ sub navbar {
 
           <a class="navbar-item" href="{%*ENV<SPARKY_HTTP_ROOT>}/builds">
             Recent Builds
+          </a>
+
+          <a class="navbar-item" href="{%*ENV<SPARKY_HTTP_ROOT>}/queue">
+            Queue
           </a>
 
           <div class="navbar-item has-dropdown is-hoverable">
