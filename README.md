@@ -6,13 +6,13 @@ Sparky is a flexible and minimalist continuous integration server written in Rak
 
 The essential features of Sparky:
 
-* Defining jobs times in crontab style
-* Scenarios defined as [Sparrow6](https://github.com/melezhik/Sparrow6) scripts
+* Defining builds times in crontab style
+* Triggering builds using external APIs and custom logic 
+* Build scenarios defined as [Sparrow6](https://github.com/melezhik/Sparrow6) scripts
 * [Nice set](https://github.com/melezhik/Sparrow6/blob/master/documentation/dsl.md) of predefined tasks is available
 * Everything is kept in SCM repository - easy to port, maintain and track changes
-* Tasks gets run **asynchronously** in one of 3 flavors - 1) on localhost 2) on remote machines via **ssh** 3) on **docker** instances
-* Nice web UI to read tasks reports is provided 
-
+* Builds gets run in one of 3 flavors - 1) on localhost 2) on remote machines via **ssh** 3) on **docker** instances
+* Nice web UI to read build reports
 
 Interested? Let's go ahead! (:
 
@@ -53,7 +53,7 @@ Then you need to run the sparky daemon
 
 * Once all the sub directories gets passed, sparky daemon sleeps for $timeout seconds.
 
-* A timeout option allow to adjust a load to your system.
+* A `timeout` option allows to balance a load on your system.
 
 * You can change a timeout by applying `--timeout` parameter when running sparky daemon:
 
@@ -93,16 +93,15 @@ You can use Sparrowdo installer as well, which installs service as systemd unit:
     $ nano utils/install-sparky-web-.pl6 # change working directory, user and root directory
     $ sparrowdo --sparrowfile=utils/install-sparky-web-systemd.pl6 --no_sudo --localhost
 
-
 # Creating first sparky project
 
 Sparky project is just a directory located at the sparky root directory:
 
     $ mkdir ~/.sparky/projects/bailador-app
 
-# Writting build scenario
+# Build scenario
 
-Sparky is heavily based on Sparrowdo, so I encourage you to read [Sparrowdo docs](https://github.com/melezhik/sparrowdo)
+Sparky is built on Sparrowdo, read [Sparrowdo](https://github.com/melezhik/sparrowdo)
 _to know how to write Sparky scenarios_.
 
 Here is a short example.
@@ -169,7 +168,6 @@ for example to run a build every hour at 30,50 or 55 minute say this:
 
     crontab: "30,50,55 * * * *"
 
-
 Follow [Time::Crontab](https://github.com/ufobat/p6-time-crontab) documentation on crontab entries format.
 
 # Disable project
@@ -181,7 +179,6 @@ You can disable project builds by setting `disable` option to true:
     disabled: true
 
 It's handy when you start a new project and don't want to add it into build pipeline.
-
 
 # Downstream projects
 
@@ -196,6 +193,57 @@ And the by setting `is_downstream` field to `true` at the downstream project `sp
     $ nano ~/.sparky/projects/downstream-project/sparky.yaml
 
     is_downstream: true
+
+# File triggering protocol (FTP)
+
+Sparky FTP allows to _trigger_ builds automatically by just creating files with build _parameters_
+in special format:
+
+    nano $project/.triggers/foo-bar-baz.pl6
+
+File should have a `*.pl6` extension and be located in project `.trigger` directory.
+
+A content of the file should Raku code returning a Hash:
+
+```raku
+{
+  description => "This is my build",
+  cwd => "/path/to/working/directory",
+  conf => "/path/to/sparrow/configuration/file"
+}
+
+```
+
+Sparky daemon parses files in `.triggers` and launch build per every file, removing file afterwards,
+this process is called file triggering.
+
+To separate different builds just create trigger files with unique names inside `$project/.trigger` directory.
+
+FTP allows to create _supplemental_ APIs to implement more complex and custom build logic, while keeping Sparky itself simple.
+
+## Trigger attributes
+
+Those keys could be used in trigger Hash. All they are optional.
+
+* `cwd`
+
+Directory where sparrowfile is located, when a build gets run, the process will change to this directory.
+
+* `conf`
+
+Path to sparrowdo configuration file
+
+* `description`
+
+Arbitrary text description of build
+
+* `key`
+
+A unique key. Reserved for future implementation of query builds by keys.
+
+## Example
+
+An example of Sparky FTP implimenarion is a RakuDist API [script](https://github.com/melezhik/RakuDist/blob/master/bin/rkd-run-sparky) that queue Sparky builds for Raku modules testing.
 
 # Sparky plugins
 
@@ -422,9 +470,7 @@ The list of available themes is on [https://jenil.github.io/bulmaswatch/](https:
 
 # Trigger jobs from HTTP API
 
-
     POST /build/project/$project
-
 
 # Examples
 
