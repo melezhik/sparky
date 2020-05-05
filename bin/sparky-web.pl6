@@ -95,7 +95,7 @@ get '/builds' => sub {
   my $dbh = get-dbh();
 
   my $sth = $dbh.prepare(q:to/STATEMENT/);
-      SELECT * FROM builds order by id desc limit 100
+      SELECT * FROM builds order by id desc limit 500
   STATEMENT
 
   $sth.execute();

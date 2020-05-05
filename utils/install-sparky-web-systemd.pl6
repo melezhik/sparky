@@ -7,4 +7,5 @@ systemd-service "sparky-web", %(
 # start service
 
 service-restart "sparky-web";
+service-enable "sparky-web";
 

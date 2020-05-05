@@ -7,4 +7,5 @@ systemd-service "sparkyd", %(
 # start service
 
 service-start "sparkyd";
+service-enable "sparkyd";
 
