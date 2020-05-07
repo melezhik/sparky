@@ -52,7 +52,7 @@ sub MAIN (
     $dbh = get-dbh( $dir );
 
     my $description = %trigger<description>;
-    my $key = %trigger<key>;
+    my $key = $trigger.IO.basename;
   
     my $sth = $dbh.prepare(q:to/STATEMENT/);
       INSERT INTO builds (project, state, description, key)
