@@ -150,7 +150,7 @@ get '/report/:project/:build_id' => sub ( $project, $build_id ) {
 get '/status/:project/:key' => sub ( $project, $key ) {
 
   if trigger-exists($root,$project,$key) {
-    "queued"
+    -2  # "queued"
   } else {
 
     my $dbh = get-dbh();
