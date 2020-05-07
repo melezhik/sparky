@@ -207,3 +207,14 @@ sub find-triggers ($root) is export {
 
   return @triggers;
 }
+
+sub trigger-exists ($root,$project,$trigger) is export {
+
+
+  if "{$root}/$project/.triggers/$trigger".IO ~~ :f {
+    return True
+  } else {
+    return False
+  }
+
+}

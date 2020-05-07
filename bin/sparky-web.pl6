@@ -147,6 +147,31 @@ get '/report/:project/:build_id' => sub ( $project, $build_id ) {
 
 }
 
+get '/status/key/:project/:key' => sub ( $project, $key ) {
+
+  if trigger-exists($root,$project,$key) {
+    "queued"
+  } else {
+
+    my $dbh = get-dbh();
+  
+    my $sth = $dbh.prepare("SELECT state, description, dt FROM builds where project = {$project} and key = {$key}");
+  
+    $sth.execute();
+
+    my @r = $sth.allrows(:array-of-hash);
+
+    my $state = @r[0]<state>;
+
+    $sth.finish;
+
+    $dbh.dispose;
+
+    $state;
+  }
+
+}
+
 get '/project/:project' => sub ($project) {
   if "$root/$project/sparrowfile".IO ~~ :f {
     my $project-conf;
