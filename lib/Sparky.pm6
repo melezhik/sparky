@@ -129,7 +129,7 @@ sub schedule-build ( $dir, %opts? ) is export {
   my $run-by-trigger = False;
 
   if "{$dir}/.triggers/".IO ~~ :d {
-    for dir("{$dir}/.triggers/", test => { $_.IO.extension eq "pl6" } ) -> $file {
+    for dir("{$dir}/.triggers/", test => { $_.IO ~~ :f } ) -> $file {
       $run-by-trigger = True;
       $trigger-file = $file.IO.absolute;
       last;
@@ -193,7 +193,7 @@ sub find-triggers ($root) is export {
     my $project = $dir.IO.basename;
 
     if "{$dir}/.triggers/".IO ~~ :d {
-      for dir("{$dir}/.triggers/", test => { $_.IO.extension eq "pl6" } ) -> $file {
+      for dir("{$dir}/.triggers/", test => { $_.IO ~~ :f } ) -> $file {
         my %trigger = EVALFILE($file);
         %trigger<project> = $project;
         %trigger<file> = $file;
@@ -210,8 +210,7 @@ sub find-triggers ($root) is export {
 
 sub trigger-exists ($root,$project,$trigger) is export {
 
-
-  if "{$root}/$project/.triggers/$trigger".IO ~~ :f {
+  if "{$root}/$project/.triggers/{$trigger}".IO ~~ :f {
     return True
   } else {
     return False

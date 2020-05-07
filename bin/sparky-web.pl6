@@ -147,7 +147,7 @@ get '/report/:project/:build_id' => sub ( $project, $build_id ) {
 
 }
 
-get '/status/key/:project/:key' => sub ( $project, $key ) {
+get '/status/:project/:key' => sub ( $project, $key ) {
 
   if trigger-exists($root,$project,$key) {
     "queued"
