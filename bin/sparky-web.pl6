@@ -155,7 +155,7 @@ get '/status/key/:project/:key' => sub ( $project, $key ) {
 
     my $dbh = get-dbh();
   
-    my $sth = $dbh.prepare("SELECT state, description, dt FROM builds where project = {$project} and key = {$key}");
+    my $sth = $dbh.prepare("SELECT state, description, dt FROM builds where project = '{$project}' and key = '{$key}'");
   
     $sth.execute();
 
