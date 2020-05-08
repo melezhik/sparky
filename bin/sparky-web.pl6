@@ -173,6 +173,34 @@ get '/status/:project/:key' => sub ( $project, $key ) {
       status(404);
     }
   }
+}
+
+get '/report/raw/:project/:key' => sub ( $project, $key ) {
+
+  if trigger-exists($root,$project,$key) {
+     "build is queued, wait till it gets run"
+  } else {
+
+    my $dbh = get-dbh();
+
+    my $sth = $dbh.prepare("SELECT id FROM builds where project = '{$project}' and key = '{$key}'");
+
+    $sth.execute();
+
+    my @r = $sth.allrows(:array-of-hash);
+
+    my $build_id = @r[0]<id>;
+
+    $sth.finish;
+
+    $dbh.dispose;
+
+    if $build_id.defined {
+      return "$reports-dir/$project/build-$build_id.txt".IO.slurp
+    } else {
+      status(404);
+    }
+  }
 
 }
 
