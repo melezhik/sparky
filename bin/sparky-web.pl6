@@ -16,7 +16,7 @@ post '/build/project/:project' => sub ($project) {
 
   schedule-build "$root/$project", %( skip-cron => True );
 
-  "build is triggered";  
+  "build is triggered";
 }
 
 get '/' => sub {
@@ -36,7 +36,7 @@ get '/' => sub {
     my $project = $dir.IO.basename;
 
     my $sth = $dbh.prepare("SELECT max(id) as last_build_id FROM builds where project = '{$project}'");
-  
+
     $sth.execute();
 
     my @r = $sth.allrows(:array-of-hash);
@@ -47,17 +47,17 @@ get '/' => sub {
 
     unless $last_build_id {
 
-      push @projects, %( 
+      push @projects, %(
         project       => $project,
         last_build_id => "",
         state         => -2, # never started
         dt            => "",
       );
-      next;  
+      next;
     }
 
     $sth = $dbh.prepare("SELECT state, description, dt FROM builds where id = {$last_build_id}");
-  
+
     $sth.execute();
 
     @r = $sth.allrows(:array-of-hash);
@@ -74,7 +74,7 @@ get '/' => sub {
 
     my $dt-human = "{$dt}";
 
-    push @projects, %( 
+    push @projects, %(
       project       => $project,
       last_build_id => $last_build_id,
       state         => $state,
@@ -85,7 +85,7 @@ get '/' => sub {
   }
 
   $dbh.dispose;
-  
+
   template 'projects.tt', css(), navbar(), @projects.sort(*.<last_build_id>).reverse;
 
 }
@@ -107,13 +107,13 @@ get '/builds' => sub {
   $dbh.dispose;
 
 
-  template 'builds.tt', css(), navbar(), @rows;   
+  template 'builds.tt', css(), navbar(), @rows;
 
 }
 
 get '/queue' => sub {
 
-  template 'queue.tt', css(), navbar(), find-triggers($root);   
+  template 'queue.tt', css(), navbar(), find-triggers($root);
 
 }
 
@@ -122,9 +122,9 @@ get '/report/:project/:build_id' => sub ( $project, $build_id ) {
   if "$reports-dir/$project/build-$build_id.txt".IO ~~ :f {
 
     my $dbh = get-dbh();
-  
+
     my $sth = $dbh.prepare("SELECT state, description, dt FROM builds where id = {$build_id}");
-  
+
     $sth.execute();
 
     my @r = $sth.allrows(:array-of-hash);
@@ -134,7 +134,7 @@ get '/report/:project/:build_id' => sub ( $project, $build_id ) {
     my $dt = @r[0]<dt>;
 
     my $description = @r[0]<description>;
- 
+
     $sth.finish;
 
     $dbh.dispose;
@@ -154,9 +154,9 @@ get '/status/:project/:key' => sub ( $project, $key ) {
   } else {
 
     my $dbh = get-dbh();
-  
+
     my $sth = $dbh.prepare("SELECT state, description, dt FROM builds where project = '{$project}' and key = '{$key}'");
-  
+
     $sth.execute();
 
     my @r = $sth.allrows(:array-of-hash);
@@ -167,7 +167,11 @@ get '/status/:project/:key' => sub ( $project, $key ) {
 
     $dbh.dispose;
 
-    $state;
+    if $state.defined {
+      return $state
+    } else {
+      status(404);
+    }
   }
 
 }
@@ -177,7 +181,7 @@ get '/project/:project' => sub ($project) {
     my $project-conf;
     my $err;
       if "$root/$project/sparky.yaml".IO ~~ :f {
-      $project-conf = slurp "$root/$project/sparky.yaml"; 
+      $project-conf = slurp "$root/$project/sparky.yaml";
       load-yaml($project-conf);
       CATCH {
         default {
@@ -202,7 +206,7 @@ get '/about' => sub {
 sub css {
 
   my %conf = get-sparky-conf();
-  
+
   my $theme ;
 
   if %conf<ui> && %conf<ui><theme> {
@@ -275,4 +279,3 @@ sub navbar {
 }
 
 baile;
-
