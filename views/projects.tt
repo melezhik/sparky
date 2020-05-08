@@ -6,7 +6,7 @@
 function run( project ){
 
   var xhr = new XMLHttpRequest();
-  xhr.open("POST", "{%*ENV<SPARKY_HTTP_ROOT>}/build/project/" + project , true );
+  %=  "xhr.open(\"POST\", \"{%*ENV<SPARKY_HTTP_ROOT>}/build/project/\" + project , true );"
   xhr.send("");
 
 }

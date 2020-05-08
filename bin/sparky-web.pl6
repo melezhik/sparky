@@ -14,9 +14,17 @@ static-dir / (.*) / => '/public';
 
 post '/build/project/:project' => sub ($project) {
 
-  schedule-build "$root/$project", %( skip-cron => True );
+  my $id = "{('a' .. 'z').pick(20).join('')}{$*PID}";
 
-  "build is triggered";
+  mkdir "$root/$project/.triggers";
+
+  spurt "$root/$project/.triggers/$id", "%( 
+    description => 'triggered by user',
+  )";
+
+  schedule-build "$root/$project";
+
+  "triggered by user";
 }
 
 get '/' => sub {
