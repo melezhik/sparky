@@ -334,7 +334,7 @@ LEAVE {
     mkdir "$downstream_dir/.triggers";
 
     spurt "$downstream_dir/.triggers/$id", "%(
-      description => "triggered by {$SPARKY-PROJECT}@{$SPARKY-BUILD-ID}",
+      description => 'triggered by {$SPARKY-PROJECT}\@{$SPARKY-BUILD-ID}',
     )";
 
     # fixme: we need to pass --make-report in
@@ -343,7 +343,7 @@ LEAVE {
     # from ustream build
     # for build runs from cli
 
-    schedule-build "$root/$project";
+    schedule-build $downstream_dir;
 
   }
 
