@@ -18,13 +18,11 @@ post '/build/project/:project' => sub ($project) {
 
   mkdir "$root/$project/.triggers";
 
-  spurt "$root/$project/.triggers/$id", "%( 
+  spurt "$root/$project/.triggers/$id", "%(
     description => 'triggered by user',
   )";
 
-  schedule-build "$root/$project";
-
-  "triggered by user";
+  "build queued";
 }
 
 get '/' => sub {

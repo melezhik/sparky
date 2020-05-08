@@ -153,13 +153,17 @@ sub schedule-build ( $dir, %opts? ) is export {
       my $crontab = %config<crontab>;
       my $tc = Time::Crontab.new(:$crontab);
       if $tc.match(DateTime.now, :truncate(True)) {
-        say "{DateTime.now} --- [$project] build triggered by cron trigger: <$crontab> ...";
-        Proc::Async.new(
-          'sparky-runner.pl6',
-          "--marker=$project",
-          "--dir=$dir",
-          "--make-report"
-        ).start if ! build-is-running($dir);
+
+        say "{DateTime.now} --- [$project] build queued by cron trigger: <$crontab> ...";
+
+        my $id = "{('a' .. 'z').pick(20).join('')}{$*PID}";
+
+        mkdir "$dir/.triggers";
+
+        spurt "$dir/.triggers/$id", "%(
+          description => 'triggered by cron',
+        )";
+
       } else {
         say "{DateTime.now} --- [$project] build is skipped by cron: $crontab ... ";
         return;
