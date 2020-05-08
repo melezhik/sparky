@@ -233,11 +233,7 @@ Arbitrary text description of build
 
 * `key`
 
-A unique key. Reserved for future implementation of query builds by keys.
-
-## Example
-
-An example of Sparky FTP implimenarion is a RakuDist API [script](https://github.com/melezhik/RakuDist/blob/master/bin/rkd-run-sparky) that queue Sparky builds for Raku modules testing.
+A unique key
 
 # Sparky plugins
 
