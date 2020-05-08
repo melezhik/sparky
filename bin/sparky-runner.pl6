@@ -48,31 +48,31 @@ sub MAIN (
   if $make-report {
 
     mkdir $reports-dir;
-  
+
     $dbh = get-dbh( $dir );
 
     my $description = %trigger<description>;
     my $key = $trigger.IO.basename;
-  
+
     my $sth = $dbh.prepare(q:to/STATEMENT/);
       INSERT INTO builds (project, state, description, key)
       VALUES ( ?,?,?,? )
     STATEMENT
-  
+
     $sth.execute($project, 0, $description, $key);
-  
+
     $sth = $dbh.prepare(q:to/STATEMENT/);
         SELECT max(ID) AS build_id
         FROM builds
         STATEMENT
-  
+
     $sth.execute();
-  
+
     my @rows = $sth.allrows();
     $build_id = @rows[0][0];
-  
+
     $sth.finish;
-  
+
     $SPARKY-BUILD-ID = $build_id;
 
 
@@ -81,22 +81,22 @@ sub MAIN (
         FROM builds
         WHERE project = ?
         STATEMENT
-  
+
     $sth.execute($project);
-  
+
     @rows = $sth.allrows();
 
     my $build_cnt = @rows[0][0];
-  
+
     $sth.finish;
 
     if $build_cnt == 1 {
-      $run-first-time = True; 
+      $run-first-time = True;
       say "RUN BUILD $project" ~ '@' ~ $build_id ~ ' (first time)';
     } else {
       say "RUN BUILD $project" ~ '@' ~ $build_id;
     }
-    
+
   } else {
 
     say "RUN BUILD <$project>";
@@ -195,8 +195,8 @@ sub MAIN (
 
   CATCH {
 
-      # will definitely catch all the exception 
-      default { 
+      # will definitely catch all the exception
+      default {
         warn .say;
         if $make-report {
           say "BUILD FAILED $project" ~ '@' ~ $build_id;
@@ -221,11 +221,11 @@ sub MAIN (
     my $sth = $dbh.prepare(q:to/STATEMENT/);
         SELECT id from builds where project = ? order by id asc
     STATEMENT
-    
+
     $sth.execute($project);
-    
+
     my @rows = $sth.allrows();
-  
+
     my $all-builds = @rows.elems;
 
     $sth.finish;
@@ -254,7 +254,7 @@ sub MAIN (
 
     }
 
-  } 
+  }
 
 
 }
@@ -269,7 +269,7 @@ sub read-config ( $dir ) {
     $yaml-str ~~ s:g/'%' BUILD '-' STATE '%'/$SPARKY-BUILD-STATE/ if $SPARKY-BUILD-STATE;
     $yaml-str ~~ s:g/'%' PROJECT '%'/$SPARKY-PROJECT/ if $SPARKY-PROJECT;
     %config = load-yaml($yaml-str);
-    
+
   }
 
   return %config;
@@ -288,7 +288,7 @@ LEAVE {
       my $plg = $i.pull-one;
       my $plg-name = $plg.keys[0];
       my %plg-params = $plg{$plg-name}<parameters>;
-      my $run-scope = $plg{$plg-name}<run_scope> || 'anytime'; 
+      my $run-scope = $plg{$plg-name}<run_scope> || 'anytime';
 
       #say "$plg-name, $run-scope, $SPARKY-BUILD-STATE";
       if ( $run-scope eq "fail" and $SPARKY-BUILD-STATE ne "FAILED" ) {
@@ -300,17 +300,17 @@ LEAVE {
       }
 
       say "Load Sparky plugin $plg-name ...";
-      require ::($plg-name); 
+      require ::($plg-name);
       say "Run Sparky plugin $plg-name ...";
       ::($plg-name ~ '::&run')(
-          { 
-            project => $SPARKY-PROJECT, 
-            build-id => $SPARKY-BUILD-ID,  
+          {
+            project => $SPARKY-PROJECT,
+            build-id => $SPARKY-BUILD-ID,
             build-state => $SPARKY-BUILD-STATE,
-          }, 
+          },
           %plg-params
       );
-  
+
     }
   }
 
@@ -324,27 +324,26 @@ LEAVE {
 
   # run downstream project
   if %config<downstream> {
-  
+
     say "SCHEDULE BUILD for DOWNSTREAM project <" ~ %config<downstream> ~ "> ... \n";
 
     my $downstream_dir = ("$DIR/../" ~ %config<downstream>).IO.absolute;
 
-    if $MAKE-REPORT {
-      shell(
-        'sparky-runner.pl6' ~ 
-        " --marker=$SPARKY-PROJECT" ~ 
-        " --dir=" ~ $downstream_dir ~
-        " --make-report" ~ 
-        ' &'
-      ); 
-    } else {
-      shell(
-        'sparky-runner.pl6' ~ 
-        " --marker=$SPARKY-PROJECT" ~ 
-        " --dir=" ~ $downstream_dir ~
-        ' &'
-      ); 
-    }
+    my $id = "{('a' .. 'z').pick(20).join('')}{$*PID}";
+
+    mkdir "$downstream_dir/.triggers";
+
+    spurt "$downstream_dir/.triggers/$id", "%(
+      description => "triggered by {$SPARKY-PROJECT}@{$SPARKY-BUILD-ID}",
+    )";
+
+    # fixme: we need to pass --make-report in
+    # schedule-build function
+    # to inherit make-report option
+    # from ustream build
+    # for build runs from cli
+
+    schedule-build "$root/$project";
 
   }
 

@@ -119,11 +119,6 @@ sub schedule-build ( $dir, %opts? ) is export {
     return;
   }
 
-  if %config<is_downstream> {
-    say "{DateTime.now} --- [$project] is downstream, SKIP when running directly ... ";
-    return;
-  }
-
   # check if build is triggered by file triggers
   my $trigger-file;
   my $run-by-trigger = False;
@@ -151,7 +146,7 @@ sub schedule-build ( $dir, %opts? ) is export {
         ).start;
 
      }
-  
+
   } else {
 
     if %config<crontab> and ! %*ENV<SPARKY_SKIP_CRON> and ! %opts<skip-cron> {
@@ -173,7 +168,7 @@ sub schedule-build ( $dir, %opts? ) is export {
         say "{DateTime.now} --- [$project] crontab entry not found, consider manual start or set up cron later, SKIP ... ";
         return;
     }
-  
+
   }
 
 }
@@ -187,7 +182,7 @@ sub find-triggers ($root) is export {
     next if "$dir".IO ~~ :f;
     next if $dir.basename eq '.git';
     next if $dir.basename eq '.reports';
-    next if $dir.basename eq 'db.sqlite3-journal';  
+    next if $dir.basename eq 'db.sqlite3-journal';
     next unless "$dir/sparrowfile".IO ~~ :f;
 
     my $project = $dir.IO.basename;

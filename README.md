@@ -2,12 +2,12 @@
 
 Sparky is a flexible and minimalist continuous integration server written in Raku.
 
-![Nice web UI](https://raw.githubusercontent.com/melezhik/sparky/master/images/sparky-web-ui4.png) 
+![Nice web UI](https://raw.githubusercontent.com/melezhik/sparky/master/images/sparky-web-ui4.png)
 
 The essential features of Sparky:
 
 * Defining builds times in crontab style
-* Triggering builds using external APIs and custom logic 
+* Triggering builds using external APIs and custom logic
 * Build scenarios defined as [Sparrow6](https://github.com/melezhik/Sparrow6) scripts
 * [Nice set](https://github.com/melezhik/Sparrow6/blob/master/documentation/dsl.md) of predefined tasks is available
 * Everything is kept in SCM repository - easy to port, maintain and track changes
@@ -188,12 +188,6 @@ You can run downstream projects by setting `downstream` field at the upstream pr
 
     downstream: downstream-project
 
-And the by setting `is_downstream` field to `true` at the downstream project `sparky.yaml` file:
-
-    $ nano ~/.sparky/projects/downstream-project/sparky.yaml
-
-    is_downstream: true
-
 # File triggering protocol (FTP)
 
 Sparky FTP allows to _trigger_ builds automatically by just creating files with build _parameters_
@@ -283,7 +277,7 @@ For instance:
 
 ## Creating Sparky plugins
 
-Technically speaking  Sparky plugins should be just Perl6 modules. 
+Technically speaking  Sparky plugins should be just Perl6 modules.
 
 For instance, for mentioned module Sparky::Plugin::Email we might have this header lines:
 
@@ -484,4 +478,3 @@ You can see examples of sparky scenarios in `examples/` folder.
 # Author
 
 Alexey Melezhik
-
