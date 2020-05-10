@@ -20,7 +20,7 @@ function reBuild(){
 
 %= $navbar
 
-    <nav class="panel">
+    <nav class="panel is-info">
       <p class="panel-heading"> 
         %= "Report: $project@$build_id [{$description||"no description"}] at {$dt}"
       </p>

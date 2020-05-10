@@ -337,13 +337,12 @@ LEAVE {
       description => 'triggered by {$SPARKY-PROJECT}\@{$SPARKY-BUILD-ID}',
     )";
 
-    # fixme: we need to pass --make-report in
-    # schedule-build function
-    # to inherit make-report option
+    # fixme: we need to set --make-report
+    # to trigger file
+    # so that schedule-build function
+    # inherit make-report option
     # from ustream build
-    # for build runs from cli
 
-    schedule-build $downstream_dir;
 
   }
 

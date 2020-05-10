@@ -8,7 +8,7 @@
 
 %= $navbar
 
-    <nav class="panel">
+    <nav class="panel is-primary">
       <p class="panel-heading">Recent builds</p>
       <table class="table panel-block">
         <tr>
