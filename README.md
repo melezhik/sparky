@@ -307,11 +307,13 @@ You can use `%config` Hash to access Sparky guts:
 
 For example:
 
+```
     sub run ( %config, %parameters ) {
 
       say "build id is: " ~ %parameters<build-id>;
 
     }
+```
 
 Alternatively you may pass _some_ predefined parameters plugins:
 
@@ -321,13 +323,14 @@ Alternatively you may pass _some_ predefined parameters plugins:
 
 For example:
 
-
+```
     $ cat sparky.yaml
 
     plugins:
       - Sparky::Plugin::Hello:
         parameters:
           name: Sparrow from project %PROJECT%
+```
 
 ## Limit plugin run scope
 
