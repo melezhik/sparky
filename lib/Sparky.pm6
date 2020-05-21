@@ -36,7 +36,7 @@ multi sub get-dbh ( $dir ) is export {
         password  => %conf<database><pass>,
     );
 
-    say "load {%conf<database><engine>} dbh";
+    #say "load {%conf<database><engine>} dbh";
 
   } else {
 
