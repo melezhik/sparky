@@ -201,11 +201,11 @@ A content of the file should Raku code returning a Hash:
 
 ```raku
 {
+  localhost => True,
   description => "This is my build",
   cwd => "/path/to/working/directory",
   conf => "/path/to/sparrow/configuration/file"
 }
-
 ```
 
 Sparky daemon parses files in `.triggers` and launch build per every file, removing file afterwards,
@@ -218,6 +218,18 @@ FTP allows to create _supplemental_ APIs to implement more complex and custom bu
 ## Trigger attributes
 
 Those keys could be used in trigger Hash. All they are optional.
+
+* `host`
+
+ssh host
+
+* `docker`
+
+docker container name
+
+* `localhost`
+
+run in localhost mode
 
 * `cwd`
 

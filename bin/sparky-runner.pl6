@@ -109,8 +109,14 @@ sub MAIN (
 
   if %sparrowdo-config<docker> {
     $sparrowdo-run ~= " --docker=" ~ %sparrowdo-config<docker>;
+  } elsif %trigger<docker> {
+    $sparrowdo-run ~= " --docker=" ~ %trigger<docker>;
   } elsif %sparrowdo-config<host> {
     $sparrowdo-run ~= " --host=" ~ %sparrowdo-config<host>;
+  } elsif %trigger<host> {
+    $sparrowdo-run ~= " --host=" ~ %trigger<host>;
+  } elsif %trigger<localhost> {
+    $sparrowdo-run ~= " --localhost";
   } else {
     $sparrowdo-run ~= " --localhost";
   }
