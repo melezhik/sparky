@@ -201,10 +201,9 @@ A content of the file should Raku code returning a Hash:
 
 ```raku
 {
-  localhost => True,
   description => "This is my build",
   cwd => "/path/to/working/directory",
-  conf => "/path/to/sparrow/configuration/file"
+  sparrowdo-options => "--localhost --nosudo --conf=/path/to/file.conf",
 }
 ```
 
@@ -219,29 +218,19 @@ FTP allows to create _supplemental_ APIs to implement more complex and custom bu
 
 Those keys could be used in trigger Hash. All they are optional.
 
-* `host`
-
-ssh host
-
-* `docker`
-
-docker container name
-
-* `localhost`
-
-run in localhost mode
-
 * `cwd`
 
 Directory where sparrowfile is located, when a build gets run, the process will change to this directory.
 
-* `conf`
-
-Path to sparrowdo configuration file
-
 * `description`
 
 Arbitrary text description of build
+
+* `sparrowdo-options`
+
+Options for sparrowdo run, for example:
+
+    `--host=foo.bar --ssh_user=admin`
 
 * `key`
 
