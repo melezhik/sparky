@@ -63,9 +63,9 @@ Then you need to run the sparky daemon
 
     $ SPARKY_TIMEOUT=30 sparkyd ...
 
-Running sparky in daemonized mode.
+Running sparky in demonized mode.
 
-At the moment sparky can't daemonize itself, as temporary workaround use linux `nohup` command:
+At the moment sparky can't demonize itself, as temporary workaround use linux `nohup` command:
 
     $ nohup sparkyd &
 
@@ -344,7 +344,7 @@ For example:
 
 You can defined _when_ to run plugin, here are 3 run scopes:
 
-* `anytime` - run plugin irrespectively of a build state. This is default value
+* `anytime` - run plugin irrespective of a build state. This is default value
 * `success` - run plugin only if build has succeeded
 * `fail`    - run plugin only if build has  failed
 
