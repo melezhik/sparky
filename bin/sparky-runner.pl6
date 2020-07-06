@@ -1,6 +1,7 @@
 use Sparky;
 use Data::Dump;
 use YAMLish;
+use Hash::Merge;
 
 state $DIR;
 state $MAKE-REPORT;
@@ -105,7 +106,7 @@ sub MAIN (
 
   my $sparrowdo-run = "sparrowdo --prefix=$project";
 
-  my %sparrowdo-config = %config<sparrowdo> || Hash.new;
+  my %sparrowdo-config = merge-hash (%config<sparrowdo> || Hash.new), (%trigger<sparrowdo>|| Hash.new), :no-append-array;
 
   if %sparrowdo-config<docker> {
     $sparrowdo-run ~= " --docker=" ~ %sparrowdo-config<docker>;
@@ -156,13 +157,6 @@ sub MAIN (
 
   if  %sparrowdo-config<bootstrap> {
     $sparrowdo-run ~= " --bootstrap";
-  }
-
-
-  if %trigger<sparrowdo-options> {
-
-    $sparrowdo-run ~= " {%trigger<sparrowdo-options>}";
-
   }
 
   my $run-dir = $dir;

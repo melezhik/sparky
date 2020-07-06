@@ -226,11 +226,18 @@ Directory where sparrowfile is located, when a build gets run, the process will 
 
 Arbitrary text description of build
 
-* `sparrowdo-options`
+* `sparrowdo`
 
 Options for sparrowdo run, for example:
 
-    `--host=foo.bar --ssh_user=admin`
+    %(
+
+      host  => "foo.bar",
+      ssh_user  => "admin"
+
+    )
+
+Should follow the format of sparky.yaml, `sparrowdo` section
 
 * `key`
 
