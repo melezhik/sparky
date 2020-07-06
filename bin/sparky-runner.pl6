@@ -108,6 +108,8 @@ sub MAIN (
 
   my %sparrowdo-config = merge-hash (%config<sparrowdo> || Hash.new), (%trigger<sparrowdo>|| Hash.new), :no-append-array;
 
+  say "merged sparrowdo configuration: {Dump(%sparrowdo-config)}";
+
   if %sparrowdo-config<docker> {
     $sparrowdo-run ~= " --docker=" ~ %sparrowdo-config<docker>;
   } elsif %sparrowdo-config<host> {
@@ -129,6 +131,10 @@ sub MAIN (
     $sparrowdo-run ~= " --no_sudo";
   }
 
+  if %sparrowdo-config<conf> {
+    $sparrowdo-run ~= " --conf=" ~ %sparrowdo-config<conf>;
+  }
+
   if %sparrowdo-config<no_index_update> and ! $run-first-time {
     $sparrowdo-run ~= " --no_index_update";
   }
@@ -145,11 +151,11 @@ sub MAIN (
     $sparrowdo-run ~= " --ssh_port=" ~ %sparrowdo-config<ssh_port>;
   }
 
-  if  %sparrowdo-config<verbose> {
+  if %sparrowdo-config<verbose> {
     $sparrowdo-run ~= " --verbose";
   }
 
-  if  %sparrowdo-config<debug> {
+  if %sparrowdo-config<debug> {
     $sparrowdo-run ~= " --debug";
   }
 
