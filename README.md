@@ -201,9 +201,13 @@ A content of the file should Raku code returning a Hash:
 
 ```raku
 {
-  description => "This is my build",
+  description => "Build app",
   cwd => "/path/to/working/directory",
-  sparrowdo-options => "--localhost --nosudo --conf=/path/to/file.conf",
+  sparrowdo => %(
+    localhost => True,
+    no_sudo   => True,
+    conf      => "/path/to/file.conf"
+  )
 }
 ```
 
