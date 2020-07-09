@@ -3,8 +3,8 @@ Revision history for Sparky
 {{$NEXT}}
 
   - New feature - FTP - file triggering protocol
+  - FTP changes - `conf` option is deprecated, more options are handled via `sparrowdo` section
   - Fix - handle path to sparrowdo configuration file 
-  - FTP changes - `conf` option is deprecated, more options are handled via `sparrowdo`
   
 0.0.25  2018-12-04T22:01:02Z
 

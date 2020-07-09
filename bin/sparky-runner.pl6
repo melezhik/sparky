@@ -151,6 +151,10 @@ sub MAIN (
     $sparrowdo-run ~= " --ssh_port=" ~ %sparrowdo-config<ssh_port>;
   }
 
+  if  %sparrowdo-config<tags> {
+    $sparrowdo-run ~= " --tags=" ~ %sparrowdo-config<tags>;
+  }
+
   if %sparrowdo-config<verbose> {
     $sparrowdo-run ~= " --verbose";
   }

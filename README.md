@@ -237,8 +237,8 @@ Options for sparrowdo run, for example:
     %(
 
       host  => "foo.bar",
-      ssh_user  => "admin"
-
+      ssh_user  => "admin",
+      tags => "prod,backend"
     )
 
 Should follow the format of sparky.yaml, `sparrowdo` section
