@@ -1,16 +1,4 @@
-language: perl
-
-env:
-  - PATH=~/.perl6/bin:/opt/rakudo-pkg/share/perl6/site/bin:/opt/rakudo-pkg/bin/:$PATH
-
-before_install:
-  - wget https://github.com/nxadm/rakudo-pkg/releases/download/v2020.02.1-07/rakudo-pkg-Ubuntu16.04_2020.02.1-07_amd64.deb
-  - sudo dpkg -i *.deb 
-
-install:
-
-    - zef install Bailador --force-test --/test
+language: minimal
 
 script:
-  - zef install .
-
+  - curl -d thing=https://github.com/melezhik/Sparky http://rakudist.raku.org/ci -s | bash
