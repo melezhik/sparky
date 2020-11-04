@@ -37,7 +37,7 @@ Interested? Let's go ahead! (:
 
 First you should run database initialization script to populate database schema:
 
-    $ perl6 db-init.pl6
+    $ perl6 db-init.raku
 
 # Running daemon
 
@@ -456,7 +456,7 @@ Depending on platform it should be client needed for your database API, for exam
 DB init script will generate database schema, provided that user defined and sparky configuration file has access to
 the database:
 
-    $ perl6 db-init.pl6
+    $ perl6 db-init.raku
 
 That is it, now sparky runs under MySQL!
 
