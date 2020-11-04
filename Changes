@@ -2,6 +2,7 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+  - change scripts extension: `pl6` -> `raku`
   - db-init.raku - Use HOME env variable to make script working on all linux/mac platforms
 
 0.0.26  2020-07-26T13:04:29-05:00

@@ -79,7 +79,7 @@ sub build-is-running ( $dir ) {
 
   my $project = $dir.IO.basename;
 
-  my @proc-check-cmd = ("bash", "-c", "ps aux | grep sparky-runner.pl6 | grep '\\--marker=$project ' | grep -v grep");
+  my @proc-check-cmd = ("bash", "-c", "ps aux | grep sparky-runner.raku | grep '\\--marker=$project ' | grep -v grep");
 
   my $proc-run = run @proc-check-cmd, :out;
 
@@ -136,7 +136,7 @@ sub schedule-build ( $dir, %opts? ) is export {
       if ! build-is-running($dir) {
 
         Proc::Async.new(
-          'sparky-runner.pl6',
+          'sparky-runner.raku',
           "--marker=$project",
           "--dir=$dir",
           "--trigger=$trigger-file",

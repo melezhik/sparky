@@ -23,7 +23,7 @@ Interested? Let's go ahead! (:
 # Sparky workflow in 4 lines:
 
     $ sparkyd # run Sparky daemon to build your projects
-    $ perl6 bin/sparky-web.pl6 # run Sparky web ui to see build statuses and reports
+    $ perl6 bin/sparky-web.raku # run Sparky web ui to see build statuses and reports
     $ nano ~/.sparky/projects/my-project/sparrowfile  # write a build scenario
     $ firefox 127.0.0.1:3000 # see what's happening
 
@@ -47,7 +47,7 @@ Then you need to run the sparky daemon
 
 * Sparky daemon traverses sub directories found at the project root directory.
 
-* For every directory found initiate build process invoking sparky worker ( `sparky-runner.pl6` ).
+* For every directory found initiate build process invoking sparky worker ( `sparky-runner.raku` ).
 
 * Sparky root directory default location is `~/.sparky/projects`.
 
@@ -71,27 +71,27 @@ At the moment sparky can't demonize itself, as temporary workaround use linux `n
 
 Or you can use Sparrowdo installer, which install service as systemd unit:
 
-    $ nano utils/install-sparky-web-systemd.pl6 # change working directory and user
-    $ sparrowdo --sparrowfile=utils/install-sparkyd-systemd.pl6 --no_sudo --localhost
+    $ nano utils/install-sparky-web-systemd.raku # change working directory and user
+    $ sparrowdo --sparrowfile=utils/install-sparkyd-systemd.raku --no_sudo --localhost
 
 # Running Web UI
 
 And finally sparky has simple web ui to show builds statuses and reports.
 
-To run Sparky web ui launch `sparky-web.pl6` script from the `bin/` directory:
+To run Sparky web ui launch `sparky-web.raku` script from the `bin/` directory:
 
-    $ perl6 bin/sparky-web.pl6
+    $ perl6 bin/sparky-web.raku
 
 This is [Bailador](https://github.com/Bailador/Bailador) application, so you can set any Bailador related options here.
 
 For example:
 
-    BAILADOR=host:0.0.0.0,port:5000 perl6 bin/sparky-web.pl6
+    BAILADOR=host:0.0.0.0,port:5000 perl6 bin/sparky-web.raku
 
 You can use Sparrowdo installer as well, which installs service as systemd unit:
 
-    $ nano utils/install-sparky-web-.pl6 # change working directory, user and root directory
-    $ sparrowdo --sparrowfile=utils/install-sparky-web-systemd.pl6 --no_sudo --localhost
+    $ nano utils/install-sparky-web-.raku # change working directory, user and root directory
+    $ sparrowdo --sparrowfile=utils/install-sparky-web-systemd.raku --no_sudo --localhost
 
 # Creating first sparky project
 
@@ -370,13 +370,13 @@ An example Sparky plugins are:
 
 # Command line client
 
-You can build the certain project using sparky command client called `sparky-runner.pl6`:
+You can build the certain project using sparky command client called `sparky-runner.raku`:
 
-    $ sparky-runner.pl6 --dir=~/.sparky/projects/bailador-app
+    $ sparky-runner.raku --dir=~/.sparky/projects/bailador-app
 
 Or just:
 
-    $ cd ~/.sparky/projects/bailador-app && sparky-runner.pl6
+    $ cd ~/.sparky/projects/bailador-app && sparky-runner.raku
 
 # Sparky runtime parameters
 
