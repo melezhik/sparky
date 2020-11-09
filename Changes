@@ -2,6 +2,10 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.0.28  2020-11-09T17:34:45Z
+
+  - Add scripts missing during previous release
+
 0.0.27  2020-11-04T19:06:12Z
 
   - change scripts extension: `pl6` -> `raku`
