@@ -2,6 +2,8 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+  - Fix: rebuild action now works properly
+
 0.0.28  2020-11-09T17:34:45Z
 
   - Add scripts missing during previous release

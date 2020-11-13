@@ -33,6 +33,10 @@ sub MAIN (
 
   mkdir $dir;
 
+  my $build-cache-dir = "$dir/../../work/$project/.triggers".IO.absolute;
+
+  mkdir $build-cache-dir; # cache dir for triggered builds
+
   my $build_id;
 
   my $dbh;
@@ -43,7 +47,7 @@ sub MAIN (
 
   if $trigger {
     %trigger = EVALFILE($trigger);
-    unlink $trigger;
+    move($trigger,"{$build-cache-dir}/{$trigger.IO.basename}");  
   }
 
   if $make-report {
@@ -221,7 +225,7 @@ sub MAIN (
     say "keep builds: " ~ %config<keep_builds>;
 
     my $sth = $dbh.prepare(q:to/STATEMENT/);
-        SELECT id from builds where project = ? order by id asc
+        SELECT id, key from builds where project = ? order by id asc
     STATEMENT
 
     $sth.execute($project);
@@ -239,17 +243,26 @@ sub MAIN (
       for @rows -> @r {
         $i++;
         my $bid = @r[0];
+        my $key = @r[1];
         if $i <= $remove-builds {
           if $dbh.do("delete from builds WHERE id = $bid") {
-            say "remove build $project" ~ '@' ~ $bid;
+            say "remove build database entry: $project" ~ '@' ~ $bid;
           } else {
-            say "!!! can't remove build <$project>" ~ '@' ~ $bid;
+            say "!!! can't remove build database entry: <$project>" ~ '@' ~ $bid;
           }
           if unlink "$reports-dir/build-$bid.txt".IO {
-            say "remove $reports-dir/build-$bid.txt";
+            say "remove report: $reports-dir/build-$bid.txt";
           } else {
-            say "!!! can't remove $reports-dir/build-$bid.txt";
+            say "!!! can't remove report: $reports-dir/build-$bid.txt";
           }
+          if $key {
+            if unlink "{$build-cache-dir}/{$key}".IO {
+              say "remove trigger cache: {$build-cache-dir}/{$key}";
+            } else {
+              say "!!! can't remove trigger cache: {$build-cache-dir}/{$key}";
+            }
+          }
+
         }
 
       }

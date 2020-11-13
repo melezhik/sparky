@@ -25,6 +25,15 @@ post '/build/project/:project' => sub ($project) {
   "build queued";
 }
 
+post '/build/project/:project/:key' => sub ($project, $key) {
+
+  mkdir "$root/$project/.triggers";
+
+  copy "$root/../work/$project/.triggers/$key", "$root/$project/.triggers/$key";
+
+  "build queued";
+}
+
 get '/' => sub {
 
   my $dbh = get-dbh();
@@ -129,7 +138,7 @@ get '/report/:project/:build_id' => sub ( $project, $build_id ) {
 
     my $dbh = get-dbh();
 
-    my $sth = $dbh.prepare("SELECT state, description, dt FROM builds where id = {$build_id}");
+    my $sth = $dbh.prepare("SELECT state, description, dt, key FROM builds where id = {$build_id}");
 
     $sth.execute();
 
@@ -141,11 +150,13 @@ get '/report/:project/:build_id' => sub ( $project, $build_id ) {
 
     my $description = @r[0]<description>;
 
+    my $key = @r[0]<key>;
+
     $sth.finish;
 
     $dbh.dispose;
 
-    template 'report.tt', css(), navbar(), $project, $build_id, $dt, $description, "$reports-dir/$project/build-$build_id.txt";
+    template 'report.tt', css(), navbar(), $project, $build_id, $key, $dt, $description, "$reports-dir/$project/build-$build_id.txt";
 
   } else {
     status(404);

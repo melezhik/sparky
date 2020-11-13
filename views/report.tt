@@ -1,4 +1,4 @@
-% my ( $css, $navbar, $project, $build_id, $dt, $description, $path ) = @_;
+% my ( $css, $navbar, $project, $build_id, $key, $dt, $description, $path ) = @_;
 
 %= $css
 
@@ -11,7 +11,7 @@
 function reBuild(){
 
   var xhr = new XMLHttpRequest();
-  %=  "xhr.open(\"POST\", \"{%*ENV<SPARKY_HTTP_ROOT>}/build/project/{$project}\", true );"
+  %=  "xhr.open(\"POST\", \"{%*ENV<SPARKY_HTTP_ROOT>}/build/project/{$project}/{$key}\", true );"
   xhr.send("");
   
 }
