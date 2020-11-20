@@ -23,7 +23,7 @@ Interested? Let's go ahead! (:
 # Sparky workflow in 4 lines:
 
     $ sparkyd # run Sparky daemon to build your projects
-    $ perl6 bin/sparky-web.raku # run Sparky web ui to see build statuses and reports
+    $ raku bin/sparky-web.raku # run Sparky web ui to see build statuses and reports
     $ nano ~/.sparky/projects/my-project/sparrowfile  # write a build scenario
     $ firefox 127.0.0.1:3000 # see what's happening
 
@@ -37,7 +37,7 @@ Interested? Let's go ahead! (:
 
 First you should run database initialization script to populate database schema:
 
-    $ perl6 db-init.raku
+    $ raku db-init.raku
 
 # Running daemon
 
@@ -80,13 +80,13 @@ And finally sparky has simple web ui to show builds statuses and reports.
 
 To run Sparky web ui launch `sparky-web.raku` script from the `bin/` directory:
 
-    $ perl6 bin/sparky-web.raku
+    $ raku bin/sparky-web.raku
 
 This is [Bailador](https://github.com/Bailador/Bailador) application, so you can set any Bailador related options here.
 
 For example:
 
-    BAILADOR=host:0.0.0.0,port:5000 perl6 bin/sparky-web.raku
+    BAILADOR=host:0.0.0.0,port:5000 raku bin/sparky-web.raku
 
 You can use Sparrowdo installer as well, which installs service as systemd unit:
 
@@ -170,6 +170,12 @@ for example to run a build every hour at 30,50 or 55 minute say this:
 
 Follow [Time::Crontab](https://github.com/ufobat/p6-time-crontab) documentation on crontab entries format.
 
+# Manual run
+
+If you want to build a project from web UI, use `allow_manual_run`:
+
+    allow_manual_run: true
+
 # Disable project
 
 You can disable project builds by setting `disable` option to true:
@@ -251,11 +257,11 @@ A unique key
 
 Sparky plugins are extensions points to add extra functionality to Sparky builds.
 
-These are Perl6 modules get run _after_ a Sparky project finishes or in other words when a build is completed.
+These are Raku modules get run _after_ a Sparky project finishes or in other words when a build is completed.
 
 To use Sparky plugins you should:
 
-* Install plugins as Perl6 modules
+* Install plugins as Raku modules
 
 * Configure plugins in project's `sparky.yaml` file
 
@@ -285,7 +291,7 @@ For instance:
 
 ## Creating Sparky plugins
 
-Technically speaking  Sparky plugins should be just Perl6 modules.
+Technically speaking  Sparky plugins should be just Raku modules.
 
 For instance, for mentioned module Sparky::Plugin::Email we might have this header lines:
 
@@ -302,7 +308,7 @@ The module should have `run` routine which is invoked when Sparky processes a pl
 
     }
 
-As we can see the `run` routine consumes its parameters as Perl6 Hash, these parameters are defined at mentioned `sparky.yaml` file,
+As we can see the `run` routine consumes its parameters as Raku Hash, these parameters are defined at mentioned `sparky.yaml` file,
 at plugin `parameters:` section, so this is how you might handle them:
 
     sub run ( %config, %parameters ) {
@@ -456,7 +462,7 @@ Depending on platform it should be client needed for your database API, for exam
 DB init script will generate database schema, provided that user defined and sparky configuration file has access to
 the database:
 
-    $ perl6 db-init.raku
+    $ raku db-init.raku
 
 That is it, now sparky runs under MySQL!
 

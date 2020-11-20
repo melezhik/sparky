@@ -1,4 +1,4 @@
-% my ( $css, $navbar, $project, $project-conf, $path, $err ) = @_;
+% my ( $css, $navbar, $project, $project-conf, $project-conf-str, $path, $err ) = @_;
 
 %= $css
 
@@ -26,11 +26,13 @@
           %= "Project: " ~ $project
        </h3>
       </div>
+      % if $project-conf<allow_manual_run> {
       <div class="panel-block">
         <a class="button is-small" onclick="run()" >Run now</a>
       </div>
+      % }
       <div class="panel-block">
-        %= "<pre><strong>Configuration</strong>:\n\n" ~ ( $err || $project-conf ) ~ "</pre>"
+        %= "<pre><strong>Configuration</strong>:\n\n" ~ ( $err || $project-conf-str ) ~ "</pre>"
       </div>
       <div class="panel-block">
         % my $text = slurp $path;

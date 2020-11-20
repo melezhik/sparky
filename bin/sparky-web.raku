@@ -223,18 +223,18 @@ get '/report/raw/:project/:key' => sub ( $project, $key ) {
 
 get '/project/:project' => sub ($project) {
   if "$root/$project/sparrowfile".IO ~~ :f {
-    my $project-conf;
+    my $project-conf-str; my $project-conf;
     my $err;
       if "$root/$project/sparky.yaml".IO ~~ :f {
-      $project-conf = slurp "$root/$project/sparky.yaml";
-      load-yaml($project-conf);
+      $project-conf-str = slurp "$root/$project/sparky.yaml";
+      $project-conf = load-yaml($project-conf-str);
       CATCH {
         default {
-          $err = .Str;
+          $err = .Str; $project-conf = %();
         }
       }
     }
-    template 'project.tt', css(), navbar(), $project, $project-conf, "$root/$project/sparrowfile", $err;
+    template 'project.tt', css(), navbar(), $project, $project-conf, $project-conf-str, "$root/$project/sparrowfile", $err;
   } else {
     status(404);
   }
