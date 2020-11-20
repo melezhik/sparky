@@ -174,6 +174,8 @@ Follow [Time::Crontab](https://github.com/ufobat/p6-time-crontab) documentation 
 
 If you want to build a project from web UI, use `allow_manual_run`:
 
+    $ nano ~/.sparky/projects/bailador-app/sparky.yaml
+
     allow_manual_run: true
 
 # Disable project

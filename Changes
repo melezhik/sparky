@@ -2,6 +2,7 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+  - Allow manual run feature
   - Fix: rebuild action now works properly
 
 0.0.28  2020-11-09T17:34:45Z
