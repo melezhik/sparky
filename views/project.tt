@@ -26,7 +26,7 @@
           %= "Project: " ~ $project
        </h3>
       </div>
-      % if $project-conf<allow_manual_run> {
+      % if $project-conf<allow_manual_run> && ! $project-conf<disabled> {
       <div class="panel-block">
         <a class="button is-small" onclick="run()" >Run now</a>
       </div>
