@@ -25,7 +25,7 @@ sub MAIN (
 
       my $project = $dir.IO.basename;
 
-      mkdir "$work-root/$project";
+      mkdir "$work-root/$project/.lock";
 
       schedule-build($dir);
 

@@ -148,9 +148,27 @@ sub schedule-build ( $dir, %opts? ) is export {
   } else {
 
     if %config<crontab> and ! %*ENV<SPARKY_SKIP_CRON> and ! %opts<skip-cron> {
+
       my $crontab = %config<crontab>;
+
       my $tc = Time::Crontab.new(:$crontab);
+
       if $tc.match(DateTime.now, :truncate(True)) {
+
+        my $cron-lock-file =   "{$dir}/../../work/{$project}/.lock/cron";
+
+        if $cron-lock-file.IO ~~ :f {
+           say "{DateTime.now} --- [$project] cron lock file exists,  SKIP ...";
+           if ( now - "{$cron-lock-file}".IO.modified ).Int > 1200 {
+             unlink  "{$dir}/../../work/{$project}/.lock/cron";
+           }
+           next;
+
+        } else {
+
+          mkdir "{$dir}/../../work/{$project}/.lock/" unless "{$dir}/../../work/{$project}/.lock/".IO ~~ :d;
+
+        }
 
         say "{DateTime.now} --- [$project] build queued by cron trigger: <$crontab> ...";
 
@@ -160,6 +178,7 @@ sub schedule-build ( $dir, %opts? ) is export {
 
         spurt "$dir/.triggers/$id", "%(
           description => 'triggered by cron',
+          lock => '$cron-lock-file'
         )";
 
       } else {

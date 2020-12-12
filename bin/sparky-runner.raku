@@ -15,7 +15,7 @@ sub MAIN (
   Str  :$dir = "$*CWD",
   Bool :$make-report = False,
   Str  :$marker,
-  Str  :$trigger?
+  Str  :$trigger?,
 )
 {
 
@@ -46,8 +46,10 @@ sub MAIN (
   my %trigger =  Hash.new;
 
   if $trigger {
+    #say "move trigger to cache dir ... [$trigger] => [{$build-cache-dir}/{$trigger.IO.basename}] ";
     %trigger = EVALFILE($trigger);
-    move($trigger,"{$build-cache-dir}/{$trigger.IO.basename}");  
+    %trigger<lock>.IO.spurt("") if %trigger<lock>; # create lock file is passed
+    move($trigger,"{$build-cache-dir}/{$trigger.IO.basename}");
   }
 
   if $make-report {
@@ -217,6 +219,9 @@ sub MAIN (
 
   }
 
+  # remove lock
+
+  unlink %trigger<lock> if %trigger<lock> && %trigger<lock>.IO ~~ :f;
 
   # remove old builds
 
