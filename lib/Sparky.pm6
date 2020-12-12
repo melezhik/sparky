@@ -117,7 +117,8 @@ sub schedule-build ( $dir, %opts? ) is export {
     return;
   }
 
-  # check if build is triggered by file triggers
+  # check  triggered jobs
+
   my $trigger-file;
   my $run-by-trigger = False;
 
@@ -145,52 +146,48 @@ sub schedule-build ( $dir, %opts? ) is export {
 
      }
 
-  } else {
-
-    if %config<crontab> and ! %*ENV<SPARKY_SKIP_CRON> and ! %opts<skip-cron> {
-
-      my $crontab = %config<crontab>;
-
-      my $tc = Time::Crontab.new(:$crontab);
-
-      if $tc.match(DateTime.now, :truncate(True)) {
-
-        my $cron-lock-file =   "{$dir}/../../work/{$project}/.lock/cron";
-
-        if $cron-lock-file.IO ~~ :f {
-           say "{DateTime.now} --- [$project] cron lock file exists,  SKIP ...";
-           if ( now - "{$cron-lock-file}".IO.modified ).Int > 1200 {
-             unlink  "{$dir}/../../work/{$project}/.lock/cron";
-           }
-           next;
-
-        } else {
-
-          mkdir "{$dir}/../../work/{$project}/.lock/" unless "{$dir}/../../work/{$project}/.lock/".IO ~~ :d;
-
-        }
-
-        say "{DateTime.now} --- [$project] build queued by cron trigger: <$crontab> ...";
-
-        my $id = "{('a' .. 'z').pick(20).join('')}{$*PID}";
-
-        mkdir "$dir/.triggers";
-
-        spurt "$dir/.triggers/$id", "%(
-          description => 'triggered by cron',
-          lock => '$cron-lock-file'
-        )";
-
-      } else {
-        say "{DateTime.now} --- [$project] build is skipped by cron: $crontab ... ";
-        return;
-      }
-    } elsif !%config<crontab>  {
-        say "{DateTime.now} --- [$project] crontab entry not found, consider manual start or set up cron later, SKIP ... ";
-        return;
-    }
-
   }
+
+  # check cron jobs
+
+  if %config<crontab> and ! %*ENV<SPARKY_SKIP_CRON> and ! %opts<skip-cron> {
+
+    my $crontab = %config<crontab>;
+
+    my $tc = Time::Crontab.new(:$crontab);
+
+    if $tc.match(DateTime.now, :truncate(True)) {
+
+      my $cron-lock-file =   "{$dir}/../../work/{$project}/.lock/cron";
+
+      if $cron-lock-file.IO ~~ :f && ( now - "{$cron-lock-file}".IO.modified ).Int < 60 {
+         say "{DateTime.now} --- [$project] cron lock file exists with an age less then 60 secs,  SKIP ...";
+         next;
+      }
+
+      say "{DateTime.now} --- [$project] build queued by cron trigger: <$crontab> ...";
+
+      mkdir "{$dir}/../../work/{$project}/.lock/" unless "{$dir}/../../work/{$project}/.lock/".IO ~~ :d;
+
+      $cron-lock-file.IO.spurt("");
+
+      my $id = "{('a' .. 'z').pick(20).join('')}{$*PID}";
+
+      mkdir "$dir/.triggers";
+
+      spurt "$dir/.triggers/$id", "%(
+        description => 'triggered by cron'
+      )";
+
+    } else {
+      say "{DateTime.now} --- [$project] build is skipped by cron: $crontab ... ";
+      return;
+    }
+  } elsif !%config<crontab>  {
+      say "{DateTime.now} --- [$project] crontab entry not found, consider manual start or set up cron later, SKIP ... ";
+      return;
+  }
+
 
 }
 
