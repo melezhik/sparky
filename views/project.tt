@@ -35,7 +35,7 @@
         %= "<pre><strong>Configuration</strong>:\n\n" ~ ( $err || $project-conf-str ) ~ "</pre>"
       </div>
       <div class="panel-block">
-        % my $text = slurp $path;
+        % use HTML::Escape; my $text = escape-html(slurp $path)
         %= "<pre><strong>Scenario</strong>:\n\n" ~ $text ~ "</pre>"
       </div>
     </div>
