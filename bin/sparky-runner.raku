@@ -111,7 +111,7 @@ sub MAIN (
 
   my $sparrowdo-run = "sparrowdo --prefix=$project";
 
-  my %sparrowdo-config = merge-hash (%config<sparrowdo> || Hash.new), (%trigger<sparrowdo>|| Hash.new), :no-append-array;
+  my %sparrowdo-config = merge-hash (%config<sparrowdo> || Hash.new), (%trigger<sparrowdo>|| Hash.new);
 
   say "merged sparrowdo configuration: {Dump(%sparrowdo-config)}";
 
