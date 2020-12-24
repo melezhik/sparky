@@ -14,7 +14,7 @@
     "Data::Dump",
     "Number::Denominate",
     "HTML::Escape",
-    "Hash::Merge"
+    "Hash::Merge:ver<2.0.0+>"
   ],
   "description": "Sparky is a flexible and minimalist continuous integration server written in Raku",
   "license": "Artistic-2.0",
