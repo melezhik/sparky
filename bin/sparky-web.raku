@@ -257,7 +257,7 @@ sub css {
   if %conf<ui> && %conf<ui><theme> {
     $theme = %conf<ui><theme>
   } else {
-    $theme = "cosmo";
+    $theme = "solar";
   }
 
   qq:to /HERE/

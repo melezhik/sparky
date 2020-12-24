@@ -6,6 +6,7 @@ Revision history for Sparky
   - Allow manual run feature
   - Fix: rebuild action now works properly
   - Use Hash::Merge 2.0.0+ version (see https://github.com/melezhik/sparky/pull/2)
+  - solar is default bulma theme
 
 0.0.28  2020-11-09T17:34:45Z
 
