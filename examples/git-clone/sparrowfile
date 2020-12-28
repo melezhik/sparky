@@ -1,5 +1,9 @@
-#!perl6
+#!raku
 
-git-scm 'https://github.com/melezhik/sparrow.git';
+directory "project";
 
-bash "ls -l";
+git-scm 'https://github.com/melezhik/rakudist-teddy-bear.git', %(
+  to => "project"
+);
+
+bash "ls -l {%*ENV<PWD>}/project";

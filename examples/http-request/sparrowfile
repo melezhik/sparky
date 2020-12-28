@@ -1,4 +1,4 @@
 #!perl6
 
-http-ok 'http://perl6.org', %( has-content => "'Perl 6'" );
+http-ok 'http://raku.org', %( has-content => "'Raku'" );
 

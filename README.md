@@ -106,24 +106,25 @@ _to know how to write Sparky scenarios_.
 
 Here is a short example.
 
-Say, we want to check out the Bailador source code from Git, install dependencies and then run unit tests:
+Say, we want to check out a Raku project from from Git, install dependencies and then run unit tests:
 
     $ nano ~/.sparky/projects/bailador-app/sparrowfile
 
-    package-install 'git';
+    directory "project";
 
-    git-scm 'https://github.com/Bailador/Bailador.git';
+    git-scm 'https://github.com/melezhik/rakudist-teddy-bear.git', %(
+      to => "project",
+    );
 
-    zef 'Path::Iterator';
-    zef '.', %( depsonly => True );
-    zef 'TAP::Harness';
+    zef "{%*ENV<PWD>}/project", %( depsonly => True );
+
+    zef 'TAP::Harness App::Prove6';
 
     bash 'prove6 -l', %(
       debug => True,
-      envvars => %(
-        PATH => '/root/.rakudobrew/moar-master/install/share/perl6/site/bin:$PATH'
-      )
+      cwd => "{%*ENV<PWD>}/project/"
     );
+
 
 # Configure Sparky workers
 

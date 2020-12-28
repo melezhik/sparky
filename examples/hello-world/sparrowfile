@@ -1,5 +1,7 @@
-#!perl6
+#!raku
 
 bash "echo Hello World";
+
 say config().perl;
+
 sleep(30);

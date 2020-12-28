@@ -1,0 +1,14 @@
+directory "project";
+
+git-scm 'https://github.com/melezhik/rakudist-teddy-bear.git', %(
+  to => "project",
+);
+
+zef "{%*ENV<PWD>}/project", %( depsonly => True );
+
+zef 'TAP::Harness App::Prove6';
+
+bash 'prove6 -l', %(
+  debug => True,
+  cwd => "{%*ENV<PWD>}/project/"
+);
