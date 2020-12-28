@@ -200,8 +200,6 @@ sub schedule-build ( $dir, %opts? ) is export {
 
     my $current-commit-short = $current-commit.chop(32);
 
-    say "current-commit: [{$current-commit}]";
-
     if $current-commit ~~ /\S/ {
 
       my $last-commit;
