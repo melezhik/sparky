@@ -282,7 +282,6 @@ Arbitrary text description of build
 Options for sparrowdo run, for example:
 
     %(
-
       host  => "foo.bar",
       ssh_user  => "admin",
       tags => "prod,backend"
