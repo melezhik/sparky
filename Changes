@@ -2,6 +2,7 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+  - New feature: triggering builds on SCM changes
   - Lock files mechanism to prevent excessive crontab runs
   - Allow manual run feature
   - Fix: rebuild action now works properly

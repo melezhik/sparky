@@ -1,0 +1,9 @@
+scm:
+  url: https://github.com/melezhik/rakudist-teddy-bear.git
+  branch: test111
+sparrowdo:
+  no_sudo: true
+  no_index_update: false
+  bootstrap: false
+allow_manual_run: true
+keep_builds: 5

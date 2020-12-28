@@ -23,7 +23,7 @@ Interested? Let's go ahead! (:
 # Sparky workflow in 4 lines:
 
     $ sparkyd # run Sparky daemon to build your projects
-    $ raku bin/sparky-web.raku # run Sparky web ui to see build statuses and reports
+    $ raku bin/sparky-web.raku # run Sparky web UI to see build statuses and reports
     $ nano ~/.sparky/projects/my-project/sparrowfile  # write a build scenario
     $ firefox 127.0.0.1:3000 # see what's happening
 
@@ -76,9 +76,9 @@ Or you can use Sparrowdo installer, which install service as systemd unit:
 
 # Running Web UI
 
-And finally sparky has simple web ui to show builds statuses and reports.
+And finally sparky has simple web UI to show builds statuses and reports.
 
-To run Sparky web ui launch `sparky-web.raku` script from the `bin/` directory:
+To run Sparky web UI launch `sparky-web.raku` script from the `bin/` directory:
 
     $ raku bin/sparky-web.raku
 
@@ -177,6 +177,44 @@ If you want to build a project from web UI, use `allow_manual_run`:
     $ nano ~/.sparky/projects/bailador-app/sparky.yaml
 
     allow_manual_run: true
+
+# Trigger build by SCM changes
+
+** warning ** - the feature is not properly tested, feel free to post issues or suggestions
+
+To trigger Sparky builds on SCM changes, define `scm` section in `sparky.yaml` file:
+
+    scm:
+      url: $SCM_URL
+      branch: $SCM_BRANCH
+
+Where:
+
+* `url` - git URL
+
+* `branch` - git branch, optional, default value is `master`
+
+For example:
+
+```yaml
+scm:
+  url: https://github.com/melezhik/rakudist-teddy-bear.git
+  branch: master
+```
+
+Once a build is triggered one needs to handle build environment leveraging `tags()<SCM_*>` objects:
+
+    directory "scm";
+
+    say "current commit is: {tags()<SCM_SHA>}";
+
+    git-scm tags()<SCM_URL>, %(
+      to => "scm",
+      branch => tags<SCM_BRANCH>
+    );
+
+    bash "ls -l {%*ENV<PWD>}/scm";
+
 
 # Disable project
 

@@ -183,6 +183,49 @@ sub schedule-build ( $dir, %opts? ) is export {
       say "{DateTime.now} --- [$project] build is skipped by cron: $crontab ... ";
       return;
     }
+
+  } elsif %config<scm> {
+
+    my $scm-url = %config<scm><url>;
+
+    my $scm-branch = %config<scm><branch> || 'master';
+
+    my $scm-dir =   "{$dir}/../../work/{$project}/.scm";
+
+    mkdir "{$dir}/../../work/{$project}/.scm" unless "{$dir}/../../work/{$project}/.scm".IO ~~ :d;
+
+    shell("git ls-remote {$scm-url} {$scm-branch} | awk '\{ print \$1 \}' 1>{$dir}/../../work/{$project}/.scm/current.commit 2>{$dir}/../../work/{$project}/.scm/git-ls-remote.err");
+
+    my $current-commit = "{$dir}/../../work/{$project}/.scm/current.commit".IO.slurp.chomp.chop(32);
+    my $last-commit;
+    my $trigger-build = False;
+
+    if  "{$dir}/../../work/{$project}/.scm/last.commit".IO ~~ :f {
+      $last-commit = "{$dir}/../../work/{$project}/.scm/last.commit".IO.slurp;
+      if $current-commit ne $last-commit {
+        $trigger-build = True;
+       "{$dir}/../../work/{$project}/.scm/last.commit".IO.spurt($current-commit);
+      }
+
+    } else {
+      "{$dir}/../../work/{$project}/.scm/last.commit".IO.spurt($current-commit);
+      $trigger-build = True;
+    }
+
+    if $trigger-build {
+
+      my $id = "{('a' .. 'z').pick(20).join('')}{$*PID}";
+
+      mkdir "$dir/.triggers";
+
+      my %trigger = %( description => "run by scm {$scm-branch} [{$current-commit}]" );
+
+      %trigger<sparrowdo> = %( tags => "SCM_SHA={$current-commit},SCM_URL={$scm-url},SCM_BRANCH={$scm-branch}" );
+
+      spurt "$dir/.triggers/$id", %trigger.perl;
+
+    }
+
   } elsif !%config<crontab>  {
       say "{DateTime.now} --- [$project] crontab entry not found, consider manual start or set up cron later, SKIP ... ";
       return;
