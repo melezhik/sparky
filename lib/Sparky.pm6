@@ -196,33 +196,42 @@ sub schedule-build ( $dir, %opts? ) is export {
 
     shell("git ls-remote {$scm-url} {$scm-branch} | awk '\{ print \$1 \}' 1>{$dir}/../../work/{$project}/.scm/current.commit 2>{$dir}/../../work/{$project}/.scm/git-ls-remote.err");
 
-    my $current-commit = "{$dir}/../../work/{$project}/.scm/current.commit".IO.slurp.chomp.chop(32);
-    my $last-commit;
-    my $trigger-build = False;
+    my $current-commit = "{$dir}/../../work/{$project}/.scm/current.commit".IO.slurp.chomp;
 
-    if  "{$dir}/../../work/{$project}/.scm/last.commit".IO ~~ :f {
-      $last-commit = "{$dir}/../../work/{$project}/.scm/last.commit".IO.slurp;
-      if $current-commit ne $last-commit {
+    my $current-commit-short = $current-commit.chop(32);
+
+    say "current-commit: [{$current-commit}]";
+
+    if $current-commit ~~ /\S/ {
+
+      my $last-commit;
+      my $trigger-build = False;
+
+      if  "{$dir}/../../work/{$project}/.scm/last.commit".IO ~~ :f {
+        $last-commit = "{$dir}/../../work/{$project}/.scm/last.commit".IO.slurp;
+        if $current-commit ne $last-commit {
+          $trigger-build = True;
+         "{$dir}/../../work/{$project}/.scm/last.commit".IO.spurt($current-commit);
+        }
+
+      } else {
+        "{$dir}/../../work/{$project}/.scm/last.commit".IO.spurt($current-commit);
         $trigger-build = True;
-       "{$dir}/../../work/{$project}/.scm/last.commit".IO.spurt($current-commit);
       }
 
-    } else {
-      "{$dir}/../../work/{$project}/.scm/last.commit".IO.spurt($current-commit);
-      $trigger-build = True;
-    }
+      if $trigger-build {
 
-    if $trigger-build {
+        my $id = "{('a' .. 'z').pick(20).join('')}{$*PID}";
 
-      my $id = "{('a' .. 'z').pick(20).join('')}{$*PID}";
+        mkdir "$dir/.triggers";
 
-      mkdir "$dir/.triggers";
+        my %trigger = %( description => "run by scm {$scm-branch} [{$current-commit-short}]" );
 
-      my %trigger = %( description => "run by scm {$scm-branch} [{$current-commit}]" );
+        %trigger<sparrowdo> = %( tags => "SCM_SHA={$current-commit-short},SCM_URL={$scm-url},SCM_BRANCH={$scm-branch}" );
 
-      %trigger<sparrowdo> = %( tags => "SCM_SHA={$current-commit},SCM_URL={$scm-url},SCM_BRANCH={$scm-branch}" );
+        spurt "$dir/.triggers/$id", %trigger.perl;
 
-      spurt "$dir/.triggers/$id", %trigger.perl;
+      }
 
     }
 
