@@ -418,7 +418,7 @@ An example Sparky plugins are:
 
 You can build the certain project using sparky command client called `sparky-runner.raku`:
 
-    $ sparky-runner.raku --dir=~/.sparky/projects/bailador-app
+    $ sparky-runner.raku --dir=/home/user/.sparky/projects/bailador-app
 
 Or just:
 
