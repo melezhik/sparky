@@ -45,6 +45,8 @@ Then you need to run the sparky daemon
 
     $ sparkyd
 
+`sparkyd` should be in your PATH, if not, fix it before going further. You should have installed with `zef install .` listed above. It could live for instance in `$HOME/.raku/bin` along with other scripts required (like `sparrowdo`).
+
 * Sparky daemon traverses sub directories found at the project root directory.
 
 * For every directory found initiate build process invoking sparky worker ( `sparky-runner.raku` ).
