@@ -19,7 +19,7 @@ function run( project ){
     %= $navbar
     <nav class="panel is-primary">
       <p class="panel-heading">Projects</p>
-      <table class="table panel-block">
+      <table class="table is-fullwidth">
         <tr>
           <td>Project</td>
           <td>Last Build</td>
