@@ -10,7 +10,7 @@
 
     <nav class="panel is-primary">
       <p class="panel-heading">Builds queue</p>
-      <table class="table panel-block">
+      <table class="table is-fullwidth">
         <tr>
           <td>Project</td>
           <td>Build Dsc</td>

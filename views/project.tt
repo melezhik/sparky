@@ -31,10 +31,11 @@
         <a class="button is-small" onclick="run()" >Run now</a>
       </div>
       % }
-      <div class="panel-block">
+      <div class="is-fullwidth">
         %= "<pre><strong>Configuration</strong>:\n\n" ~ ( $err || $project-conf-str ) ~ "</pre>"
       </div>
-      <div class="panel-block">
+      <div class="panel-block"></div>
+      <div class="is-fullwidth">
         % use HTML::Escape; my $text = escape-html(slurp $path)
         %= "<pre><strong>Scenario</strong>:\n\n" ~ $text ~ "</pre>"
       </div>
