@@ -74,7 +74,7 @@ Or you can use Sparrowdo installer, which install service as systemd unit:
     $ nano utils/install-sparky-web-systemd.raku # change working directory and user
     $ sparrowdo --sparrowfile=utils/install-sparkyd-systemd.raku --no_sudo --localhost
 
-<sub><sup> (\*) Note: `sparkyd` should be in your PATH, if not, fix it before going further. You should have installed with `zef install .` listed above. It could live for instance in `$HOME/.raku/bin` along with other scripts required (like `sparrowdo`).</sub></sup>
+<sup> (\*) Note: `sparkyd` should be in your PATH, if not, fix it before going further. You should have installed with `zef install .` listed above. It could live for instance in `$HOME/.raku/bin` along with other scripts required (like `sparrowdo`).</sub>
 
 # Running Web UI
 
