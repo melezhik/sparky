@@ -22,28 +22,37 @@ Interested? Let's go ahead! (:
 
 # Sparky workflow in 4 lines:
 
-    $ sparkyd # run Sparky daemon to build your projects
-    $ raku bin/sparky-web.raku # run Sparky web UI to see build statuses and reports
-    $ nano ~/.sparky/projects/my-project/sparrowfile  # write a build scenario
-    $ firefox 127.0.0.1:3000 # see what's happening
+```bash
+$ sparkyd # run Sparky daemon to build your projects
+$ raku bin/sparky-web.raku # run Sparky web UI to see build statuses and reports
+$ nano ~/.sparky/projects/my-project/sparrowfile  # write a build scenario
+$ firefox 127.0.0.1:3000 # see what's happening
+```
 
 # Installation
 
-    $ sudo apt-get install sqlite3
-    $ git clone https://github.com/melezhik/sparky.git
-    $ cd sparky && zef install .
+```bash
+$ sudo apt-get install sqlite3
+$ git clone https://github.com/melezhik/sparky.git
+$ cd sparky && zef install .
+```
+
 
 # Setup
 
 First you should run database initialization script to populate database schema:
 
-    $ raku db-init.raku
+```bash
+$ raku db-init.raku
+```
 
 # Running daemon
 
 Then you need to run (\*) the sparky daemon
 
-    $ sparkyd
+```bash
+$ sparkyd
+```
 
 * Sparky daemon traverses sub directories found at the project root directory.
 
@@ -57,22 +66,30 @@ Then you need to run (\*) the sparky daemon
 
 * You can change a timeout by applying `--timeout` parameter when running sparky daemon:
 
-    $ sparkyd --timeout=600 # sleep 10 minutes
+```bash
+$ sparkyd --timeout=600 # sleep 10 minutes
+```
 
 * You can also set a timeout by using `SPARKY_TIMEOUT` environment variable:
 
-    $ SPARKY_TIMEOUT=30 sparkyd ...
+```bash
+$ SPARKY_TIMEOUT=30 sparkyd ...
+```
 
 Running sparky in demonized mode.
 
 At the moment sparky can't demonize itself, as temporary workaround use linux `nohup` command:
 
-    $ nohup sparkyd &
+```bash 
+$ nohup sparkyd &
+```
 
 Or you can use Sparrowdo installer, which install service as systemd unit:
 
-    $ nano utils/install-sparky-web-systemd.raku # change working directory and user
-    $ sparrowdo --sparrowfile=utils/install-sparkyd-systemd.raku --no_sudo --localhost
+```bash
+$ nano utils/install-sparky-web-systemd.raku # change working directory and user
+$ sparrowdo --sparrowfile=utils/install-sparkyd-systemd.raku --no_sudo --localhost
+```
 
 \* `sparkyd` should be in your PATH, if not, fix it before going further. You should have installed with `zef install .` listed above. It could live for instance in `$HOME/.raku/bin` along with other scripts required (like `sparrowdo`)
 
@@ -82,24 +99,32 @@ And finally sparky has simple web UI to show builds statuses and reports.
 
 To run Sparky web UI launch `sparky-web.raku` script from the `bin/` directory:
 
-    $ raku bin/sparky-web.raku
+```bash
+$ raku bin/sparky-web.raku
+```
 
 This is [Bailador](https://github.com/Bailador/Bailador) application, so you can set any Bailador related options here.
 
 For example:
 
-    BAILADOR=host:0.0.0.0,port:5000 raku bin/sparky-web.raku
+```bash
+$ BAILADOR=host:0.0.0.0,port:5000 raku bin/sparky-web.raku
+```
 
 You can use Sparrowdo installer as well, which installs service as systemd unit:
 
-    $ nano utils/install-sparky-web-.raku # change working directory, user and root directory
-    $ sparrowdo --sparrowfile=utils/install-sparky-web-systemd.raku --no_sudo --localhost
+```bash
+$ nano utils/install-sparky-web-.raku # change working directory, user and root directory
+$ sparrowdo --sparrowfile=utils/install-sparky-web-systemd.raku --no_sudo --localhost
+```
 
 # Creating first sparky project
 
 Sparky project is just a directory located at the sparky root directory:
 
-    $ mkdir ~/.sparky/projects/bailador-app
+```bash
+$ mkdir ~/.sparky/projects/bailador-app
+```
 
 # Build scenario
 
@@ -110,22 +135,27 @@ Here is a short example.
 
 Say, we want to check out a Raku project from from Git, install dependencies and then run unit tests:
 
-    $ nano ~/.sparky/projects/bailador-app/sparrowfile
+```bash
+$ nano ~/.sparky/projects/bailador-app/sparrowfile
+```
 
-    directory "project";
+And add content like this :
+```raku
+directory "project";
 
-    git-scm 'https://github.com/melezhik/rakudist-teddy-bear.git', %(
-      to => "project",
-    );
+git-scm 'https://github.com/melezhik/rakudist-teddy-bear.git', %(
+  to => "project",
+);
 
-    zef "{%*ENV<PWD>}/project", %( depsonly => True );
+zef "{%*ENV<PWD>}/project", %( depsonly => True );
 
-    zef 'TAP::Harness App::Prove6';
+zef 'TAP::Harness App::Prove6';
 
-    bash 'prove6 -l', %(
-      debug => True,
-      cwd => "{%*ENV<PWD>}/project/"
-    );
+bash 'prove6 -l', %(
+  debug => True,
+  cwd => "{%*ENV<PWD>}/project/"
+);
+```
 
 
 # Configure Sparky workers
@@ -133,14 +163,19 @@ Say, we want to check out a Raku project from from Git, install dependencies and
 By default the build scenario gets executed _on the same machine you run Sparky at_, but you can change this
 to _any remote host_ setting Sparrowdo related parameters in the `sparky.yaml` file:
 
-    $ nano ~/.sparky/projects/bailador-app/sparky.yaml
+```bash
+$ nano ~/.sparky/projects/bailador-app/sparky.yaml
+```
 
-    sparrowdo:
-      host: '192.168.0.1'
-      ssh_private_key: /path/to/ssh_private/key.pem
-      ssh_user: sparky
-      no_index_update: true
-      sync: /tmp/repo
+And define worker configuration : 
+```yaml
+sparrowdo:
+  host: '192.168.0.1'
+  ssh_private_key: /path/to/ssh_private/key.pem
+  ssh_user: sparky
+  no_index_update: true
+  sync: /tmp/repo
+```
 
 You can read about the all [available parameters](https://github.com/melezhik/sparrowdo#sparrowdo-cli) in Sparrowdo documentation.
 
@@ -149,16 +184,23 @@ You can read about the all [available parameters](https://github.com/melezhik/sp
 Sparrowdo bootstrap takes a while, if you don't need bootstrap ( sparrow client is already installed at a target host )
 use `bootstrap: false` option:
 
-    sparrowdo:
-      bootstrap: false
+```yaml
+sparrowdo:
+  bootstrap: false
+```
 
 # Purging old builds
 
 To remove old build set `keep_builds` parameter in `sparky.yaml`:
 
-    $ nano ~/.sparky/projects/bailador-app/sparky.yaml
+```bash
+$ nano ~/.sparky/projects/bailador-app/sparky.yaml
+```
 
-    keep_builds: 10
+Put number of past builds to keep:
+```yaml
+keep_builds: 10
+```
 
 That makes Sparky remove old build and only keep last `keep_builds` builds.
 
@@ -167,9 +209,14 @@ That makes Sparky remove old build and only keep last `keep_builds` builds.
 It's possible to setup scheduler for Sparky builds, you should define `crontab` entry in sparky yaml file.
 for example to run a build every hour at 30,50 or 55 minute say this:
 
-    $ nano ~/.sparky/projects/bailador-app/sparky.yaml
+```bash
+$ nano ~/.sparky/projects/bailador-app/sparky.yaml
+```
 
-    crontab: "30,50,55 * * * *"
+With this schedule :
+```cron
+crontab: "30,50,55 * * * *"
+```
 
 Follow [Time::Crontab](https://github.com/ufobat/p6-time-crontab) documentation on crontab entries format.
 
@@ -177,9 +224,14 @@ Follow [Time::Crontab](https://github.com/ufobat/p6-time-crontab) documentation 
 
 If you want to build a project from web UI, use `allow_manual_run`:
 
-    $ nano ~/.sparky/projects/bailador-app/sparky.yaml
+```bash
+$ nano ~/.sparky/projects/bailador-app/sparky.yaml
+```
 
-    allow_manual_run: true
+And activate manual run:
+```
+allow_manual_run: true
+```
 
 # Trigger build by SCM changes
 
@@ -187,14 +239,15 @@ If you want to build a project from web UI, use `allow_manual_run`:
 
 To trigger Sparky builds on SCM changes, define `scm` section in `sparky.yaml` file:
 
-    scm:
-      url: $SCM_URL
-      branch: $SCM_BRANCH
+```yaml
+scm:
+  url: $SCM_URL
+  branch: $SCM_BRANCH
+```
 
 Where:
 
 * `url` - git URL
-
 * `branch` - git branch, optional, default value is `master`
 
 For example:
@@ -207,25 +260,29 @@ scm:
 
 Once a build is triggered one needs to handle build environment leveraging `tags()<SCM_*>` objects:
 
-    directory "scm";
+```raku
+directory "scm";
 
-    say "current commit is: {tags()<SCM_SHA>}";
+say "current commit is: {tags()<SCM_SHA>}";
 
-    git-scm tags()<SCM_URL>, %(
-      to => "scm",
-      branch => tags<SCM_BRANCH>
-    );
+git-scm tags()<SCM_URL>, %(
+  to => "scm",
+  branch => tags<SCM_BRANCH>
+);
 
-    bash "ls -l {%*ENV<PWD>}/scm";
+bash "ls -l {%*ENV<PWD>}/scm";
+```
 
 
 # Disable project
 
 You can disable project builds by setting `disable` option to true:
 
-    $ nano ~/.sparky/projects/bailador-app/sparky.yaml
+```bash
+$ nano ~/.sparky/projects/bailador-app/sparky.yaml
 
-    disabled: true
+disabled: true
+```
 
 It's handy when you start a new project and don't want to add it into build pipeline.
 
@@ -233,16 +290,20 @@ It's handy when you start a new project and don't want to add it into build pipe
 
 You can run downstream projects by setting `downstream` field at the upstream project `sparky.yaml` file:
 
-    $ nano ~/.sparky/projects/main/sparky.yaml
+```bash
+$ nano ~/.sparky/projects/main/sparky.yaml
 
-    downstream: downstream-project
+downstream: downstream-project
+```
 
 # File triggering protocol (FTP)
 
 Sparky FTP allows to _trigger_ builds automatically by just creating files with build _parameters_
 in special format:
 
-    nano $project/.triggers/foo-bar-baz.pl6
+```bash
+$ nano $project/.triggers/foo-bar-baz.pl6
+```
 
 File should have a `*.pl6` extension and be located in project `.trigger` directory.
 
@@ -272,22 +333,21 @@ FTP allows to create _supplemental_ APIs to implement more complex and custom bu
 Those keys could be used in trigger Hash. All they are optional.
 
 * `cwd`
-
 Directory where sparrowfile is located, when a build gets run, the process will change to this directory.
 
 * `description`
-
 Arbitrary text description of build
 
 * `sparrowdo`
-
 Options for sparrowdo run, for example:
 
-    %(
-      host  => "foo.bar",
-      ssh_user  => "admin",
-      tags => "prod,backend"
-    )
+```raku
+%(
+  host  => "foo.bar",
+  ssh_user  => "admin",
+  tags => "prod,backend"
+)
+```
 
 Should follow the format of sparky.yaml, `sparrowdo` section
 
@@ -311,7 +371,9 @@ To use Sparky plugins you should:
 
 You should install a module on the same server where you run Sparky at. For instance:
 
-    $ zef install Sparky::Plugin::Email # Sparky plugin to send email notifications
+```bash
+$ zef install Sparky::Plugin::Email # Sparky plugin to send email notifications
+```
 
 ## Configure Sparky
 
@@ -319,17 +381,22 @@ In project's `sparky.yaml` file define plugins section, it should be list of Plu
 
 For instance:
 
-    $ cat sparky.yaml
+```bash
+$ cat sparky.yaml
+```
 
-    plugins:
-      - Sparky::Plugin::Email:
-        parameters:
-          subject: "I finished"
-          to: "happy@user.email"
-          text: "here will be log"
-      - Sparky::Plugin::Hello:
-        parameters:
-          name: Sparrow
+That contains :
+```yaml
+plugins:
+  - Sparky::Plugin::Email:
+    parameters:
+      subject: "I finished"
+      to: "happy@user.email"
+      text: "here will be log"
+  - Sparky::Plugin::Hello:
+    parameters:
+      name: Sparrow
+```
 
 ## Creating Sparky plugins
 
@@ -337,27 +404,33 @@ Technically speaking  Sparky plugins should be just Raku modules.
 
 For instance, for mentioned module Sparky::Plugin::Email we might have this header lines:
 
-    use v6;
+```raku
+use v6;
 
-    unit module Sparky::Plugin::Hello;
+unit module Sparky::Plugin::Hello;
+```
 
 
 That is it.
 
 The module should have `run` routine which is invoked when Sparky processes a plugin:
 
-    our sub run ( %config, %parameters ) {
+```raku
+our sub run ( %config, %parameters ) {
 
-    }
+}
+```
 
 As we can see the `run` routine consumes its parameters as Raku Hash, these parameters are defined at mentioned `sparky.yaml` file,
 at plugin `parameters:` section, so this is how you might handle them:
 
-    sub run ( %config, %parameters ) {
+```raku
+sub run ( %config, %parameters ) {
 
-      say "Hello " ~ %parameters<name>;
+  say "Hello " ~ %parameters<name>;
 
-    }
+}
+```
 
 You can use `%config` Hash to access Sparky guts:
 
@@ -367,12 +440,12 @@ You can use `%config` Hash to access Sparky guts:
 
 For example:
 
-```
-    sub run ( %config, %parameters ) {
+```raku
+sub run ( %config, %parameters ) {
 
-      say "build id is: " ~ %parameters<build-id>;
+  say "build id is: " ~ %parameters<build-id>;
 
-    }
+}
 ```
 
 Alternatively you may pass _some_ predefined parameters plugins:
@@ -383,13 +456,16 @@ Alternatively you may pass _some_ predefined parameters plugins:
 
 For example:
 
+```bash
+$ cat sparky.yaml
 ```
-    $ cat sparky.yaml
 
-    plugins:
-      - Sparky::Plugin::Hello:
-        parameters:
-          name: Sparrow from project %PROJECT%
+That contains:
+```yaml
+plugins:
+  - Sparky::Plugin::Hello:
+    parameters:
+      name: Sparrow from project %PROJECT%
 ```
 
 ## Limit plugin run scope
@@ -402,11 +478,12 @@ You can defined _when_ to run plugin, here are 3 run scopes:
 
 Scopes are defined at `run_scope:` parameter:
 
-
-      - Sparky::Plugin::Hello:
-        run_scope: fail
-        parameters:
-          name: Sparrow
+```yaml
+- Sparky::Plugin::Hello:
+  run_scope: fail
+  parameters:
+    name: Sparrow
+```
 
 
 ## An example of Sparky plugins
@@ -420,11 +497,15 @@ An example Sparky plugins are:
 
 You can build the certain project using sparky command client called `sparky-runner.raku`:
 
-    $ sparky-runner.raku --dir=/home/user/.sparky/projects/bailador-app
+```bash
+$ sparky-runner.raku --dir=/home/user/.sparky/projects/bailador-app
+```
 
 Or just:
 
-    $ cd ~/.sparky/projects/bailador-app && sparky-runner.raku
+```bash
+$ cd ~/.sparky/projects/bailador-app && sparky-runner.raku
+```
 
 # Sparky runtime parameters
 
@@ -434,13 +515,17 @@ All this parameters could be overridden by command line ( `--root`, `--work-root
 
 This is sparky root directory, or directory where Sparky looks for the projects to get built:
 
-    ~/.sparky/projects/
+```bash
+~/.sparky/projects/
+```
 
 ##  Work directory
 
 This is working directory where sparky might place some stuff, useless at the moment:
 
-    ~/.sparky/work
+```bash
+~/.sparky/work
+```
 
 # Environment variables
 
@@ -448,7 +533,9 @@ This is working directory where sparky might place some stuff, useless at the mo
 
 You can disable cron check to run project forcefully, by setting `SPARKY_SKIP_CRON` environment variable:
 
-    $ export SPARKY_SKIP_CRON=1 && sparkyd
+```bash
+$ export SPARKY_SKIP_CRON=1 && sparkyd
+```
 
 ## SPARKY_ROOT
 
@@ -473,38 +560,50 @@ if you prefer other databases here is guideline.
 
 You should defined database engine and connection parameters, say we want to use MySQL:
 
-    $ nano ~/sparky.yaml
+```bash
+$ nano ~/sparky.yaml
+```
 
-    database:
-      engine: mysql
-      host: $dbhost
-      port: $dbport
-      name: $dbname
-      user: $dbuser
-      pass: $dbpassword
+With content :
+
+```yaml
+database:
+  engine: mysql
+  host: $dbhost
+  port: $dbport
+  name: $dbname
+  user: $dbuser
+  pass: $dbpassword
+```
 
 For example:
 
-    database:
-      engine: mysql
-      host: "127.0.0.1"
-      port: 3306
-      name: sparky
-      user: sparky
-      pass: "123"
+```yaml
+database:
+  engine: mysql
+  host: "127.0.0.1"
+  port: 3306
+  name: sparky
+  user: sparky
+  pass: "123"
+```
 
 ## Installs dependencies
 
 Depending on platform it should be client needed for your database API, for example for Debian we have to:
 
-    $ sudo yum install mysql-client
+```bash
+$ sudo yum install mysql-client
+```
 
 ## Creating database user, password and schema
 
 DB init script will generate database schema, provided that user defined and sparky configuration file has access to
 the database:
 
-    $ raku db-init.raku
+```bash
+$ raku db-init.raku
+```
 
 That is it, now sparky runs under MySQL!
 
@@ -513,17 +612,23 @@ That is it, now sparky runs under MySQL!
 Sparky uses [Bulma](https://bulma.io/) as a CSS framework, you can easily change the theme
 through sparky configuration file:
 
+```bash
+$ nano ~/sparky.yaml
+```
 
-    $ nano ~/sparky.yaml
-
-    ui:
-      theme: cosmo
+And choose your theme :
+```yaml
+ui:
+  theme: cosmo
+```
 
 The list of available themes is on [https://jenil.github.io/bulmaswatch/](https://jenil.github.io/bulmaswatch/)
 
 # Trigger jobs from HTTP API
 
-    POST /build/project/$project
+```
+POST /build/project/$project
+```
 
 # Examples
 
