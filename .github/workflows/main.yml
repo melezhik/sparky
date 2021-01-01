@@ -1,4 +1,4 @@
-name: test
+name: Test installation of dependencies
 
 on:
   push:
@@ -23,5 +23,5 @@ jobs:
         with:
           raku-version: ${{ matrix.raku-version }}
       - name: Install Dependencies
-        run: zef install . --force-test
+        run: zef install .
 

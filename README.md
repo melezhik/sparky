@@ -430,7 +430,7 @@ Or just:
 
 All this parameters could be overridden by command line ( `--root`, `--work-root` )
 
-##  Rood directory
+##  Root directory
 
 This is sparky root directory, or directory where Sparky looks for the projects to get built:
 

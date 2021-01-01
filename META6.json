@@ -11,7 +11,7 @@
     "Time::Crontab",
     "Bailador",
     "Text::Markdown",
-    "Data::Dump",
+    "Data::Dump:ver<0.0.12+>",
     "Number::Denominate",
     "HTML::Escape",
     "Hash::Merge:ver<2.0.0+>"
