@@ -139,7 +139,8 @@ Say, we want to check out a Raku project from from Git, install dependencies and
 $ nano ~/.sparky/projects/bailador-app/sparrowfile
 ```
 
-And add content like this :
+And add content like this:
+
 ```raku
 directory "project";
 
@@ -167,7 +168,8 @@ to _any remote host_ setting Sparrowdo related parameters in the `sparky.yaml` f
 $ nano ~/.sparky/projects/bailador-app/sparky.yaml
 ```
 
-And define worker configuration : 
+And define worker configuration:
+
 ```yaml
 sparrowdo:
   host: '192.168.0.1'
@@ -213,7 +215,8 @@ for example to run a build every hour at 30,50 or 55 minute say this:
 $ nano ~/.sparky/projects/bailador-app/sparky.yaml
 ```
 
-With this schedule :
+With this schedule:
+
 ```cron
 crontab: "30,50,55 * * * *"
 ```
@@ -385,7 +388,8 @@ For instance:
 $ cat sparky.yaml
 ```
 
-That contains :
+That contains:
+
 ```yaml
 plugins:
   - Sparky::Plugin::Email:
@@ -461,6 +465,7 @@ $ cat sparky.yaml
 ```
 
 That contains:
+
 ```yaml
 plugins:
   - Sparky::Plugin::Hello:
@@ -564,7 +569,7 @@ You should defined database engine and connection parameters, say we want to use
 $ nano ~/sparky.yaml
 ```
 
-With content :
+With content:
 
 ```yaml
 database:
@@ -616,7 +621,8 @@ through sparky configuration file:
 $ nano ~/sparky.yaml
 ```
 
-And choose your theme :
+And choose your theme:
+
 ```yaml
 ui:
   theme: cosmo
