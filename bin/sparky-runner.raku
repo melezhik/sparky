@@ -1,3 +1,5 @@
+#!/usr/bin/env raku
+
 use Sparky;
 use Data::Dump;
 use YAMLish;

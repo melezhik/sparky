@@ -1,4 +1,4 @@
-#!perl6
+#!/usr/bin/env raku
 
 use Sparky;
 

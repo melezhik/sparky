@@ -1,3 +1,5 @@
+#!/usr/bin/env raku
+
 use Bailador;
 use DBIish;
 use Text::Markdown;
