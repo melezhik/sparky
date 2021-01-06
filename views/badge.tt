@@ -33,7 +33,9 @@
             <text font-size="10px" font-weight="100" font-family="sans-serif" fill="#FFF" x="32" y="65%" alignment-baseline="middle" text-anchor="middle">Sparky</text>
           </g>
           <g>
-            <rect x="64" y="0" width="35" height="20" fill="#0E7FBF" />
+            <rect x="64" y="0" width="35" height="20" fill="#0E7FBF">
+              <animate attributeType="XML" attributeName="fill" values="#0E7FBF;#0EAFFF;#0E7FBF;#0E7FBF;"  dur="0.8s" repeatCount="indefinite"/>
+            </rect>
             <text font-size="10px" font-weight="100" font-family="sans-serif" fill="#FFF"  x="82" y="65%" alignment-baseline="middle" text-anchor="middle">&#x23F0;</text>
           </g>
         </svg>
