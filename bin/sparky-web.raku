@@ -133,6 +133,30 @@ get '/queue' => sub {
 
 }
 
+get '/badge/:project' => sub ($project) {
+
+  my $dbh = get-dbh();
+  my $sth = $dbh.prepare("SELECT max(id) as last_build_id FROM builds where project = '{$project}'");
+  $sth.execute();
+  my @r = $sth.allrows(:array-of-hash);
+  $sth.finish;
+  my $last_build_id =  @r[0]<last_build_id>;
+  my $state = -2;
+
+  if ($last_build_id) {
+    $sth = $dbh.prepare("SELECT state, description, dt FROM builds where id = {$last_build_id}");
+    $sth.execute();
+    @r = $sth.allrows(:array-of-hash);
+    $sth.finish;
+    $state = @r[0]<state>;
+  }
+
+  $dbh.dispose;
+
+  template 'badge.tt', $project, $state;
+
+}
+
 get '/report/:project/:build_id' => sub ( $project, $build_id ) {
 
   if "$reports-dir/$project/build-$build_id.txt".IO ~~ :f {
