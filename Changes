@@ -2,7 +2,10 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.0.30  2021-01-10T23:54:47Z
+
   - JS markdown parser and syntax highlighter in about page. Removing Text::Markdown
+  - Hightlight code on project page
 
 0.0.29  2021-01-04T00:22:18Z
 
