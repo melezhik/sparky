@@ -32,11 +32,11 @@
       </div>
       % }
       <div class="is-fullwidth">
-        %= "<pre><strong>Configuration</strong>:\n\n" ~ ( $err || $project-conf-str ) ~ "</pre>"
+        %= "<pre><strong>Configuration</strong>:\n\n" ~ ( $err || ( "<code class='language-yaml'>" ~ $project-conf-str ~ "</code>" ) ) ~ "</pre>"
       </div>
       <div class="panel-block"></div>
       <div class="is-fullwidth">
         % use HTML::Escape; my $text = escape-html(slurp $path)
-        %= "<pre><strong>Scenario</strong>:\n\n" ~ $text ~ "</pre>"
+        %= "<pre><strong>Scenario</strong>:\n\n" ~ "<code class='language-perl'>" ~ $text ~ "</code>" ~ "</pre>"
       </div>
     </div>
