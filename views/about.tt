@@ -6,15 +6,51 @@
       <title>~SPARKY CI WEB~ | about </title>
     </head>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/12.0.4/markdown-it.min.js" integrity="sha512-0DkA2RqFvfXBVeti0R1l0E8oMkmY0X+bAA2i02Ld8xhpjpvqORUcE/UBe+0KOPzi5iNah0aBpW6uaNNrqCk73Q==" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.14.0/js/all.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
 %= $navbar
 
     <nav class="panel is-primary">
       <p class="panel-heading">
           About
       </p>
-      <div class="content">
-          %= $doc       
+      <div class="content" id="doc">
+          <pre id="markdown">
+            %= $doc 
+          </pre>
        </div>
      </nav>
 
+  <script>
+    var markdown = document.getElementById("markdown").innerText;
+    // alert(markdown)
+    // var hljs = require('highlight.js'); // https://highlightjs.org/ 
+    var md = window.markdownit({
+      html: false,
+      breaks: false,
+      linkify: true,
+      typographer: true,
+      langPrefix:   'language-',
+      highlight: function (str, lang) {
+      if (lang && hljs.getLanguage(lang)) {
+          try {
+            return '<pre class="hljs"><code>' +
+                   hljs.highlight(lang, str, true).value +
+                   '</code></pre>';
+          } catch (__) {}
+        }
+
+        return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
+      }
+
+    });;
+    var html = md.render(markdown);
+    // alert(html);
+    document.getElementById("markdown").innerHTML = "";
+    document.getElementById("doc").innerHTML = html;
+  </script>
 

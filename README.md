@@ -2,7 +2,7 @@
 
 Sparky is a flexible and minimalist continuous integration server written in Raku.
 
-![Nice web UI](https://raw.githubusercontent.com/melezhik/sparky/master/images/sparky-web-ui4.png)
+![Nice web UI](https://raw.githubusercontent.com/melezhik/sparky/master/images/sparky-web-ui5.png)
 
 The essential features of Sparky:
 
@@ -91,7 +91,11 @@ $ nano utils/install-sparky-web-systemd.raku # change working directory and user
 $ sparrowdo --sparrowfile=utils/install-sparkyd-systemd.raku --no_sudo --localhost
 ```
 
-\* `sparkyd` should be in your PATH, if not, fix it before going further. You should have installed with `zef install .` listed above. It could live for instance in `$HOME/.raku/bin` along with other scripts required (like `sparrowdo`)
+\* `sparkyd` should be in your PATH, if not, fix it before going further. 
+
+You should have installed with `zef install .` listed above. 
+
+It could live for instance in `$HOME/.raku/bin` along with other scripts required (like `sparrowdo`)
 
 # Running Web UI
 
@@ -129,9 +133,7 @@ $ mkdir ~/.sparky/projects/bailador-app
 # Build scenario
 
 Sparky is built on Sparrowdo, read [Sparrowdo](https://github.com/melezhik/sparrowdo)
-_to know how to write Sparky scenarios_.
-
-Here is a short example.
+_to know how to write Sparky scenarios_. Here is a short example.
 
 Say, we want to check out a Raku project from from Git, install dependencies and then run unit tests:
 

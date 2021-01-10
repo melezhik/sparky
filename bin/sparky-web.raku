@@ -245,8 +245,8 @@ get '/project/:project' => sub ($project) {
 get '/about' => sub {
 
   my $raw-md = slurp "README.md";
-  my $md = parse-markdown($raw-md);
-  template 'about.tt', css(), navbar(), $md.to_html;
+  #my $md = parse-markdown($raw-md);
+  template 'about.tt', css(), navbar(), $raw-md;
 }
 
 
