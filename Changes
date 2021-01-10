@@ -2,6 +2,8 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+  - JS markdown parser and syntax highlighter in about page. Removing Text::Markdown
+
 0.0.29  2021-01-04T00:22:18Z
 
   - New feature: triggering builds on SCM changes

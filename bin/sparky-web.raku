@@ -2,7 +2,6 @@
 
 use Bailador;
 use DBIish;
-use Text::Markdown;
 use Sparky;
 use YAMLish;
 use Number::Denominate;
@@ -245,7 +244,6 @@ get '/project/:project' => sub ($project) {
 get '/about' => sub {
 
   my $raw-md = slurp "README.md";
-  #my $md = parse-markdown($raw-md);
   template 'about.tt', css(), navbar(), $raw-md;
 }
 

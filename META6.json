@@ -10,7 +10,6 @@
     "Sparrowdo",
     "Time::Crontab",
     "Bailador",
-    "Text::Markdown",
     "Data::Dump:ver<0.0.12+>",
     "Number::Denominate",
     "HTML::Escape",
