@@ -18,7 +18,7 @@ Interested? Let's go ahead! (:
 
 # Build status
 
-[![Build Status](https://travis-ci.org/melezhik/sparky.svg?branch=master)](https://travis-ci.org/melezhik/sparky)
+[![Build Status](http://161.35.142.50/badge/sparky-dev)](http://161.35.142.50/badge/sparky-dev)
 
 # Sparky workflow in 4 lines:
 
