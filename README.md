@@ -646,7 +646,7 @@ POST /build/project/$project
 Use a following request to get a project badge ( image/status of the last build ):
 
 ```http
-GET /badge/project/$project
+GET /badge/$project
 ```
 
 
