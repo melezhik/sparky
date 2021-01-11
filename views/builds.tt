@@ -30,7 +30,15 @@
           %= %r<description> || "NA"
           </td>
           <td>
-            %= "<img src='{%*ENV<SPARKY_HTTP_ROOT>}/badge/" ~ %r<project> ~ "' />"
+          % if %r<state> == -1 {
+          <span class="tag is-danger">failed</span>
+          % }
+          % if %r<state> ==  0 {
+          <span class="tag is-primary">running</span>
+          % }
+          % if %r<state> == 1 {
+          <span class="tag is-success">succeed</span>
+          % }
           </td>
           <td>
           %= %r<dt>

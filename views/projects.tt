@@ -43,10 +43,17 @@ function run( project ){
             %= %r<description> || "NA"
           </td>
           <td>
+          % if %r<state> == -1 {
+          <span class="tag is-danger">failed</span>
+          % }
+          % if %r<state> ==  0 {
+          <span class="tag is-primary">running</span>
+          % }
+          % if %r<state> == 1 {
+          <span class="tag is-success">succeed</span>
+          % }
           % if %r<state> == -2 {
             <a class="button is-small" onclick="run('<%= %r<project> %>')" >Run Now</a>
-          % } else {
-            %= "<img src='{%*ENV<SPARKY_HTTP_ROOT>}/badge/" ~ %r<project> ~ "' />"
           % }
           </td>
           <td>
