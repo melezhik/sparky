@@ -1,52 +1,75 @@
 % my ($project, $state) = @_;
 
 % if $state == 1 {
-  <svg style="border-radius: 4px" viewBox="0 0 100 20" width="100" xmlns="http://www.w3.org/2000/svg">
-    <g>
-      <rect x="0" y="0" width="64" height="20" fill="#424B54" />
-      <text font-size="10px" font-weight="100" font-family="sans-serif" fill="#FFF" x="32" y="65%" alignment-baseline="middle" text-anchor="middle">success</text>
-    </g>
-    <g>
-      <rect x="64" y="0" width="35" height="20" fill="#60A561" />
-      <text font-size="10px" font-weight="100" font-family="sans-serif" fill="#FFF"  x="82" y="65%" alignment-baseline="middle" text-anchor="middle">&#x2714;</text>
-    </g>
+  <svg width="92" height="20" viewBox="0 0 920 200" xmlns="http://www.w3.org/2000/svg" role="img">
+   <linearGradient id="a" x2="0" y2="100%">
+     <stop offset="0" stop-opacity=".1" stop-color="#EEE"/>
+     <stop offset="1" stop-opacity=".1"/>
+   </linearGradient>
+   <mask id="m"><rect width="920" height="200" rx="30" fill="#FFF"/></mask>
+   <g mask="url(#m)">
+     <rect width="472" height="200" fill="#555"/>
+     <rect width="448" height="200" fill="#60A561" x="472"/>
+     <rect width="920" height="200" fill="url(#a)"/>
+   </g>
+   <g aria-hidden="true" fill="#fff" text-anchor="start" font-family="Verdana,DejaVu Sans,sans-serif" font-size="110">
+     <text x="50" y="138" textLength="372">Sparky</text>
+     <text x="647" y="138" textLength="348">&#x2714;</text>
+   </g>
   </svg>
 % } elsif $state == -1 {
-  <svg style="border-radius: 4px" viewBox="0 0 100 20" width="100" xmlns="http://www.w3.org/2000/svg">
-    <g>
-      <rect x="0" y="0" width="64" height="20" fill="#424B54" />
-      <text font-size="10px" font-weight="100" font-family="sans-serif" fill="#FFF" x="32" y="65%" alignment-baseline="middle" text-anchor="middle">failed</text>
-    </g>
-    <g>
-      <rect x="64" y="0" width="35" height="20" fill="#DD7373" />
-      <text font-size="10px" font-weight="100" font-family="sans-serif" fill="#FFF"  x="82" y="65%" alignment-baseline="middle" text-anchor="middle">&#x2717;</text>
-    </g>
+  <svg width="92" height="20" viewBox="0 0 920 200" xmlns="http://www.w3.org/2000/svg" role="img">
+   <linearGradient id="a" x2="0" y2="100%">
+     <stop offset="0" stop-opacity=".1" stop-color="#EEE"/>
+     <stop offset="1" stop-opacity=".1"/>
+   </linearGradient>
+   <mask id="m"><rect width="920" height="200" rx="30" fill="#FFF"/></mask>
+   <g mask="url(#m)">
+     <rect width="472" height="200" fill="#555"/>
+     <rect width="448" height="200" fill="#DD7373" x="472"/>
+     <rect width="920" height="200" fill="url(#a)"/>
+   </g>
+   <g aria-hidden="true" fill="#fff" text-anchor="start" font-family="Verdana,DejaVu Sans,sans-serif" font-size="110">
+     <text x="50" y="138" textLength="372">Sparky</text>
+     <text x="647" y="138" textLength="348">&#x2717;</text>
+   </g>
   </svg>
 % } elsif $state == 0 {
-  <svg style="border-radius: 4px" viewBox="0 0 100 20" width="100" xmlns="http://www.w3.org/2000/svg">
-    <g>
-      <rect x="0" y="0" width="64" height="20" fill="#424B54" />
-      <text font-size="10px" font-weight="100" font-family="sans-serif" fill="#FFF" x="32" y="65%" alignment-baseline="middle" text-anchor="middle">running</text>
-    </g>
-    <g>
-      <rect x="64" y="0" width="35" height="20" fill="#0E7FBF">
-        <animate attributeType="XML" attributeName="fill" values="#0E7FBF;#0EAFFF;#0E7FBF;#0E7FBF;"  dur="0.8s" repeatCount="indefinite"/>
-      </rect>
-      <text font-size="10px" font-weight="100" font-family="sans-serif" fill="#FFF"  x="82" y="65%" alignment-baseline="middle" text-anchor="middle">&#x23F0;</text>
-    </g>
+  <svg width="92" height="20" viewBox="0 0 920 200" xmlns="http://www.w3.org/2000/svg" role="img">
+   <linearGradient id="a" x2="0" y2="100%">
+     <stop offset="0" stop-opacity=".1" stop-color="#EEE"/>
+     <stop offset="1" stop-opacity=".1"/>
+   </linearGradient>
+   <mask id="m"><rect width="920" height="200" rx="30" fill="#FFF"/></mask>
+   <g mask="url(#m)">
+     <rect width="472" height="200" fill="#555"/>
+     <rect width="448" height="200" fill="0E7FBF" x="472">
+       <animate attributeType="XML" attributeName="fill" values="#0E7FBF;#0EAFFF;#0E7FBF;#0E7FBF;"  dur="0.8s" repeatCount="indefinite"/>
+     </rect>
+     <rect width="920" height="200" fill="url(#a)"/>
+   </g>
+   <g aria-hidden="true" fill="#fff" text-anchor="start" font-family="Verdana,DejaVu Sans,sans-serif" font-size="110">
+     <text x="50" y="138" textLength="372">Sparky</text>
+     <text x="647" y="138" textLength="348">&#x23F0;</text>
+   </g>
   </svg>
 % } else {
   <!-- Not started -->
-  <svg style="border-radius: 4px" viewBox="0 0 100 20" width="100" xmlns="http://www.w3.org/2000/svg">
-    <g>
-      <rect x="0" y="0" width="64" height="20" fill="#424B54" />
-      <text font-size="10px" font-weight="100" font-family="sans-serif" fill="#FFF" x="32" y="65%" alignment-baseline="middle" text-anchor="middle">not started</text>
-    </g>
-    <g>
-      <rect x="64" y="0" width="35" height="20" fill="#0E7FBF"/>
-      <text font-size="10px" font-weight="100" font-family="sans-serif" fill="#FFF"  x="82" y="65%" alignment-baseline="middle" text-anchor="middle">&#x1F4C5;</text>
-    </g>
+  <svg width="92" height="20" viewBox="0 0 920 200" xmlns="http://www.w3.org/2000/svg" role="img">
+   <linearGradient id="a" x2="0" y2="100%">
+     <stop offset="0" stop-opacity=".1" stop-color="#EEE"/>
+     <stop offset="1" stop-opacity=".1"/>
+   </linearGradient>
+   <mask id="m"><rect width="920" height="200" rx="30" fill="#FFF"/></mask>
+   <g mask="url(#m)">
+     <rect width="472" height="200" fill="#555"/>
+     <rect width="448" height="200" fill="#0E7FBF" x="472"/>
+     <rect width="920" height="200" fill="url(#a)"/>
+   </g>
+   <g aria-hidden="true" fill="#fff" text-anchor="start" font-family="Verdana,DejaVu Sans,sans-serif" font-size="110">
+     <text x="50" y="138" textLength="372">Sparky</text>
+     <text x="647" y="138" textLength="348">&#x23F0;</text>
+   </g>
   </svg>
-
 % }
       
