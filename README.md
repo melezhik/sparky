@@ -18,7 +18,7 @@ Interested? Let's go ahead! (:
 
 # Build status
 
-[![Build Status](http://161.35.142.50/badge/sparky-dev)](http://161.35.142.50/badge/sparky-dev)
+[![Build Status](http://161.35.142.50/badge/sparky-dev)](http://161.35.142.50/project/sparky-dev)
 
 # Sparky workflow in 4 lines:
 
