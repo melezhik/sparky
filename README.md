@@ -160,15 +160,6 @@ bash 'prove6 -l', %(
 );
 ```
 
-# Badges
-
-Use a following request to get build badges:
-
-```http
-GET /badge/project/$project
-```
-
-
 # Configure Sparky workers
 
 By default the build scenario gets executed _on the same machine you run Sparky at_, but you can change this
@@ -639,11 +630,25 @@ ui:
 
 The list of available themes is on [https://jenil.github.io/bulmaswatch/](https://jenil.github.io/bulmaswatch/)
 
-# Trigger jobs from HTTP API
+
+# HTTP API
+
+## Trigger jobs from HTTP API
+
+Use a following request to build a project:
 
 ```http
 POST /build/project/$project
 ```
+
+## Badges
+
+Use a following request to get a project badge ( image/status of the last build ):
+
+```http
+GET /badge/project/$project
+```
+
 
 # Examples
 
