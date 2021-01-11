@@ -127,7 +127,7 @@ $ sparrowdo --sparrowfile=utils/install-sparky-web-systemd.raku --no_sudo --loca
 Sparky project is just a directory located at the sparky root directory:
 
 ```bash
-$ mkdir ~/.sparky/projects/bailador-app
+$ mkdir ~/.sparky/projects/teddy-bear-app
 ```
 
 # Build scenario
@@ -138,7 +138,7 @@ _to know how to write Sparky scenarios_. Here is a short example.
 Say, we want to check out a Raku project from from Git, install dependencies and then run unit tests:
 
 ```bash
-$ nano ~/.sparky/projects/bailador-app/sparrowfile
+$ nano ~/.sparky/projects/teddy-bear-app/sparrowfile
 ```
 
 And add content like this:
@@ -160,6 +160,14 @@ bash 'prove6 -l', %(
 );
 ```
 
+# Badges
+
+Use a following request to get build badges:
+
+```http
+GET /badge/project/$project
+```
+
 
 # Configure Sparky workers
 
@@ -167,7 +175,7 @@ By default the build scenario gets executed _on the same machine you run Sparky 
 to _any remote host_ setting Sparrowdo related parameters in the `sparky.yaml` file:
 
 ```bash
-$ nano ~/.sparky/projects/bailador-app/sparky.yaml
+$ nano ~/.sparky/projects/teddy-bear-app/sparky.yaml
 ```
 
 And define worker configuration:
@@ -198,7 +206,7 @@ sparrowdo:
 To remove old build set `keep_builds` parameter in `sparky.yaml`:
 
 ```bash
-$ nano ~/.sparky/projects/bailador-app/sparky.yaml
+$ nano ~/.sparky/projects/teddy-bear-app/sparky.yaml
 ```
 
 Put number of past builds to keep:
@@ -214,7 +222,7 @@ It's possible to setup scheduler for Sparky builds, you should define `crontab` 
 for example to run a build every hour at 30,50 or 55 minute say this:
 
 ```bash
-$ nano ~/.sparky/projects/bailador-app/sparky.yaml
+$ nano ~/.sparky/projects/teddy-bear-app/sparky.yaml
 ```
 
 With this schedule:
@@ -230,7 +238,7 @@ Follow [Time::Crontab](https://github.com/ufobat/p6-time-crontab) documentation 
 If you want to build a project from web UI, use `allow_manual_run`:
 
 ```bash
-$ nano ~/.sparky/projects/bailador-app/sparky.yaml
+$ nano ~/.sparky/projects/teddy-bear-app/sparky.yaml
 ```
 
 And activate manual run:
@@ -278,13 +286,12 @@ git-scm tags()<SCM_URL>, %(
 bash "ls -l {%*ENV<PWD>}/scm";
 ```
 
-
 # Disable project
 
 You can disable project builds by setting `disable` option to true:
 
 ```bash
-$ nano ~/.sparky/projects/bailador-app/sparky.yaml
+$ nano ~/.sparky/projects/teddy-bear-app/sparky.yaml
 
 disabled: true
 ```
@@ -301,16 +308,16 @@ $ nano ~/.sparky/projects/main/sparky.yaml
 downstream: downstream-project
 ```
 
-# File triggering protocol (FTP)
+# Sparky triggering protocol (STP)
 
-Sparky FTP allows to _trigger_ builds automatically by just creating files with build _parameters_
+Sparky Prorvisioning Protocol allows to _trigger_ builds automatically by just creating files with build _parameters_
 in special format:
 
 ```bash
-$ nano $project/.triggers/foo-bar-baz.pl6
+$ nano $project/.triggers/foo-bar-baz
 ```
 
-File should have a `*.pl6` extension and be located in project `.trigger` directory.
+File has to be located in project `.trigger` directory.
 
 A content of the file should Raku code returning a Hash:
 
@@ -331,7 +338,7 @@ this process is called file triggering.
 
 To separate different builds just create trigger files with unique names inside `$project/.trigger` directory.
 
-FTP allows to create _supplemental_ APIs to implement more complex and custom build logic, while keeping Sparky itself simple.
+STP allows to create _supplemental_ APIs to implement more complex and custom build logic, while keeping Sparky itself simple.
 
 ## Trigger attributes
 
@@ -505,13 +512,13 @@ An example Sparky plugins are:
 You can build the certain project using sparky command client called `sparky-runner.raku`:
 
 ```bash
-$ sparky-runner.raku --dir=/home/user/.sparky/projects/bailador-app
+$ sparky-runner.raku --dir=/home/user/.sparky/projects/teddy-bear-app
 ```
 
 Or just:
 
 ```bash
-$ cd ~/.sparky/projects/bailador-app && sparky-runner.raku
+$ cd ~/.sparky/projects/teddy-bear-app && sparky-runner.raku
 ```
 
 # Sparky runtime parameters
