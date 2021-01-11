@@ -234,7 +234,7 @@ $ nano ~/.sparky/projects/bailador-app/sparky.yaml
 ```
 
 And activate manual run:
-```
+```yaml
 allow_manual_run: true
 ```
 
@@ -634,7 +634,7 @@ The list of available themes is on [https://jenil.github.io/bulmaswatch/](https:
 
 # Trigger jobs from HTTP API
 
-```
+```http
 POST /build/project/$project
 ```
 
