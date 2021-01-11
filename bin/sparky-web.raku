@@ -153,6 +153,7 @@ get '/badge/:project' => sub ($project) {
 
   $dbh.dispose;
 
+  content_type("image/svg+xml;charset=utf-8");
   template 'badge.tt', $project, $state;
 
 }
