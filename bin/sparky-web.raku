@@ -294,7 +294,10 @@ sub css {
   <script defer src="https://use.fontawesome.com/releases/v5.14.0/js/all.js"></script>
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/styles/default.min.css">
   <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/highlight.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+  <link rel="stylesheet" href="/linenumbers.css">
   <script>hljs.initHighlightingOnLoad();</script>
+  <script>hljs.initLineNumbersOnLoad();</script>
 
   HERE
 
