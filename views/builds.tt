@@ -34,7 +34,7 @@
           <span class="tag is-danger">failed</span>
           % }
           % if %r<state> ==  0 {
-          <span class="tag is-primary">running</span>
+          <span class="tag is-primary flash-button">running</span>
           % }
           % if %r<state> == 1 {
           <span class="tag is-success">succeed</span>
