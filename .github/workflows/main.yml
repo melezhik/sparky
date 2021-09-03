@@ -23,5 +23,5 @@ jobs:
         with:
           raku-version: ${{ matrix.raku-version }}
       - name: Install Dependencies
-        run: zef install .
+        run: zef install . --/test
 
