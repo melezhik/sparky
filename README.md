@@ -293,7 +293,7 @@ downstream: downstream-project
 
 # Sparky triggering protocol (STP)
 
-Sparky Provisioning Protocol allows to _trigger_ builds automatically by just creating files with build _parameters_
+Sparky Triggering Protocol allows to _trigger_ builds automatically by just creating files with build _parameters_
 in special format:
 
 ```bash
