@@ -1,4 +1,4 @@
-<.css>
+<&HTML-AND-JAVASCRIPT(.css)>
 
 <script>
 
@@ -15,7 +15,7 @@
     <head>
       <title>~SPARKY CI WEB~</title>
     </head>
-    <.navbar>
+    <&HTML-AND-JAVASCRIPT(.navbar)>
     <nav class="panel">
       <p class="panel-heading">Projects</p>
       <table class="table panel-block">

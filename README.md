@@ -104,7 +104,7 @@ And finally Sparky has a simple web UI to show builds statuses and reports.
 To run Sparky CI web app:
 
 ```bash
-$ cro run
+$ SPARKY_HTTP_ROOT="" cro run
 ```
 
 To install Sparky CI web app as a systemd unit:
