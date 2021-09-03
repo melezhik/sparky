@@ -316,5 +316,12 @@ my $application = route {
 
 }
 
+my Cro::Service $service = Cro::HTTP::Server.new:
+    :host<localhost>, :port<3000>, :$application;
 
+$service.start;
 
+react whenever signal(SIGINT) {
+    $service.stop;
+    exit;
+}

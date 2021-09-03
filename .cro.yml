@@ -1,0 +1,6 @@
+cro: 1
+id: sparky
+name: Sparky CI Web
+entrypoint: bin/sparky-web.raku
+ignore:
+  - .cache

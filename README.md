@@ -24,7 +24,7 @@ Interested? Let's go ahead! (:
 
 ```bash
 $ sparkyd # run Sparky daemon to build your projects
-$ raku bin/sparky-web.raku # run Sparky web UI to see build statuses and reports
+$ cron run # run Sparky CI UI to see build statuses and reports
 $ nano ~/.sparky/projects/my-project/sparrowfile  # write a build scenario
 $ firefox 127.0.0.1:3000 # see what's happening
 ```
@@ -84,7 +84,7 @@ At the moment sparky can't demonize itself, as temporary workaround use linux `n
 $ nohup sparkyd &
 ```
 
-Or you can use Sparrowdo installer, which install service as systemd unit:
+To install sparkyd as a systemd unit:
 
 ```bash
 $ nano utils/install-sparky-web-systemd.raku # change working directory and user
@@ -99,28 +99,20 @@ It could live for instance in `$HOME/.raku/bin` along with other scripts require
 
 # Running Web UI
 
-And finally sparky has simple web UI to show builds statuses and reports.
+And finally sparky has a simple web UI to show builds statuses and reports.
 
-To run Sparky web UI launch `sparky-web.raku` script from the `bin/` directory:
+To run Sparky CI web app:
 
 ```bash
-$ raku bin/sparky-web.raku
+$ cro run
 ```
 
-This is [Bailador](https://github.com/Bailador/Bailador) application, so you can set any Bailador related options here.
-
-For example:
+To install Sparky CI web app as a systemd unit:
 
 ```bash
-$ BAILADOR=host:0.0.0.0,port:5000 raku bin/sparky-web.raku
-```
-
-You can use Sparrowdo installer as well, which installs service as systemd unit:
-
-```bash
-$ nano utils/install-sparky-web-.raku # change working directory, user and root directory
+$ nano utils/install-sparky-web-systemd.raku # change working directory, user and root directory
 $ sparrowdo --sparrowfile=utils/install-sparky-web-systemd.raku --no_sudo --localhost
-```
+``
 
 # Creating first sparky project
 
@@ -301,7 +293,7 @@ downstream: downstream-project
 
 # Sparky triggering protocol (STP)
 
-Sparky Prorvisioning Protocol allows to _trigger_ builds automatically by just creating files with build _parameters_
+Sparky Provisioning Protocol allows to _trigger_ builds automatically by just creating files with build _parameters_
 in special format:
 
 ```bash
@@ -656,7 +648,7 @@ You can see examples of sparky scenarios in `examples/` folder.
 
 # See also
 
-[Bailador](https://github.com/Bailador/Bailador) - A light-weight route-based web application framework for Perl 6.
+* [Cro](https://cro.services) - Raku Web Framework
 [Sparky-docker](https://github.com/melezhik/sparky-docker) - Run Sparky as Docker container.
 
 # Author
