@@ -93,6 +93,7 @@ my $application = route {
       my $dt-human = "{$dt}";
 
       push @projects, %(
+        http-root     => sparky-http-root(),
         project       => $project,
         last_build_id => $last_build_id,
         state         => $state,
@@ -280,23 +281,31 @@ my $application = route {
 
   get -> 'project', $project {
     if "$root/$project/sparrowfile".IO ~~ :f {
-      my $project-conf;
+      my $project-conf-str; 
+      my %project-conf;
       my $err;
-        if "$root/$project/sparky.yaml".IO ~~ :f {
-        $project-conf = slurp "$root/$project/sparky.yaml"; 
-        load-yaml($project-conf);
-        CATCH {
-          default {
-            $err = .Str;
-          }
+
+      if "$root/$project/sparky.yaml".IO ~~ :f {
+        $project-conf-str = "$root/$project/sparky.yaml".IO.slurp; 
+
+        try { %project-conf = load-yaml($project-conf-str) };
+
+        if $! {
+          say "$!";
+          $err = "$!";
         }
+
       }
+
       template 'templates/project.crotmp', {
+        http-root => sparky-http-root(),
         css =>css(), 
         navbar => navbar(), 
         project => $project, 
-        conf => $project-conf, 
-        sparrowfile => "$root/$project/sparrowfile", 
+        allow-manual-run => %project-conf<allow_manual_run> || False,
+        disabled => %project-conf<disabled> || False,
+        project-conf-str => $project-conf-str || "configuration not found", 
+        scenario-code => "$root/$project/sparrowfile".IO ~~ :e ?? "$root/$project/sparrowfile".IO.slurp !! "scenario not found", 
         error => $err
       }
     } else {

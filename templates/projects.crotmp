@@ -5,7 +5,7 @@
   function run( project ){
 
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", "/build/project/" + project , true );
+    xhr.open("POST", "<.http-root>/build/project/" + project , true );
     xhr.send("");
 
   }
