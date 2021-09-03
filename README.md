@@ -97,9 +97,9 @@ You should have installed with `zef install .` listed above.
 
 It could live for instance in `$HOME/.raku/bin` along with other scripts required (like `sparrowdo`)
 
-# Running Web UI
+# Sparky Web UI
 
-And finally sparky has a simple web UI to show builds statuses and reports.
+And finally Sparky has a simple web UI to show builds statuses and reports.
 
 To run Sparky CI web app:
 
@@ -112,7 +112,7 @@ To install Sparky CI web app as a systemd unit:
 ```bash
 $ nano utils/install-sparky-web-systemd.raku # change working directory, user and root directory
 $ sparrowdo --sparrowfile=utils/install-sparky-web-systemd.raku --no_sudo --localhost
-``
+```
 
 # Creating first sparky project
 
