@@ -104,7 +104,7 @@ my $application = route {
 
     $dbh.dispose;
 
-    template 'projects.crotmp', {
+    template 'templates/projects.crotmp', {
 
       css => css(), 
       navbar => navbar(), 
@@ -130,7 +130,7 @@ my $application = route {
 
     $dbh.dispose;
   
-     template 'builds.crotmp', {
+     template 'templates/builds.crotmp', {
 
       css => css(), 
       navbar => navbar(), 
@@ -141,7 +141,7 @@ my $application = route {
   }
   
   get -> 'queue' {
-    template 'queue.crotmp', {
+    template 'templates/queue.crotmp', {
       css => css(), 
       navbar => navbar(), 
       builds => find-triggers($root)
@@ -172,7 +172,7 @@ my $application = route {
       .append-header('Content-type', 'image/svg+xml;charset=utf-8');
     }
 
-    template 'badge.crotmp', {
+    template 'templates/badge.crotmp', {
       project => $project, 
       state => $state
     }
@@ -203,7 +203,7 @@ my $application = route {
 
       $dbh.dispose;
 
-      template 'report.tt', {
+      template 'templates/report.tt', {
         css => css(), 
         navbar => navbar(), 
         project => $project,
@@ -291,7 +291,7 @@ my $application = route {
           }
         }
       }
-      template 'project.crotmp', {
+      template 'templates/project.crotmp', {
         css =>css(), 
         navbar => navbar(), 
         project => $project, 
@@ -306,7 +306,7 @@ my $application = route {
   
   get -> 'about' {
   
-    template 'about.crotmp', {
+    template 'templates/about.crotmp', {
       css => css(), 
       navbar => navbar(), 
       data => "README.md".IO.slurp,
