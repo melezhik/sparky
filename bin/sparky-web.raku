@@ -1,356 +1,320 @@
-#!/usr/bin/env raku
+use Cro::HTTP::Server;
+use Cro::HTTP::Router;
+use Cro::WebApp::Template;
 
-use Bailador;
 use DBIish;
 use Sparky;
+use Sparky::HTML;
 use YAMLish;
 use Number::Denominate;
 
 my $root = %*ENV<SPARKY_ROOT> || %*ENV<HOME> ~ '/.sparky/projects';
 my $reports-dir = "$root/.reports";
 
-#say $root;
+my $application = route { 
 
-static-dir / (.*) / => '/public';
+  post -> 'build', 'project', $project {
 
-post '/build/project/:project' => sub ($project) {
+    my $id = "{('a' .. 'z').pick(20).join('')}{$*PID}";
 
-  my $id = "{('a' .. 'z').pick(20).join('')}{$*PID}";
+    mkdir "$root/$project/.triggers";
 
-  mkdir "$root/$project/.triggers";
+    spurt "$root/$project/.triggers/$id", "%(
+      description => 'triggered by user',
+    )";
 
-  spurt "$root/$project/.triggers/$id", "%(
-    description => 'triggered by user',
-  )";
+    "build queued";
 
-  "build queued";
-}
+  }
 
-post '/build/project/:project/:key' => sub ($project, $key) {
+  post -> 'build', 'project', $project, $key {
 
-  mkdir "$root/$project/.triggers";
+    mkdir "$root/$project/.triggers";
 
-  copy "$root/../work/$project/.triggers/$key", "$root/$project/.triggers/$key";
+    copy "$root/../work/$project/.triggers/$key", "$root/$project/.triggers/$key";
 
-  "build queued";
-}
+    "build queued";
 
-get '/' => sub {
+  }
 
-  my $dbh = get-dbh();
+  get -> {
+  
+    my $dbh = get-dbh();
 
-  my @projects = Array.new;
+    my @projects = Array.new;
 
-  for dir($root) -> $dir {
+    for dir($root) -> $dir {
 
-    next if "$dir".IO ~~ :f;
-    next if $dir.basename eq '.git';
-    next if $dir.basename eq '.reports';
-    next if $dir.basename eq 'db.sqlite3-journal';
-    next unless "$dir/sparrowfile".IO ~~ :f;
+      next if "$dir".IO ~~ :f;
+      next if $dir.basename eq '.git';
+      next if $dir.basename eq '.reports';
+      next if $dir.basename eq 'db.sqlite3-journal';
+      next unless "$dir/sparrowfile".IO ~~ :f;
 
-    my $project = $dir.IO.basename;
+      my $project = $dir.IO.basename;
 
-    my $sth = $dbh.prepare("SELECT max(id) as last_build_id FROM builds where project = '{$project}'");
+      my $sth = $dbh.prepare("SELECT max(id) as last_build_id FROM builds where project = '{$project}'");
 
-    $sth.execute();
+      $sth.execute();
 
-    my @r = $sth.allrows(:array-of-hash);
+      my @r = $sth.allrows(:array-of-hash);
 
-    $sth.finish;
+      $sth.finish;
 
-    my $last_build_id =  @r[0]<last_build_id>;
+      my $last_build_id =  @r[0]<last_build_id>;
 
-    unless $last_build_id {
+      unless $last_build_id {
+
+        push @projects, %(
+          project       => $project,
+          last_build_id => "",
+          state         => -2, # never started
+          dt            => "",
+        );
+        next;
+      }
+
+      $sth = $dbh.prepare("SELECT state, description, dt FROM builds where id = {$last_build_id}");
+
+      $sth.execute();
+
+      @r = $sth.allrows(:array-of-hash);
+
+      $sth.finish;
+
+      my $state = @r[0]<state>;
+
+      my $dt = @r[0]<dt>;
+
+      my $description = @r[0]<description>;
+
+      #my $dt-human = denominate( DateTime.now - DateTime.new("{$dt}")) ~ " ago";
+
+      my $dt-human = "{$dt}";
 
       push @projects, %(
         project       => $project,
-        last_build_id => "",
-        state         => -2, # never started
-        dt            => "",
+        last_build_id => $last_build_id,
+        state         => $state,
+        dt            => $dt-human,
+        description   => $description,
       );
-      next;
+
     }
 
-    $sth = $dbh.prepare("SELECT state, description, dt FROM builds where id = {$last_build_id}");
+    $dbh.dispose;
 
-    $sth.execute();
+    template 'projects.crotmp', {
 
-    @r = $sth.allrows(:array-of-hash);
+      css => css(), 
+      navbar => navbar(), 
+      projects => @projects.sort(*.<last_build_id>).reverse,
 
-    $sth.finish;
-
-    my $state = @r[0]<state>;
-
-    my $dt = @r[0]<dt>;
-
-    my $description = @r[0]<description>;
-
-    #my $dt-human = denominate( DateTime.now - DateTime.new("{$dt}")) ~ " ago";
-
-    my $dt-human = "{$dt}";
-
-    push @projects, %(
-      project       => $project,
-      last_build_id => $last_build_id,
-      state         => $state,
-      dt            => $dt-human,
-      description   => $description,
-    );
-
+    }
+  
   }
-
-  $dbh.dispose;
-
-  template 'projects.tt', css(), navbar(), @projects.sort(*.<last_build_id>).reverse;
-
-}
-
-get '/builds' => sub {
-
-  my $dbh = get-dbh();
-
-  my $sth = $dbh.prepare(q:to/STATEMENT/);
-      SELECT * FROM builds order by id desc limit 500
-  STATEMENT
-
-  $sth.execute();
-
-  my @rows = $sth.allrows(:array-of-hash);
-
-  $sth.finish;
-
-  $dbh.dispose;
-
-
-  template 'builds.tt', css(), navbar(), @rows;
-
-}
-
-get '/queue' => sub {
-
-  template 'queue.tt', css(), navbar(), find-triggers($root);
-
-}
-
-get '/badge/:project' => sub ($project) {
-
-  my $dbh = get-dbh();
-  my $sth = $dbh.prepare("SELECT max(id) as last_build_id FROM builds where project = '{$project}'");
-  $sth.execute();
-  my @r = $sth.allrows(:array-of-hash);
-  $sth.finish;
-  my $last_build_id =  @r[0]<last_build_id>;
-  my $state = -2;
-
-  if ($last_build_id) {
-    $sth = $dbh.prepare("SELECT state, description, dt FROM builds where id = {$last_build_id}");
-    $sth.execute();
-    @r = $sth.allrows(:array-of-hash);
-    $sth.finish;
-    $state = @r[0]<state>;
-  }
-
-  $dbh.dispose;
-
-  content_type("image/svg+xml;charset=utf-8");
-  template 'badge.tt', $project, $state;
-
-}
-
-get '/report/:project/:build_id' => sub ( $project, $build_id ) {
-
-  if "$reports-dir/$project/build-$build_id.txt".IO ~~ :f {
+  
+  get -> 'builds' {
 
     my $dbh = get-dbh();
 
-    my $sth = $dbh.prepare("SELECT state, description, dt, key FROM builds where id = {$build_id}");
+    my $sth = $dbh.prepare(q:to/STATEMENT/);
+        SELECT * FROM builds order by id desc limit 500
+    STATEMENT
 
     $sth.execute();
 
-    my @r = $sth.allrows(:array-of-hash);
-
-    my $state = @r[0]<state>;
-
-    my $dt = @r[0]<dt>;
-
-    my $description = @r[0]<description>;
-
-    my $key = @r[0]<key>;
+    my @rows = $sth.allrows(:array-of-hash);
 
     $sth.finish;
 
     $dbh.dispose;
+  
+     template 'builds.crotmp', {
 
-    template 'report.tt', css(), navbar(), $project, $build_id, $key, $dt, $description, "$reports-dir/$project/build-$build_id.txt";
+      css => css(), 
+      navbar => navbar(), 
+      builds => @rows,
 
-  } else {
-    status(404);
+    }
+ 
+  }
+  
+  get -> 'queue' {
+    template 'queue.crotmp', {
+      css => css(), 
+      navbar => navbar(), 
+      builds => find-triggers($root)
+    }
   }
 
-}
-
-get '/status/:project/:key' => sub ( $project, $key ) {
-
-  if trigger-exists($root,$project,$key) {
-    -2  # "queued"
-  } else {
+  get -> 'badge', $project {
 
     my $dbh = get-dbh();
-
-    my $sth = $dbh.prepare("SELECT state, description, dt FROM builds where project = '{$project}' and key = '{$key}'");
-
+    my $sth = $dbh.prepare("SELECT max(id) as last_build_id FROM builds where project = '{$project}'");
     $sth.execute();
-
     my @r = $sth.allrows(:array-of-hash);
-
-    my $state = @r[0]<state>;
-
     $sth.finish;
+    my $last_build_id =  @r[0]<last_build_id>;
+    my $state = -2;
+
+    if ($last_build_id) {
+      $sth = $dbh.prepare("SELECT state, description, dt FROM builds where id = {$last_build_id}");
+      $sth.execute();
+      @r = $sth.allrows(:array-of-hash);
+      $sth.finish;
+      $state = @r[0]<state>;
+    }
 
     $dbh.dispose;
 
-    if $state.defined {
-      return $state
+    given response {
+      .append-header('Content-type', 'image/svg+xml;charset=utf-8');
+    }
+
+    template 'badge.crotmp', {
+      project => $project, 
+      state => $state
+    }
+
+  }
+
+  get -> 'report', $project, uint32 $build_id  {
+
+    if "$reports-dir/$project/build-$build_id.txt".IO ~~ :f {
+
+      my $dbh = get-dbh();
+
+      my $sth = $dbh.prepare("SELECT state, description, dt, key FROM builds where id = {$build_id}");
+
+      $sth.execute();
+
+      my @r = $sth.allrows(:array-of-hash);
+
+      my $state = @r[0]<state>;
+
+      my $dt = @r[0]<dt>;
+
+      my $description = @r[0]<description>;
+
+      my $key = @r[0]<key>;
+
+      $sth.finish;
+
+      $dbh.dispose;
+
+      template 'report.tt', {
+        css => css(), 
+        navbar => navbar(), 
+        project => $project,
+        build_id => $build_id, 
+        key => $key, 
+        dt => $dt, 
+        description => $description, 
+        data => "$reports-dir/$project/build-$build_id.txt"
+      }
+
     } else {
-      status(404);
+      not-found();
     }
+  
   }
-}
 
-get '/report/raw/:project/:key' => sub ( $project, $key ) {
 
-  if trigger-exists($root,$project,$key) {
-     "build is queued, wait till it gets run"
-  } else {
+  get -> 'status', $project, $key {
 
-    my $dbh = get-dbh();
-
-    my $sth = $dbh.prepare("SELECT id FROM builds where project = '{$project}' and key = '{$key}'");
-
-    $sth.execute();
-
-    my @r = $sth.allrows(:array-of-hash);
-
-    my $build_id = @r[0]<id>;
-
-    $sth.finish;
-
-    $dbh.dispose;
-
-    if $build_id.defined {
-      return "$reports-dir/$project/build-$build_id.txt".IO.slurp
+    if trigger-exists($root,$project,$key) {
+      -2  # "queued"
     } else {
-      status(404);
-    }
-  }
 
-}
+      my $dbh = get-dbh();
 
-get '/project/:project' => sub ($project) {
-  if "$root/$project/sparrowfile".IO ~~ :f {
-    my $project-conf-str; my $project-conf;
-    my $err;
-      if "$root/$project/sparky.yaml".IO ~~ :f {
-      $project-conf-str = slurp "$root/$project/sparky.yaml";
-      $project-conf = load-yaml($project-conf-str);
-      CATCH {
-        default {
-          $err = .Str; $project-conf = %();
-        }
+      my $sth = $dbh.prepare("SELECT state, description, dt FROM builds where project = '{$project}' and key = '{$key}'");
+
+      $sth.execute();
+
+      my @r = $sth.allrows(:array-of-hash);
+
+      my $state = @r[0]<state>;
+
+      $sth.finish;
+
+      $dbh.dispose;
+
+      if $state.defined {
+        $state
+      } else {
+        not-found();
       }
     }
-    template 'project.tt', css(), navbar(), $project, $project-conf, $project-conf-str, "$root/$project/sparrowfile", $err;
-  } else {
-    status(404);
   }
-}
+  
+  get -> 'report', 'raw', $project, $key {
 
-get '/about' => sub {
+    if trigger-exists($root,$project,$key) {
+       "build is queued, wait till it gets run"
+    } else {
 
-  my $raw-md = slurp "README.md";
-  template 'about.tt', css(), navbar(), $raw-md;
-}
+      my $dbh = get-dbh();
 
+      my $sth = $dbh.prepare("SELECT id FROM builds where project = '{$project}' and key = '{$key}'");
 
-sub css {
+      $sth.execute();
 
-  my %conf = get-sparky-conf();
+      my @r = $sth.allrows(:array-of-hash);
 
-  my $theme ;
+      my $build_id = @r[0]<id>;
 
-  if %conf<ui> && %conf<ui><theme> {
-    $theme = %conf<ui><theme>
-  } else {
-    $theme = "solar";
+      $sth.finish;
+
+      $dbh.dispose;
+
+      if $build_id.defined {
+        "$reports-dir/$project/build-$build_id.txt".IO.slurp
+      } else {
+        not-found();
+      }
+    }
+
   }
 
-  qq:to /HERE/
+  get -> 'project', $project {
+    if "$root/$project/sparrowfile".IO ~~ :f {
+      my $project-conf;
+      my $err;
+        if "$root/$project/sparky.yaml".IO ~~ :f {
+        $project-conf = slurp "$root/$project/sparky.yaml"; 
+        load-yaml($project-conf);
+        CATCH {
+          default {
+            $err = .Str;
+          }
+        }
+      }
+      template 'project.crotmp', {
+        css =>css(), 
+        navbar => navbar(), 
+        project => $project, 
+        conf => $project-conf, 
+        sparrowfile => "$root/$project/sparrowfile", 
+        error => $err
+      }
+    } else {
+      not-found();
+    }
+  }
+  
+  get -> 'about' {
+  
+    template 'about.crotmp', {
+      css => css(), 
+      navbar => navbar(), 
+      data => "README.md".IO.slurp,
+    }
 
-  <meta charset="utf-8">
-
-  <link rel="stylesheet" href="https://unpkg.com/bulmaswatch/$theme/bulmaswatch.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/12.0.4/markdown-it.min.js" integrity="sha512-0DkA2RqFvfXBVeti0R1l0E8oMkmY0X+bAA2i02Ld8xhpjpvqORUcE/UBe+0KOPzi5iNah0aBpW6uaNNrqCk73Q==" crossorigin="anonymous"></script>
-  <script defer src="https://use.fontawesome.com/releases/v5.14.0/js/all.js"></script>
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/styles/default.min.css">
-  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/highlight.min.js"></script>
-  <script>hljs.initHighlightingOnLoad();</script>
-
-  HERE
-
-}
-
-sub navbar {
-
-  qq:to /HERE/
-
-
-    <nav class="navbar" role="navigation" aria-label="main navigation">
-      <div class="navbar-brand">
-        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-          <span aria-hidden="true"></span>
-        </a>
-      </div>
-
-      <div id="navbarBasicExample" class="navbar-menu">
-        <div class="navbar-start">
-          <a class="navbar-item" href="{%*ENV<SPARKY_HTTP_ROOT>}/">
-            Projects
-          </a>
-
-          <a class="navbar-item" href="{%*ENV<SPARKY_HTTP_ROOT>}/builds">
-            Recent Builds
-          </a>
-
-          <a class="navbar-item" href="{%*ENV<SPARKY_HTTP_ROOT>}/queue">
-            Queue
-          </a>
-
-          <div class="navbar-item has-dropdown is-hoverable">
-            <a class="navbar-link">
-              More
-            </a>
-
-            <div class="navbar-dropdown">
-              <a class="navbar-item" href="{%*ENV<SPARKY_HTTP_ROOT>}/about">
-                About
-              </a>
-              <a class="navbar-item" href="https://github.com/melezhik/sparky">
-                Docs
-              </a>
-              <a class="navbar-item" href="https://github.com/melezhik/sparky/issues">
-                Report an issue
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </nav>
-
-  HERE
+  }
 
 }
 
-baile;
+
+

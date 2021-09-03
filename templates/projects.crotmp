@@ -1,0 +1,62 @@
+<.css>
+
+<script>
+
+  function run( project ){
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/build/project/" + project , true );
+    xhr.send("");
+
+  }
+
+</script>
+
+    <head>
+      <title>~SPARKY CI WEB~</title>
+    </head>
+    <.navbar>
+    <nav class="panel">
+      <p class="panel-heading">Projects</p>
+      <table class="table panel-block">
+        <tr>
+          <td>Project</td>
+          <td>Last Build</td>
+          <td>State</td>
+          <td>Time</td>
+        </tr>
+        <@projects: $i>
+        <tr>
+          <td>
+          <a href="/project/<$i.project>"><$i.project></a>
+          </td>
+          <td>
+          <?{$i.state == -2}>
+            N/A
+          </?>
+          <?{$i.state != -2}>
+            <a href="/report/<i.project>/<i.last_build_id>"><i.last_build_id></a>
+          </?>
+          </td>
+          <td>
+          <?{$i.state == -1}>
+          <span class="tag is-danger">failed</span>
+          </?>
+          <?{$i.state == 0}>
+          <span class="tag is-primary">running</span>
+          </?>
+          <?{$i.state == 1}>
+          <span class="tag is-success">succeed</span>
+          </?>
+          <?{$i.state == -2}>
+            <a class="button is-small" onclick="run('<%= %r<project> %>')" >Run Now</a>
+          </?>
+          </td>
+          <td>
+          <i.dt>
+          </td>
+        </tr>   
+        </@>
+      </table>
+    </nav>
+

@@ -1,38 +1,37 @@
 {
-  "authors": [
+  "authors" : [
     "Alexey Melezhik"
   ],
-  "build-depends": [
-  ],
-  "depends": [
+  "build-depends" : [ ],
+  "depends" : [
     "YAMLish",
     "DBIish",
     "Sparrowdo",
     "Time::Crontab",
-    "Bailador",
+    "Cro::HTTP::Server",
+    "Cro::HTTP::Router",
+    "Cro::WebApp::Template",
     "Data::Dump:ver<0.0.12+>",
-    "Number::Denominate",
-    "HTML::Escape",
-    "Hash::Merge:ver<2.0.0+>"
+    "Hash::Merge:ver<2.0.0+>",
+    "HTML::Escape"
   ],
-  "description": "Sparky is a flexible and minimalist continuous integration server written in Raku",
-  "license": "Artistic-2.0",
-  "name": "Sparky",
-  "perl": "6.*",
-  "provides": {
-    "Sparky": "lib/Sparky.pm6"
+  "description" : "Sparky is a flexible and minimalist continuous integration server written in Raku",
+  "license" : "Artistic-2.0",
+  "name" : "Sparky",
+  "perl" : "6.*",
+  "provides" : {
+    "Sparky" : "lib/Sparky.pm6",
+    "Sparky::HTML" : "lib/Sparky/HTML.pm6"
   },
-  "resources": [
-  ],
-  "source-type": "git",
-  "source-url": "https://github.com/melezhik/sparky.git",
-  "support": {
-    "bugtracker": "https://github.com/melezhik/sparky/issues",
-    "source": "https://github.com/melezhik/sparky.git"
+  "resources" : [ ],
+  "source-type" : "git",
+  "source-url" : "https://github.com/melezhik/sparky.git",
+  "support" : {
+    "bugtracker" : "https://github.com/melezhik/sparky/issues",
+    "source" : "https://github.com/melezhik/sparky.git"
   },
-  "tags": [
-  ],
-  "test-depends": [
-  ],
-  "version": "0.0.30"
+  "tags" : [ ],
+  "test-depends" : [ ],
+  "version" : "0.1.0"
 }
+

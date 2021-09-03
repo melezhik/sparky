@@ -1,5 +1,0 @@
-RakuDist related changes:
-
-* Build descriptions
-* Queued builds
-* What to with manual run for file triggered builds?
