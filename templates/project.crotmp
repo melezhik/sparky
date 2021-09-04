@@ -1,0 +1,44 @@
+<&HTML-AND-JAVASCRIPT(.css)>
+
+    <head>
+      <title>~SPARKY CI WEB~ | project: <.project> </title>
+    </head>
+
+  <script>
+  
+  function run() {
+  
+    var xhr = new XMLHttpRequest();
+    xhr.open(\"POST\", \"<.http-root>/build/project/<.project>\", true );
+    xhr.send("");
+  
+  }
+  
+  </script>
+
+<&HTML-AND-JAVASCRIPT(.navbar)>  
+    
+    <div class="panel is-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          Project: <.project>
+       </h3>
+      </div>
+      <?{ .allow-manual-run == True && .disabled != True}>
+      <div class="panel-block">
+        <a class="button is-small" onclick="run()" >Run now</a>
+      </div>
+      </?>
+      <div class="is-fullwidth">
+        <?.error>
+        <pre><strong>Configuration</strong>:<br><br><.error>
+        </?>
+        <!.error>
+        <pre><strong>Configuration</strong>:<br><br><code class='language-yaml'><.project-conf-str></code></pre>
+        </!>
+      </div>
+      <div class="panel-block"></div>
+      <div class="is-fullwidth">
+       <pre><strong>Scenario</strong>:<br><br><code>$scenario-code</code></pre>
+      </div>
+    </div>
