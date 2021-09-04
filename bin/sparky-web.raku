@@ -6,7 +6,6 @@ use DBIish;
 use Sparky;
 use Sparky::HTML;
 use YAMLish;
-use Number::Denominate;
 
 my $root = %*ENV<SPARKY_ROOT> || %*ENV<HOME> ~ '/.sparky/projects';
 my $reports-dir = "$root/.reports";
