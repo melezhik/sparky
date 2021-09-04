@@ -66,9 +66,8 @@ my $application = route {
 
         push @projects, %(
           project       => $project,
-          last_build_id => "",
           state         => -2, # never started
-          dt            => "",
+          dt            => "N/A",
         );
         next;
       }
@@ -89,10 +88,9 @@ my $application = route {
 
       #my $dt-human = denominate( DateTime.now - DateTime.new("{$dt}")) ~ " ago";
 
-      my $dt-human = "{$dt}";
+      my $dt-human = $dt;
 
       push @projects, %(
-        http-root     => sparky-http-root(),
         project       => $project,
         last_build_id => $last_build_id,
         state         => $state,
@@ -106,6 +104,7 @@ my $application = route {
 
     template 'templates/projects.crotmp', {
 
+      http-root => sparky-http-root(),
       css => css(), 
       navbar => navbar(), 
       projects => @projects.sort(*.<last_build_id>).reverse,
