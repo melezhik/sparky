@@ -8,6 +8,7 @@
     "DBIish",
     "Sparrowdo",
     "Time::Crontab",
+    "cro",
     "Cro::HTTP::Server",
     "Cro::HTTP::Router",
     "Cro::WebApp::Template",
