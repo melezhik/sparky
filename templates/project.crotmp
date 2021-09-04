@@ -31,7 +31,7 @@
       </?>
       <div class="is-fullwidth">
         <?.error>
-        <pre><strong>Configuration</strong>:<br><br><.error>
+          <pre><strong>Configuration (error)</strong>:<br><br><code class='language-yaml'><.project-conf-str></code></pre>
         </?>
         <!.error>
         <pre><strong>Configuration</strong>:<br><br><code class='language-yaml'><.project-conf-str></code></pre>
@@ -39,6 +39,6 @@
       </div>
       <div class="panel-block"></div>
       <div class="is-fullwidth">
-       <pre><strong>Scenario</strong>:<br><br><code>$scenario-code</code></pre>
+       <pre><strong>Scenario</strong>:<br><br><code><.scenario-code></code></pre>
       </div>
     </div>

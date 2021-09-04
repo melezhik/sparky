@@ -282,16 +282,20 @@ my $application = route {
     if "$root/$project/sparrowfile".IO ~~ :f {
       my $project-conf-str; 
       my %project-conf;
-      my $err;
+      my $error;
 
       if "$root/$project/sparky.yaml".IO ~~ :f {
+
         $project-conf-str = "$root/$project/sparky.yaml".IO.slurp; 
 
         try { %project-conf = load-yaml($project-conf-str) };
 
-        if $! {
-          say "$!";
-          $err = "$!";
+        if $! { 
+
+          $error = $!;
+ 
+          say "error parsing $root/$project/sparky.yaml";
+          say $error;
         }
 
       }
@@ -305,7 +309,7 @@ my $application = route {
         disabled => %project-conf<disabled> || False,
         project-conf-str => $project-conf-str || "configuration not found", 
         scenario-code => "$root/$project/sparrowfile".IO ~~ :e ?? "$root/$project/sparrowfile".IO.slurp !! "scenario not found", 
-        error => $err
+        error => $error
       }
     } else {
       not-found();
