@@ -18,7 +18,7 @@
     <&HTML-AND-JAVASCRIPT(.navbar)>
     <nav class="panel">
       <p class="panel-heading">Projects</p>
-      <table class="table panel-block">
+      <table class="table panel-block is-fullwidth">
         <tr>
           <td>Project</td>
           <td>Last Build</td>
