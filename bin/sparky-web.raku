@@ -21,7 +21,7 @@ my $application = route {
 
     spurt "$root/$project/.triggers/$id", "%( description => 'triggered by user');\n";
 
-    content 'text/plain', "build queued, key=$id\n";
+    content 'text/plain', "$id";
 
   }
 
@@ -31,7 +31,7 @@ my $application = route {
 
     copy "$root/../work/$project/.triggers/$key", "$root/$project/.triggers/$key";
 
-    content 'text/plain', "build queued, key=$key\n";
+    content 'text/plain', "$key";
 
   }
 
@@ -169,7 +169,8 @@ my $application = route {
     $dbh.dispose;
 
     given response {
-      .append-header('Content-type', 'image/svg+xml;charset=utf-8');
+      .append-header('Content-type', 'image/svg+xml');
+      .append-header('charset', 'utf-8');
     }
 
     template 'templates/badge.crotmp', {

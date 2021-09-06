@@ -1,6 +1,4 @@
-% my ($project, $state) = @_;
-
-% if $state == 1 {
+<?{.state == 1}>
   <svg width="92" height="20" viewBox="0 0 920 200" xmlns="http://www.w3.org/2000/svg" role="img">
    <linearGradient id="a" x2="0" y2="100%">
      <stop offset="0" stop-opacity=".1" stop-color="#EEE"/>
@@ -17,7 +15,9 @@
      <text x="647" y="138" textLength="348">&#x2714;</text>
    </g>
   </svg>
-% } elsif $state == -1 {
+</?>
+
+<?{.state == -1}>
   <svg width="92" height="20" viewBox="0 0 920 200" xmlns="http://www.w3.org/2000/svg" role="img">
    <linearGradient id="a" x2="0" y2="100%">
      <stop offset="0" stop-opacity=".1" stop-color="#EEE"/>
@@ -34,7 +34,9 @@
      <text x="647" y="138" textLength="348">&#x2717;</text>
    </g>
   </svg>
-% } elsif $state == 0 {
+</?>
+
+<?{.state == 0}>
   <svg width="92" height="20" viewBox="0 0 920 200" xmlns="http://www.w3.org/2000/svg" role="img">
    <linearGradient id="a" x2="0" y2="100%">
      <stop offset="0" stop-opacity=".1" stop-color="#EEE"/>
@@ -53,7 +55,9 @@
      <text x="647" y="138" textLength="348">&#x23F0;</text>
    </g>
   </svg>
-% } else {
+</?>
+
+<?{.state == -2}>
   <!-- Not started -->
   <svg width="92" height="20" viewBox="0 0 920 200" xmlns="http://www.w3.org/2000/svg" role="img">
    <linearGradient id="a" x2="0" y2="100%">
@@ -71,5 +75,5 @@
      <text x="647" y="138" textLength="348">&#x23F0;</text>
    </g>
   </svg>
-% }
+</?>
       
