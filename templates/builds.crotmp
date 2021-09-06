@@ -1,0 +1,63 @@
+<&HTML-AND-JAVASCRIPT(.css)>
+
+    <head>
+      <title>~SPARKY CI WEB~</title>
+    </head>
+
+<&HTML-AND-JAVASCRIPT(.navbar)>
+
+    <nav class="panel is-primary">
+      <p class="panel-heading">Recent builds</p>
+      <table class="table is-fullwidth">
+        <tr>
+          <td>Project</td>
+          <td>ID</td>
+          <td>Build Dsc</td>
+          <td>State</td>
+          <td>Time</td>
+        </tr>
+        <@builds: $i>
+        <tr>
+          <td>
+            <a href='<.http-root>/project/<$i.project>'><$i.project></a>
+          </td>
+          <td>
+            <a href='<.http-root>/report/<$i.project>/<$i.id>'><i.id></a>
+          </td>
+          <td>
+          <?$i.description>
+            <$i.description>
+          </?>
+          <!$i.description>
+            NA
+          </!>
+          </td>
+          <td>
+          <?{$i.state == -2}>
+          N/A
+          </?>
+          <?{$i.state != -2}>
+          <a href="/report/<$i.project>/<$i.id>"><$i.id></a>
+          </?>
+          </td>
+          <td>
+          <?{$i.state == -1}>
+            <span class="tag is-danger">failed</span>
+          </?>
+          <?{$i.state == 0}>
+            <span class="tag is-primary">running</span>
+          </?>
+          <?{$i.state == 1}>
+            <span class="tag is-success">succeed</span>
+          </?>
+          <?{$i.state == -2}>
+            <a class="button is-small" onclick="run('<$i.project>')" >Run Now</a>
+          </?>
+          </td>
+          <td>
+            <$i.dt>
+          </td>
+        </tr>   
+        </@>
+      </table>
+  </nav>

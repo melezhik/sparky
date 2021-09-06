@@ -132,7 +132,8 @@ my $application = route {
      template 'templates/builds.crotmp', {
 
       css => css(), 
-      navbar => navbar(), 
+      navbar => navbar(),
+      http-root => sparky-http-root(),
       builds => @rows,
 
     }
