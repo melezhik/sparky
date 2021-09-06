@@ -178,7 +178,7 @@ my $application = route {
 
   }
 
-  get -> 'report', $project, uint32 $build_id  {
+  get -> 'report', $project, $build_id  {
 
     if "$reports-dir/$project/build-$build_id.txt".IO ~~ :f {
 
@@ -202,15 +202,16 @@ my $application = route {
 
       $dbh.dispose;
 
-      template 'templates/report.tt', {
+      template 'templates/report.crotmp', {
         css => css(), 
         navbar => navbar(), 
+        http-root => sparky-http-root(),
         project => $project,
-        build_id => $build_id, 
+        build_id => $build_id,
         key => $key, 
         dt => $dt, 
         description => $description, 
-        data => "$reports-dir/$project/build-$build_id.txt"
+        data => "$reports-dir/$project/build-$build_id.txt".IO.slurp
       }
 
     } else {

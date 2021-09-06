@@ -1,0 +1,39 @@
+<&HTML-AND-JAVASCRIPT(.css)>
+
+    <head>
+      <title>~SPARKY CI WEB~ | build: <.project>@<.build_id></title>
+    </head>
+
+<script>
+
+function reBuild(){
+
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "<.http-root>/build/project/<.project>/<.key>", true );
+  xhr.send("");
+  
+}
+
+</script>
+
+<&HTML-AND-JAVASCRIPT(.navbar)>
+
+    <nav class="panel is-warning">
+      <p class="panel-heading"> 
+        Report: <.project><.build_id>
+        <?.description>
+        [<.description>]
+        </?> 
+        <!.description>
+        [no description]
+        </!> 
+        at <.dt>
+      </p>
+      <div class="panel-block">
+        <a class="button is-small" onclick="reBuild()">Rebuild</a>
+      </div>
+      <div class="panel-block">
+        <pre><.data></pre>
+      </div>
+    </nav>
+
