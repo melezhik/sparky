@@ -16,7 +16,7 @@
       <title>~SPARKY CI WEB~</title>
     </head>
     <&HTML-AND-JAVASCRIPT(.navbar)>
-    <nav class="panel">
+    <nav class="panel is-primary">
       <p class="panel-heading">Projects</p>
       <table class="table panel-block is-fullwidth">
         <tr>
