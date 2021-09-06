@@ -8,6 +8,7 @@ use Sparky::HTML;
 use YAMLish;
 
 my $root = %*ENV<SPARKY_ROOT> || %*ENV<HOME> ~ '/.sparky/projects';
+
 my $reports-dir = "$root/.reports";
 
 my $application = route { 
@@ -18,11 +19,9 @@ my $application = route {
 
     mkdir "$root/$project/.triggers";
 
-    spurt "$root/$project/.triggers/$id", "%(
-      description => 'triggered by user',
-    )";
+    spurt "$root/$project/.triggers/$id", "%( description => 'triggered by user');\n";
 
-    "build queued";
+    content 'text/plain', "build queued, key=$id\n";
 
   }
 
@@ -32,7 +31,7 @@ my $application = route {
 
     copy "$root/../work/$project/.triggers/$key", "$root/$project/.triggers/$key";
 
-    "build queued";
+    content 'text/plain', "build queued, key=$key\n";
 
   }
 
@@ -226,7 +225,7 @@ my $application = route {
   get -> 'status', $project, $key {
 
     if trigger-exists($root,$project,$key) {
-      -2  # "queued"
+      content 'text/plain', "-2"  # "queued"
     } else {
 
       my $dbh = get-dbh();
@@ -244,7 +243,7 @@ my $application = route {
       $dbh.dispose;
 
       if $state.defined {
-        $state
+        content 'text/plain', "$state"
       } else {
         not-found();
       }
@@ -254,7 +253,7 @@ my $application = route {
   get -> 'report', 'raw', $project, $key {
 
     if trigger-exists($root,$project,$key) {
-       "build is queued, wait till it gets run"
+       content 'text/plain', "build is queued, wait till it gets run\n"
     } else {
 
       my $dbh = get-dbh();
@@ -272,7 +271,7 @@ my $application = route {
       $dbh.dispose;
 
       if $build_id.defined {
-        "$reports-dir/$project/build-$build_id.txt".IO.slurp
+        content 'text/plain', "$reports-dir/$project/build-$build_id.txt".IO.slurp
       } else {
         not-found();
       }
