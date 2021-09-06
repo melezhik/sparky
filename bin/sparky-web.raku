@@ -68,6 +68,7 @@ my $application = route {
           project       => $project,
           state         => -2, # never started
           dt            => "N/A",
+          last_build_id => "",
         );
         next;
       }

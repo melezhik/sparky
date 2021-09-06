@@ -22,7 +22,7 @@
             <a href='<.http-root>/project/<$i.project>'><$i.project></a>
           </td>
           <td>
-            <a href='<.http-root>/report/<$i.project>/<$i.id>'><i.id></a>
+            <a href='<.http-root>/report/<$i.project>/<$i.id>'><$i.id></a>
           </td>
           <td>
           <?$i.description>
@@ -36,11 +36,6 @@
           <?{$i.state == -2}>
           N/A
           </?>
-          <?{$i.state != -2}>
-          <a href="/report/<$i.project>/<$i.id>"><$i.id></a>
-          </?>
-          </td>
-          <td>
           <?{$i.state == -1}>
             <span class="tag is-danger">failed</span>
           </?>
