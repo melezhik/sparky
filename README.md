@@ -18,7 +18,7 @@ Interested? Let's go ahead! (:
 
 # Build status
 
-[![Build Status](http://161.35.142.50/badge/sparky-dev)](http://161.35.142.50/project/sparky-dev)
+![github actions](https://github.com/melezhik/sparky/actions/workflows/main.yml/badge.svg)
 
 # Sparky workflow in 4 lines:
 
