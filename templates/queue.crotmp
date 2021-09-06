@@ -1,0 +1,36 @@
+<&HTML-AND-JAVASCRIPT(.css)>
+
+    <head>
+      <title>~SPARKY CI WEB~</title>
+    </head>
+
+<&HTML-AND-JAVASCRIPT(.navbar)>
+
+    <nav class="panel is-primary">
+      <p class="panel-heading">Builds queue</p>
+      <table class="table is-fullwidth">
+        <tr>
+          <td>Project</td>
+          <td>Build Dsc</td>
+          <td>Time</td>
+        </tr>
+        <@builds: $i>
+        <tr>
+          <td>
+          <$i.project>
+          </td>
+          <td>
+          <?$i.description>
+            <$i.description>
+          </?>
+          <!$i.description>
+            NA
+          </!>
+          </td>
+          <td>
+          <$i.dt>
+          </td>
+        </tr>   
+        </@>
+      </table>
+  </nav>
