@@ -40,7 +40,7 @@ $ cd sparky && zef install .
 
 # Setup
 
-First you should run database initialization script to populate database schema:
+Run database initialization script to populate database schema:
 
 ```bash
 $ raku db-init.raku
@@ -48,7 +48,7 @@ $ raku db-init.raku
 
 # Running daemon
 
-Then you need to run (\*) the sparky daemon
+Run ( see also [Setting path](#setting_path) section ) sparky daemon to dispatch jobs:
 
 ```bash
 $ sparkyd
@@ -91,11 +91,9 @@ $ nano utils/install-sparky-web-systemd.raku # change working directory and user
 $ sparrowdo --sparrowfile=utils/install-sparkyd-systemd.raku --no_sudo --localhost
 ```
 
-\* `sparkyd` should be in your PATH, if not, fix it before going further. 
+## Setting path
 
-You should have installed with `zef install .` listed above. 
-
-It could live for instance in `$HOME/.raku/bin` along with other scripts required (like `sparrowdo`)
+\* `sparkyd` should be in your PATH, usually you need to `export PATH=~/.raku/bin:$PATH` after `zef install .` 
 
 # Sparky Web UI
 
