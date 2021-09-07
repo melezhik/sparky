@@ -8,9 +8,8 @@ Sparky features:
 
 * Defining builds times in crontab style
 * Triggering builds using external APIs and custom logic
-* Build scenarios are defined as Raku scripts with support of [Sparrow6](https://github.com/melezhik/Sparrow6) DSL, 
-Where one can extend their CICD code using various scripting languages
-* [Nice set](https://github.com/melezhik/Sparrow6/blob/master/documentation/dsl.md) of predefined tasks is available
+* Build scenarios are defined as Raku scripts with support of [Sparrow6](https://github.com/melezhik/Sparrow6/blob/master/documentation/dsl.md) DSL 
+* CICD code could be extented using various scripting languages
 * Everything is kept in SCM repository - easy to port, maintain and track changes
 * Builds gets run in one of 3 flavors - 1) on localhost 2) on remote machines via ssh 3) on docker instances
 * Nice web UI to run build and read reports
