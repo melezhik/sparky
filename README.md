@@ -620,33 +620,61 @@ ui:
 
 The list of available themes is on [https://jenil.github.io/bulmaswatch/](https://jenil.github.io/bulmaswatch/)
 
-
 # HTTP API
 
-## Trigger jobs from HTTP API
+## Trigger builds
 
-Use a following request to build a project:
+Trigger a project's build
 
 ```http
 POST /build/project/$project
 ```
 
+Returns `$key` - unique build identificator
+
+## Build status
+
+Get project's status ( image/status of the last build ):
+
+```http
+GET /status/$project/$key
+```
+
+Returns `$status`:
+
+* `0` - build is running
+
+* `-1` - build failed
+
+* `1` - build finished successfully
+
+* `-2` - unknown state ( build does not exist or is placed in a queue )
+
 ## Badges
 
-Use a following request to get a project badge ( image/status of the last build ):
+Get project's badge ( image/status of the project's last build ):
 
 ```http
 GET /badge/$project
 ```
 
+## Build report
+
+Get build report in raw text format
+
+```http
+GET /report/raw/$project/$key
+```
+
 # Examples
 
-You can see examples of sparky scenarios in `examples/` folder.
+Examples of sparky configurations could be found in a `examples/` folder.
 
 # See also
 
 * [Cro](https://cro.services) - Raku Web Framework
-[Sparky-docker](https://github.com/melezhik/sparky-docker) - Run Sparky as Docker container.
+
+* [Sparky-docker](https://github.com/melezhik/sparky-docker) - Run Sparky as Docker container.
 
 # Author
 
