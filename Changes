@@ -2,8 +2,12 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.1.0  2021-09-07T03:16:00Z
+
   - Move from Bailador to Cro
-  - Badges for projects ( on @thibaultduponchelle request )
+  - Minor css/html bug fixes
+  - Slight improvement of documentation
+  - Badges for projects ( based on @thibaultduponchelle pull request )
   - Sandstone is default bulma theme
 
 0.0.30  2021-01-10T23:54:47Z
