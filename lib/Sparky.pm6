@@ -228,9 +228,13 @@ sub schedule-build ( $dir, %opts? ) is export {
 
         mkdir "$dir/.triggers";
 
-        my %trigger = %( description => "run by scm {$scm-branch} [{$current-commit-short}]" );
+        my %trigger = %( 
+          description => "run by scm {$scm-branch} [{$current-commit-short}]" 
+        );
 
-        %trigger<sparrowdo> = %( tags => "SCM_SHA={$current-commit-short},SCM_URL={$scm-url},SCM_BRANCH={$scm-branch}" );
+        %trigger<sparrowdo> = %( 
+          tags => "SCM_SHA={$current-commit-short},SCM_URL={$scm-url},SCM_BRANCH={$scm-branch}" 
+        );
 
         spurt "$dir/.triggers/$id", %trigger.perl;
 
