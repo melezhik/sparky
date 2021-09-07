@@ -48,7 +48,7 @@ $ raku db-init.raku
 
 # Running daemon
 
-Run ( see also [Setting path](#setting_path) section ) sparky daemon to dispatch jobs:
+Run ( see also [Setting path](#setting-path) section ) sparky daemon to dispatch jobs:
 
 ```bash
 $ sparkyd
