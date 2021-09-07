@@ -159,7 +159,7 @@ my $application = route {
     my $state = -2;
 
     if ($last_build_id) {
-      $sth = $dbh.prepare("SELECT state, description, dt FROM builds where id = {$last_build_id}");
+      $sth = $dbh.prepare("SELECT state FROM builds where id = {$last_build_id}");
       $sth.execute();
       @r = $sth.allrows(:array-of-hash);
       $sth.finish;
@@ -168,17 +168,29 @@ my $application = route {
 
     $dbh.dispose;
 
-    given response {
-      #content "image/svg+xml", "OK";
-      #.remove-header('Content-type');
-      #.append-header('Content-type', 'image/svg+xml;utf-8');
-      #.append-header('charset', 'utf-8');
+    if $state == -1 {
+      redirect :permanent, '/icons/build-fail.png';
     }
 
-    template 'templates/badge.crotmp', {
-      project => $project, 
-      state => $state
+    if $state == 1 {
+      redirect :permanent, '/icons/build-pass.png';
     }
+
+    if $state == 0 {
+      redirect :permanent, '/icons/build-run.png';
+    }
+
+    if $state == -2 {
+      redirect :permanent, '/icons/build-na.png';
+    }
+
+  }
+
+  get -> 'icons', *@path {
+
+    cache-control :public, :max-age(3000);
+
+    static 'icons', @path;
 
   }
 

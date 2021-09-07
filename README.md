@@ -639,7 +639,6 @@ Use a following request to get a project badge ( image/status of the last build 
 GET /badge/$project
 ```
 
-
 # Examples
 
 You can see examples of sparky scenarios in `examples/` folder.
