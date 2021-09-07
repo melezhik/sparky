@@ -3,7 +3,8 @@ Revision history for Sparky
 {{$NEXT}}
 
   - Move from Bailador to Cro
-  - Add badges functionality, kudos to @thibaultduponchelle
+  - Badges for projects ( on @thibaultduponchelle request )
+  - Sandstone is default bulma theme
 
 0.0.30  2021-01-10T23:54:47Z
 
