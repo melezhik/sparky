@@ -169,8 +169,10 @@ my $application = route {
     $dbh.dispose;
 
     given response {
-      .append-header('Content-type', 'image/svg+xml');
-      .append-header('charset', 'utf-8');
+      #content "image/svg+xml", "OK";
+      #.remove-header('Content-type');
+      #.append-header('Content-type', 'image/svg+xml;utf-8');
+      #.append-header('charset', 'utf-8');
     }
 
     template 'templates/badge.crotmp', {
