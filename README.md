@@ -1,20 +1,19 @@
 # SYNOPSIS
 
-Sparky is a flexible and minimalist continuous integration server written in Raku.
+Sparky is flexible and minimalist continuous integration server written in Raku.
 
 ![Nice web UI](https://raw.githubusercontent.com/melezhik/sparky/master/images/sparky-web-ui5.png)
 
-The essential features of Sparky:
+Sparky features:
 
 * Defining builds times in crontab style
 * Triggering builds using external APIs and custom logic
-* Build scenarios defined as [Sparrow6](https://github.com/melezhik/Sparrow6) scripts
+* Build scenarios are defined as Raku scripts with support of [Sparrow6](https://github.com/melezhik/Sparrow6) DSL, 
+Where one can extend their CICD code using various scripting languages
 * [Nice set](https://github.com/melezhik/Sparrow6/blob/master/documentation/dsl.md) of predefined tasks is available
 * Everything is kept in SCM repository - easy to port, maintain and track changes
-* Builds gets run in one of 3 flavors - 1) on localhost 2) on remote machines via **ssh** 3) on **docker** instances
-* Nice web UI to read build reports
-
-Interested? Let's go ahead! (:
+* Builds gets run in one of 3 flavors - 1) on localhost 2) on remote machines via ssh 3) on docker instances
+* Nice web UI to run build and read reports
 
 # Build status
 
@@ -538,7 +537,7 @@ Sets the sparky root directory
 
 ## SPARKY_HTTP_ROOT
 
-Set Sparky web application http root. Useful when proxy application through Nginx.
+Set sparky web application http root. Useful when proxy application through Nginx.
 
 ## SPARKY_TIMEOUT
 
@@ -674,7 +673,7 @@ Examples of sparky configurations could be found in a `examples/` folder.
 
 * [Cro](https://cro.services) - Raku Web Framework
 
-* [Sparky-docker](https://github.com/melezhik/sparky-docker) - Run Sparky as Docker container.
+* [Sparky-docker](https://github.com/melezhik/sparky-docker) - Run Sparky as Docker container
 
 # Author
 

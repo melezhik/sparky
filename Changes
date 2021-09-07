@@ -2,6 +2,11 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.1.1  2021-09-07T05:34:00Z
+
+  - Clean up readme 
+  - Remove obsolete dependencies
+
 0.1.0  2021-09-07T03:16:00Z
 
   - Move from Bailador to Cro
