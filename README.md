@@ -26,7 +26,7 @@ Interested? Let's go ahead! (:
 $ sparkyd # run Sparky daemon to build your projects
 $ cron run # run Sparky CI UI to see build statuses and reports
 $ nano ~/.sparky/projects/my-project/sparrowfile  # write a build scenario
-$ firefox 127.0.0.1:3000 # see what's happening
+$ firefox 127.0.0.1:3000 # run builds and get reports
 ```
 
 # Installation
