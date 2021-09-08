@@ -9,7 +9,7 @@ Sparky features:
 * Defining builds times in crontab style
 * Triggering builds using external APIs and custom logic
 * Build scenarios are defined as Raku scripts with support of [Sparrow6](https://github.com/melezhik/Sparrow6/blob/master/documentation/dsl.md) DSL 
-* CICD code could be extented using various scripting languages
+* CICD code could be extended using various scripting languages
 * Everything is kept in SCM repository - easy to port, maintain and track changes
 * Builds gets run in one of 3 flavors - 1) on localhost 2) on remote machines via ssh 3) on docker instances
 * Nice web UI to run build and read reports
@@ -120,10 +120,12 @@ $ mkdir ~/.sparky/projects/teddy-bear-app
 
 # Build scenario
 
-Sparky is built on Sparrowdo, read [Sparrowdo](https://github.com/melezhik/sparrowdo)
-_to know how to write Sparky scenarios_. Here is a short example.
+Sparky is built on top of Sparrow/Sparrowdo, read [Sparrowdo](https://github.com/melezhik/sparrowdo)
+_to know how to write Sparky scenarios_. 
 
-Say, we want to check out a Raku project from from Git, install dependencies and then run unit tests:
+Here is a short example.
+
+Git check out a Raku project, install dependencies and run unit tests:
 
 ```bash
 $ nano ~/.sparky/projects/teddy-bear-app/sparrowfile
@@ -132,13 +134,16 @@ $ nano ~/.sparky/projects/teddy-bear-app/sparrowfile
 And add content like this:
 
 ```raku
+
 directory "project";
 
 git-scm 'https://github.com/melezhik/rakudist-teddy-bear.git', %(
   to => "project",
 );
 
-zef "{%*ENV<PWD>}/project", %( depsonly => True );
+zef "{%*ENV<PWD>}/project", %( 
+  depsonly => True 
+);
 
 zef 'TAP::Harness App::Prove6';
 
