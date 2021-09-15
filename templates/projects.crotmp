@@ -28,14 +28,14 @@
         <@projects: $i>
         <tr>
           <td>
-            <a href="/project/<$i.project>"><$i.project></a>
+            <a href="<.http-root>/project/<$i.project>"><$i.project></a>
           </td>
           <td>
           <?{$i.state == -2}>
             N/A
           </?>
           <?{$i.state != -2}>
-            <a href="/report/<$i.project>/<$i.last_build_id>"><$i.last_build_id></a>
+            <a href="<.http-root>/report/<$i.project>/<$i.last_build_id>"><$i.last_build_id></a>
           </?>
           </td>
           <td>

@@ -39,13 +39,13 @@ sub navbar is export {
       </div>
       <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
-          <a class="navbar-item" href="{%*ENV<SPARKY_HTTP_ROOT>}/">
+          <a class="navbar-item" href="{sparky-http-root()}/">
             Projects
           </a>
-          <a class="navbar-item" href="{%*ENV<SPARKY_HTTP_ROOT>}/builds">
+          <a class="navbar-item" href="{sparky-http-root()}/builds">
             Recent Builds
           </a>
-          <a class="navbar-item" href="{%*ENV<SPARKY_HTTP_ROOT>}/queue">
+          <a class="navbar-item" href="{sparky-http-root()}/queue">
             Queue
           </a>
           <div class="navbar-item has-dropdown is-hoverable">
@@ -53,7 +53,7 @@ sub navbar is export {
               More
             </a>
             <div class="navbar-dropdown">
-              <a class="navbar-item" href="{%*ENV<SPARKY_HTTP_ROOT>}/about">
+              <a class="navbar-item" href="{sparky-http-root()}/about">
                 About
               </a>
               <a class="navbar-item" href="https://github.com/melezhik/sparky">

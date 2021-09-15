@@ -100,7 +100,7 @@ And finally Sparky has a simple web UI to show builds statuses and reports.
 To run Sparky CI web app:
 
 ```bash
-$ SPARKY_HTTP_ROOT="" cro run
+$ cro run
 ```
 
 To install Sparky CI web app as a systemd unit:
@@ -541,7 +541,9 @@ Sets the sparky root directory
 
 ## SPARKY_HTTP_ROOT
 
-Set sparky web application http root. Useful when proxy application through Nginx.
+Set sparky web application http root. Useful when proxy application through Nginx:
+
+    SPARKY_HTTP_ROOT='/sparky' cro run
 
 ## SPARKY_TIMEOUT
 
