@@ -159,7 +159,7 @@ sub MAIN (
   }
 
   if  %sparrowdo-config<tags> {
-    $sparrowdo-run ~= " --tags=" ~ %sparrowdo-config<tags>;
+    $sparrowdo-run ~= " --tags='{%sparrowdo-config<tags>}'";
   }
 
   if %sparrowdo-config<verbose> {
