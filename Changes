@@ -2,6 +2,10 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.1.4  2021-12-14T00:00:00Z
+
+  - Support spaces in sparrowdo tags
+
 0.1.3  2021-09-15T10:03:00Z
 
   - SPARKY_HTTP_ROOT bug fix
