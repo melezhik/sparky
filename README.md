@@ -351,6 +351,99 @@ Should follow the format of sparky.yaml, `sparrowdo` section
 
 A unique key
 
+# Job API
+
+Job API allows to trigger new builds from a main scenario. 
+
+This allow create multi stage scenarios.
+
+Fo example:
+
+```raku
+
+  if tags()<stage> eq "main" {
+
+    use Sparky::JobApi;
+
+    my $project = "spawned_01";
+
+    my $job-id = job-queue %(
+      project => $project,
+      description => "spawned job", 
+      tags => %(
+        stage => "child",
+        foo => 1,
+        bar => 2,
+      ),
+    );
+
+    say "queue spawned job, job id = {$job-id}";
+
+  } elsif tags()<stage> eq "child" {
+
+    say "I am a child scenario";
+
+  }
+
+```
+
+In this example the same scenario runs for a main and child job, but
+code is conditionally branched off based on a `tags()<stage>` value:
+
+
+`hosts.raku`:
+
+```raku
+[
+  "localhost"
+]
+```
+
+```bash
+sparrowdo --hosts=host.raku --no_sudo --tags=stage=main
+``` 
+
+Child job inherit all main job attributes, including configuration file, one can use
+`tags` parameter to override main scenario tag values.
+
+Main scenario could asynchronously wait till a child job finishes:
+
+```raku
+
+  say "queue spawned job, job id = {$job-id}";
+
+  my $supply = supply {
+      my $i = 1;
+      while True {
+          c.get: "http://127.0.0.1:4000/status/{$project}/{$job-id}" or next;
+          if c.res.content.Int == 1 {
+            emit %( id => $job-id, status => "OK");
+            done;
+          } elsif c.res.content.Int == -1 {
+            emit %( id => $job-id, status => "FAIL");
+            done;
+          } elsif c.res.content.Int == 0 {
+            emit %( id => $job-id, status => "RUNNING");
+          }
+          $i++;
+          if $i>=3000 { # timeout after 300 requests
+            emit %( id => $job-id, status => "TIMEOUT");
+            done
+          }
+      }
+  }
+
+  $supply.tap( -> $v {
+      if $v<status> eq "FAIL" or $v<status> eq "OK"  or $v<status> eq "TIMEOUT" {
+        say $v;
+      }
+  });
+```
+
+Recursive jobs are possible when a child job spawnes another job and so on. Just be
+careful.
+
+
 # Sparky plugins
 
 Sparky plugins are extensions points to add extra functionality to Sparky builds.

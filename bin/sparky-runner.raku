@@ -159,7 +159,11 @@ sub MAIN (
   }
 
   if  %sparrowdo-config<tags> {
+    %sparrowdo-config<tags> ~= ",SPARKY_PROJECT={$project}";
+    %sparrowdo-config<tags> ~= ",SPARKY_JOB_ID={$trigger.IO.basename}" if $trigger;
     $sparrowdo-run ~= " --tags='{%sparrowdo-config<tags>}'";
+  } elsif $trigger {
+    $sparrowdo-run ~= " --tags=SPARKY_PROJECT={$project},SPARKY_JOB_ID={$trigger.IO.basename}";
   }
 
   if %sparrowdo-config<verbose> {

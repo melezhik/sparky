@@ -5,3 +5,4 @@ entrypoint: bin/sparky-web.raku
 ignore:
   - .cache
   - icons/
+  - README.md

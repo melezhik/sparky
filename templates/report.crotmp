@@ -20,7 +20,7 @@ function reBuild(){
 
     <nav class="panel is-warning">
       <p class="panel-heading"> 
-        Report: <.project><.build_id>
+        Report: <.project>@<.build_id>
         <?.description>
         [<.description>]
         </?> 
