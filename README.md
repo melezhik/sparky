@@ -426,7 +426,7 @@ Main scenario could asynchronously wait till a child job finishes:
             emit %( id => $job-id, status => "RUNNING");
           }
           $i++;
-          if $i>=3000 { # timeout after 300 requests
+          if $i>=3000 { # timeout after 3000 requests
             emit %( id => $job-id, status => "TIMEOUT");
             done
           }
