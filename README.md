@@ -410,7 +410,14 @@ Main scenario could asynchronously wait till a child job finishes:
 
 ```raku
 
+  # this code should be in
+  # tags()<stage> == "main" branch:
+
   say "queue spawned job, job id = {$job-id}";
+
+  use Curlie;
+
+  my \c = Curlie.new;
 
   my $supply = supply {
       my $i = 1;
@@ -440,7 +447,7 @@ Main scenario could asynchronously wait till a child job finishes:
   });
 ```
 
-Recursive jobs are possible when a child job spawnes another job and so on. Just be
+Recursive jobs are possible when a child job spawns another job and so on. Just be
 careful.
 
 
@@ -722,13 +729,13 @@ The list of available themes is on [https://jenil.github.io/bulmaswatch/](https:
 
 ## Trigger builds
 
-Trigger a project's build
+Trigger a project's build ( aka Sparky job )
 
 ```http
 POST /build/project/$project
 ```
 
-Returns `$key` - unique build identificator
+Returns `$key` - unique build identification ( aka Sparky Job ID )
 
 ## Build status
 
