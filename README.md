@@ -450,6 +450,97 @@ Main scenario could asynchronously wait till a child job finishes:
 Recursive jobs are possible when a child job spawns another job and so on. Just be
 careful.
 
+One can also pass `job-id` explicitly, this is for example to wait all recursive jobs
+within main job and  will lead to such an interesting  scenario:
+
+
+```raku
+
+  if tags()<stage> eq "main" {
+
+    job-queue %(
+      project => "worker_0",
+      job-id => "job_0",
+      description => "spawned job",
+      tags => %(
+        stage => "child",
+        i => 1,
+      ),
+     );
+
+    use Curlie;
+
+    my \c = Curlie.new;
+
+    my @jobs;
+
+    for 0 .. 10 -> $i {
+
+      my $supply = supply {
+
+        my $j = 1;
+
+        while True {
+          c.get: "http://127.0.0.1:3000/status/{worker_$i}/job_{$i}" or next;
+          if c.res.content.Int == 1 {
+            emit %( id => "job_{$i}", status => "OK");
+            done;
+          } elsif c.res.content.Int == -1 {
+            emit %( id => "job_{$i}", status => "FAIL");
+            done;
+          } elsif c.res.content.Int == 0 {
+            emit %( id => "job_{$i}", status => "RUNNING");
+          }
+          $j++;
+          if $j>=300 { # timeout after 300 requests
+            emit %( id => "job_{$i}", status => "TIMEOUT");
+            done
+          }
+        }
+    }
+
+    $supply.tap( -> $v {
+      if $v<status> eq "FAIL" or $v<status> eq "OK"  or $v<status> eq "TIMEOUT" {
+        push @jobs, $v;
+      }
+      say $v;
+    });
+
+    say @jobs.grep({$_<status> eq "OK"}).elems, " jobs finished successfully";
+    say @jobs.grep({$_<status> eq "FAIL"}).elems, " jobs failed";
+    say @jobs.grep({$_<status> eq "TIMEOUT"}).elems, " jobs timeouted";
+
+  } elsif tags()<stage> eq "child" {
+
+    if tags()<i> <= 10 {
+
+      say "I am a child job!";
+
+      # do some useful stuff here
+      # and launch another recursive job
+      # with predefined project and job ID
+      # i tagged variable gets incrimented
+      # recursively launched jobs
+      # get waited in a "main" scenario 
+
+      job-queue %(
+        project => "worker_{tags()<i>}",
+        job-id => "job_{tags()<i>}",
+        description => "spawned job",
+        tags => %(
+          stage => "child",
+          i => tags()<i> + 1,
+        ),
+     );
+    }
+  }
+
+```
+
+So in this scenario job IDs get generated ahead of time while jobs get launched recursively in
+subsequent jobs. Main scenario waits till all recursive jobs finishes in Raku `supply|tap` fashion.
+
+Neat!
 
 # Sparky plugins
 

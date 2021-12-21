@@ -10,7 +10,7 @@ sub job-queue (%config) is export {
 
   my $rand = ('a' .. 'z').pick(20).join('');
 
-  my $job-id = "{$rand}{$*PID}";
+  my $job-id =  %config<job-id> || "{$rand}{$*PID}";
 
   my $sparky-project-dir = "{%*ENV<HOME>}/.sparky/projects/{$project}";
 
