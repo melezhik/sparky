@@ -403,7 +403,7 @@ code is conditionally branched off based on a `tags()<stage>` value:
 sparrowdo --hosts=host.raku --no_sudo --tags=stage=main
 ``` 
 
-Child job inherit all main job attributes, including configuration file, one can use
+A child job inherits all the main job attributes, including configuration file, one can use
 `tags` parameter to override main scenario tag values.
 
 Main scenario could asynchronously wait till a child job finishes:
