@@ -406,20 +406,24 @@ sparrowdo --hosts=host.raku --no_sudo --tags=stage=main
 A child job inherits all the main job attributes, including configuration file, one can use
 `tags` parameter to override main scenario tag values.
 
-Main scenario could asynchronously wait till a child job finishes:
+## Asynchronous (none blocking) wait of child jobs
+
+Main scenario could asynchronously wait till a child job finishes,
+using brilliant Raku `supply|tap` method:
 
 ```raku
 
-  # this code should be in
-  # tags()<stage> == "main" branch:
+  if tags()<stage> eq "main" {
 
-  say "queue spawned job, job id = {$job-id}";
+    # for bravity - skip code that spawns a child job
 
-  use Curlie;
+    say "queue spawned job, job id = {$job-id}";
 
-  my \c = Curlie.new;
+    use Curlie;
 
-  my $supply = supply {
+    my \c = Curlie.new;
+
+    my $supply = supply {
       my $i = 1;
       while True {
           c.get: "http://127.0.0.1:4000/status/{$project}/{$job-id}" or next;
@@ -438,13 +442,19 @@ Main scenario could asynchronously wait till a child job finishes:
             done
           }
       }
-  }
+    }
 
-  $supply.tap( -> $v {
+    $supply.tap( -> $v {
       if $v<status> eq "FAIL" or $v<status> eq "OK"  or $v<status> eq "TIMEOUT" {
         say $v;
       }
-  });
+    });
+  } elsif tags()<stage> eq "child" {
+
+    # child job here
+
+  }
+
 ```
 
 Recursive jobs are possible when a child job spawns another job and so on. Just be
