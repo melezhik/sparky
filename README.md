@@ -415,7 +415,7 @@ using brilliant Raku `supply|tap` method:
 
   if tags()<stage> eq "main" {
 
-    # for bravity - skip code that spawns a child job
+    # for brevity - skip code that spawns a child job
 
     say "queue spawned job, job id = {$job-id}";
 
@@ -456,6 +456,8 @@ using brilliant Raku `supply|tap` method:
   }
 
 ```
+
+## Recursive jobs
 
 Recursive jobs are possible when a child job spawns another job and so on. Just be
 careful not to end up in endless recursion:
@@ -583,7 +585,7 @@ within main job and  will lead to such an interesting  scenario:
       # do some useful stuff here
       # and launch another recursive job
       # with predefined project and job ID
-      # i tagged variable gets incrimented
+      # i tagged variable gets incremented
       # recursively launched jobs
       # get waited in a "main" scenario 
 
@@ -602,7 +604,9 @@ within main job and  will lead to such an interesting  scenario:
 ```
 
 So in this scenario job IDs get generated ahead of time while jobs get launched recursively in
-subsequent jobs. Main scenario waits till all recursive jobs finishes in Raku `supply|tap` fashion.
+subsequent jobs. 
+
+Main scenario waits till all recursive jobs finishes in none blocking Raku `supply|tap` fashion.
 
 Neat!
 
