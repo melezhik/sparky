@@ -474,7 +474,12 @@ within main job and  will lead to such an interesting  scenario:
 
     my @jobs;
 
-    for 0 .. 10 -> $i {
+    # wait all 10 recursively launched jobs
+    # that are not yet launched by that point
+    # but will be launched recursively
+    # in "child" jobs 
+
+    for 1 .. 10 -> $i {
 
       my $supply = supply {
 
