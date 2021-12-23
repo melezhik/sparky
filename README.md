@@ -515,7 +515,6 @@ within main job and  will lead to such an interesting  scenario:
 
 
 ```raku
-
 use Sparky::JobApi;
 
 if tags()<stage> eq "main" {
@@ -549,7 +548,7 @@ if tags()<stage> eq "main" {
 
       my $supply = supply {
 
-        my $j = 1;
+        #my $j = 1;
 
         while True {
           my %r = $http.get("http://127.0.0.1:4000/status/worker_{$i}/{$rand}_{$i}");
@@ -563,11 +562,11 @@ if tags()<stage> eq "main" {
           } elsif %r<content>.Int == 0 {
             emit %( id => "job_{$i}", status => "RUNNING");
           }
-          $j++;
-          if $j>=300 { # timeout after 300 requests
-            emit %( id => "job_{$i}", status => "TIMEOUT");
-            done
-          }
+          #$j++;
+          #if $j>=300 { # timeout after 300 requests
+          #  emit %( id => "job_{$i}", status => "TIMEOUT");
+          #  done
+          #}
         }
       }
 
@@ -590,7 +589,7 @@ if tags()<stage> eq "main" {
 
     say tags().perl;
 
-    if tags()<i> <= 10 {
+    if tags()<i> < 10 {
 
       my $i = tags()<i> + 1;
 
@@ -611,8 +610,8 @@ if tags()<stage> eq "main" {
           i => $i,
         ),
      );
-    }
-  }
+   }
+}
 ```
 
 So in this scenario job IDs get generated ahead of time while jobs get launched recursively in
