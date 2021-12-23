@@ -506,7 +506,6 @@ if tags()<stage> eq "main" {
     say "I am off now, good buy!";
 
   }
-
 ```
 
 ## Predefined job IDs
@@ -517,21 +516,26 @@ within main job and  will lead to such an interesting  scenario:
 
 ```raku
 
-  if tags()<stage> eq "main" {
+use Sparky::JobApi;
+
+if tags()<stage> eq "main" {
+
+    my $rand = ('a' .. 'z').pick(20).join('');
 
     job-queue %(
-      project => "worker_0",
-      job-id => "job_0",
+      project => "worker_1",
+      job-id => "{$rand}_1",
       description => "spawned job",
       tags => %(
+        seed => $rand,
         stage => "child",
         i => 1,
       ),
      );
 
-    use Curlie;
+    use HTTP::Tinyish;
 
-    my \c = Curlie.new;
+    my $http = HTTP::Tinyish.new;
 
     my @jobs;
 
@@ -540,6 +544,7 @@ within main job and  will lead to such an interesting  scenario:
     # but will be launched recursively
     # in "child" jobs 
 
+
     for 1 .. 10 -> $i {
 
       my $supply = supply {
@@ -547,14 +552,15 @@ within main job and  will lead to such an interesting  scenario:
         my $j = 1;
 
         while True {
-          c.get: "http://127.0.0.1:3000/status/{worker_$i}/job_{$i}" or next;
-          if c.res.content.Int == 1 {
+          my %r = $http.get("http://127.0.0.1:4000/status/worker_{$i}/{$rand}_{$i}");
+          %r<status> == 200 or next;
+          if %r<content>.Int == 1 {
             emit %( id => "job_{$i}", status => "OK");
             done;
-          } elsif c.res.content.Int == -1 {
+          } elsif %r<content>.Int == -1 {
             emit %( id => "job_{$i}", status => "FAIL");
             done;
-          } elsif c.res.content.Int == 0 {
+          } elsif %r<content>.Int == 0 {
             emit %( id => "job_{$i}", status => "RUNNING");
           }
           $j++;
@@ -563,14 +569,16 @@ within main job and  will lead to such an interesting  scenario:
             done
           }
         }
-    }
-
-    $supply.tap( -> $v {
-      if $v<status> eq "FAIL" or $v<status> eq "OK"  or $v<status> eq "TIMEOUT" {
-        push @jobs, $v;
       }
-      say $v;
-    });
+
+      $supply.tap( -> $v {
+        if $v<status> eq "FAIL" or $v<status> eq "OK"  or $v<status> eq "TIMEOUT" {
+          push @jobs, $v;
+        }
+        say $v;
+      });
+
+    }
 
     say @jobs.grep({$_<status> eq "OK"}).elems, " jobs finished successfully";
     say @jobs.grep({$_<status> eq "FAIL"}).elems, " jobs failed";
@@ -578,9 +586,13 @@ within main job and  will lead to such an interesting  scenario:
 
   } elsif tags()<stage> eq "child" {
 
+    say "I am a child job!";
+
+    say tags().perl;
+
     if tags()<i> <= 10 {
 
-      say "I am a child job!";
+      my $i = tags()<i> + 1;
 
       # do some useful stuff here
       # and launch another recursive job
@@ -590,17 +602,17 @@ within main job and  will lead to such an interesting  scenario:
       # get waited in a "main" scenario 
 
       job-queue %(
-        project => "worker_{tags()<i>}",
-        job-id => "job_{tags()<i>}",
+        project => "worker_{$i}",
+        job-id => "{tags()<seed>}_{$i}",
         description => "spawned job",
         tags => %(
+          seed => tags()<seed>,
           stage => "child",
-          i => tags()<i> + 1,
+          i => $i,
         ),
      );
     }
   }
-
 ```
 
 So in this scenario job IDs get generated ahead of time while jobs get launched recursively in
