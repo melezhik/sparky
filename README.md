@@ -412,28 +412,42 @@ Main scenario could asynchronously wait till a child job finishes,
 using brilliant Raku `supply|tap` method:
 
 ```raku
+ if tags()<stage> eq "main" {
 
-  if tags()<stage> eq "main" {
+    # spawns a child job
 
-    # for brevity - skip code that spawns a child job
+    use Sparky::JobApi;
+
+    my $job-id = job-queue %(
+      project => "spawned_jobs",
+      description => "my spawned job",
+      tags => %(
+        stage => "child",
+        foo => 1,
+        bar => 2,
+      ),
+    );
 
     say "queue spawned job, job id = {$job-id}";
 
-    use Curlie;
+    use HTTP::Tinyish;
 
-    my \c = Curlie.new;
+    my $http = HTTP::Tinyish.new;
 
     my $supply = supply {
+
       my $i = 1;
+
       while True {
-          c.get: "http://127.0.0.1:4000/status/{$project}/{$job-id}" or next;
-          if c.res.content.Int == 1 {
+          my %r = $http.get("http://127.0.0.1:4000/status/spawned_jobs/{$job-id}");
+          %r<status> == 200 or next;
+          if %r<content>.Int == 1 {
             emit %( id => $job-id, status => "OK");
             done;
-          } elsif c.res.content.Int == -1 {
+          } elsif %r<content>.Int == -1 {
             emit %( id => $job-id, status => "FAIL");
             done;
-          } elsif c.res.content.Int == 0 {
+          } elsif %r<content>.Int == 0 {
             emit %( id => $job-id, status => "RUNNING");
           }
           $i++;
@@ -453,8 +467,10 @@ using brilliant Raku `supply|tap` method:
 
     # child job here
 
-  }
+    say "config: ", config().perl;
+    say "tags: ", tags().perl;
 
+  }
 ```
 
 ## Recursive jobs
