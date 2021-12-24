@@ -463,7 +463,7 @@ Recursive jobs are possible when a child job spawns another job and so on. Just 
 careful not to end up in endless recursion:
 
 ```raku
-if tags()<stage> eq "main" {
+  if tags()<stage> eq "main" {
 
     use Sparky::JobApi;
 
@@ -504,6 +504,8 @@ if tags()<stage> eq "main" {
   } elsif tags()<stage> eq "off" {
 
     say "I am off now, good buy!";
+    say "config: ", config().perl;
+    say "tags: ", tags().perl;
 
   }
 ```
