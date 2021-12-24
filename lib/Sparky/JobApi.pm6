@@ -12,7 +12,8 @@ sub job-queue (%config) is export {
     $project = %config<project>;
   } else {
     my $workers = %config<workers> || 4;
-    $project = "{tags()<SPARKY_PROJECT>}.spawned_%.2d".sprintf((^$workers).pick(1)+1);
+    my $i = (^$workers).pick(1).join("")+1;
+    $project = "{tags()<SPARKY_PROJECT>}.spawned_%.2d".sprintf($i);
   }
 
   my $rand = ('a' .. 'z').pick(20).join('');
