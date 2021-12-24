@@ -6,7 +6,14 @@ use Sparrow6::DSL;
 
 sub job-queue (%config) is export {
 
-  my $project = %config<project> || "{tags()<SPARKY_PROJECT>}.spawned";
+  my $project;
+
+  if %config<project>  {
+    $project = %config<project>;
+  } else {
+    my $workers = %config<workers> || 4;
+    $project = "{tags()<SPARKY_PROJECT>}.spawned_%.2d".sprintf((^$workers).pick(1)+1);
+  }
 
   my $rand = ('a' .. 'z').pick(20).join('');
 
