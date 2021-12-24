@@ -360,8 +360,7 @@ This allow create multi stage scenarios.
 Fo example:
 
 ```raku
-
-  if tags()<stage> eq "main" {
+if tags()<stage> eq "main" {
 
     use Sparky::JobApi;
 
@@ -379,12 +378,13 @@ Fo example:
 
     say "queue spawned job, job id = {$job-id}";
 
-  } elsif tags()<stage> eq "child" {
+} elsif tags()<stage> eq "child" {
 
-    say "I am a child scenario";
+  say "I am a child scenario";
+  say "config: ", config().perl;
+  say "tags: ", tags().perl;
 
-  }
-
+}
 ```
 
 In this example the same scenario runs for a main and child job, but
