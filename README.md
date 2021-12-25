@@ -118,7 +118,7 @@ Sparky project is just a directory located at the sparky root directory:
 $ mkdir ~/.sparky/projects/teddy-bear-app
 ```
 
-# Build scenario
+# Sparky scenario
 
 Sparky is built on top of Sparrow/Sparrowdo, read [Sparrowdo](https://github.com/melezhik/sparrowdo)
 _to know how to write Sparky scenarios_. 
