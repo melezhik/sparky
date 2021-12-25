@@ -49,6 +49,7 @@ my $application = route {
       next if $dir.basename eq '.reports';
       next if $dir.basename eq 'db.sqlite3-journal';
       next unless "$dir/sparrowfile".IO ~~ :f;
+      next unless "$dir/sparky.yaml".IO ~~ :f;
 
       my $project = $dir.IO.basename;
 

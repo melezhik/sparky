@@ -270,6 +270,19 @@ git-scm tags()<SCM_URL>, %(
 bash "ls -l {%*ENV<PWD>}/scm";
 ```
 
+To set default values for SCM_URL and SCM_BRANCH, use sparrowdo `tags`:
+
+
+`sparky.yaml`:
+
+```yaml
+  sparrowdo:
+    tags: SCM_URL=https://github.com/melezhik/rakudist-teddy-bear.git,SCM_BRANCH=master
+```
+
+These is useful when trigger build manually.
+
+
 # Disable project
 
 You can disable project builds by setting `disable` option to true:
