@@ -411,19 +411,20 @@ A child job inherits all the main job attributes, including configuration file, 
 One can choose to set project either explicitly:
 
 ```raku
-    my $job-id = job-queue %(
-      project => "spawned_jobs",
-      description => "spawned job", 
-    );
+  my $job-id = job-queue %(
+    project => "spawned_jobs",
+    description => "spawned job", 
+  );
 ```
+
 The code will spawn a new job on project called "spawned_jobs"
 
 Or implicitly, with _auto generated_ project:
 
 ```raku
-    my $job-id = job-queue %(
-      description => "spawned job", 
-    );
+  job-queue %(
+    description => "spawned job", 
+  );
 ```
 
 This code will spawn a new job on project called $currect_project.spawned_$random_number
@@ -434,12 +435,12 @@ To set a level of parallelism for this case, use `workers` parameter
 to increase $random_number range:
 
 ```raku
-    for 1 .. 10 {
-      my $job-id = job-queue %(
-        description => "spawned job", 
-        workers => 10,
-      );
-    }
+for 1 .. 10 {
+  job-queue %(
+    description => "spawned job", 
+    workers => 10,
+  );
+}
 ```
 
 This code will spawn new jobs on projects called  $currect_project.spawned_$random_number
