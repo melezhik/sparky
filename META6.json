@@ -14,7 +14,8 @@
     "Cro::HTTP::Router",
     "Cro::WebApp::Template",
     "Data::Dump:ver<0.0.12+>",
-    "Hash::Merge:ver<2.0.0+>"
+    "Hash::Merge:ver<2.0.0+>",
+    "Text::Markdown"
   ],
   "description" : "Sparky is a flexible and minimalist continuous integration server written in Raku",
   "license" : "Artistic-2.0",

@@ -6,6 +6,7 @@ use DBIish;
 use Sparky;
 use Sparky::HTML;
 use YAMLish;
+use Text::Markdown;
 
 my $root = %*ENV<SPARKY_ROOT> || %*ENV<HOME> ~ '/.sparky/projects';
 
@@ -337,7 +338,7 @@ my $application = route {
     template 'templates/about.crotmp', {
       css => css(), 
       navbar => navbar(), 
-      data => "README.md".IO.slurp,
+      data => parse-markdown("README.md".IO.slurp).to_html,
     }
 
   }
