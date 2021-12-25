@@ -444,7 +444,7 @@ to increase $random_number range:
 
 This code will spawn new jobs on projects called  $currect_project.spawned_$random_number
 
-Where a random number is taken from a range `1..4`.
+Where a random number is taken from a range `1..10`.
 
 ## Asynchronous (none blocking) wait of child jobs
 
