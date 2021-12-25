@@ -406,7 +406,7 @@ sparrowdo --hosts=host.raku --no_sudo --tags=stage=main
 A child job inherits all the main job attributes, including configuration file, one can use
 `tags` parameter to override main scenario tag values.
 
-## Set project for spawned job
+## Set a project for spawned job
 
 One can choose to set project either explicitly:
 
@@ -415,20 +415,22 @@ One can choose to set project either explicitly:
       project => "spawned_jobs",
       description => "spawned job", 
     );
-  # will spawn a new job on project "spawned_jobs"
 ```
+The code will spawn a new job on project called "spawned_jobs"
+
 Or implicitly, with _auto generated_ project:
 
 ```raku
     my $job-id = job-queue %(
       description => "spawned job", 
     );
-  # will spawn a new job on project $currect_project.spawned_$random_number
 ```
+
+This code will spawn a new job on project called $currect_project.spawned_$random_number
 
 Where a random number is taken from a range `1..4`.
 
-To set a level of parallelism for the the second case, choose `workers` parameter,
+To set a level of parallelism for this case, use `workers` parameter
 to increase $random_number range:
 
 ```raku
@@ -438,9 +440,11 @@ to increase $random_number range:
         workers => 10,
       );
     }
-  # will spawn new jobs on projects $currect_project.spawned_{1..10}
 ```
 
+This code will spawn new jobs on projects called  $currect_project.spawned_$random_number
+
+Where a random number is taken from a range `1..4`.
 
 ## Asynchronous (none blocking) wait of child jobs
 
