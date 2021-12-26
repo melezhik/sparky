@@ -91,7 +91,7 @@ $ sparrowdo --sparrowfile=utils/install-sparkyd-systemd.raku --no_sudo --localho
 
 ## Setting path
 
-\* `sparkyd` should be in your PATH, usually you need to `export PATH=~/.raku/bin:$PATH` after `zef install .` 
+`sparkyd` should be in your PATH, usually you need to `export PATH=~/.raku/bin:$PATH` after `zef install .` 
 
 # Sparky Web UI
 
