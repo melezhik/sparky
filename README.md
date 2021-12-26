@@ -6,7 +6,7 @@ Sparky is flexible and minimalist continuous integration server written in Raku.
 
 Sparky features:
 
-* Defining builds times in crontab style
+* Defining builds scheduling times in crontab style
 * Triggering builds using external APIs and custom logic
 * Build scenarios are defined as Raku scripts with support of [Sparrow6](https://github.com/melezhik/Sparrow6/blob/master/documentation/dsl.md) DSL 
 * CICD code could be extended using various scripting languages
@@ -21,7 +21,7 @@ Sparky features:
 # Sparky workflow in 4 lines:
 
 ```bash
-$ sparkyd # run Sparky daemon to build your projects
+$ sparkyd # run Sparky daemon to trigger build jobs
 $ cron run # run Sparky CI UI to see build statuses and reports
 $ nano ~/.sparky/projects/my-project/sparrowfile  # write a build scenario
 $ firefox 127.0.0.1:4000 # run builds and get reports
@@ -35,7 +35,6 @@ $ git clone https://github.com/melezhik/sparky.git
 $ cd sparky && zef install .
 ```
 
-
 # Setup
 
 Run database initialization script to populate database schema:
@@ -46,7 +45,7 @@ $ raku db-init.raku
 
 # Running daemon
 
-Run ( see also [Setting path](#setting-path) section ) sparky daemon to dispatch jobs:
+Run ( see also [Setting path](#setting-path) section ) sparky daemon to trigger build jobs:
 
 ```bash
 $ sparkyd
@@ -58,7 +57,7 @@ $ sparkyd
 
 * Sparky root directory default location is `~/.sparky/projects`.
 
-* Once all the sub directories gets passed, sparky daemon sleeps for $timeout seconds.
+* Once all the sub directories are passed, sparky daemon sleeps for $timeout seconds.
 
 * A `timeout` option allows to balance a load on your system.
 
@@ -118,7 +117,7 @@ Sparky project is just a directory located at the sparky root directory:
 $ mkdir ~/.sparky/projects/teddy-bear-app
 ```
 
-# Sparky scenario
+# Build scenario
 
 Sparky is built on top of Sparrow/Sparrowdo, read [Sparrowdo](https://github.com/melezhik/sparrowdo)
 _to know how to write Sparky scenarios_. 
@@ -255,7 +254,7 @@ scm:
   branch: master
 ```
 
-Once a build is triggered one needs to handle build environment leveraging `tags()<SCM_*>` objects:
+Once a build is triggered respected SCM attributes available via `tags()<SCM_*>` elements:
 
 ```raku
 directory "scm";
