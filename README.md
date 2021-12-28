@@ -45,11 +45,13 @@ $ raku db-init.raku
 
 # Running daemon
 
-Run ( see also [Setting path](#setting-path) section ) sparky daemon to trigger build jobs:
-
 ```bash
 $ sparkyd
 ```
+
+`sparkyd` should be in your PATH, usually you need to `export PATH=~/.raku/bin:$PATH` after 
+
+`zef install .` 
 
 * Sparky daemon traverses sub directories found at the project root directory.
 
@@ -87,10 +89,6 @@ To install sparkyd as a systemd unit:
 $ nano utils/install-sparky-web-systemd.raku # change working directory and user
 $ sparrowdo --sparrowfile=utils/install-sparkyd-systemd.raku --no_sudo --localhost
 ```
-
-## Setting path
-
-`sparkyd` should be in your PATH, usually you need to `export PATH=~/.raku/bin:$PATH` after `zef install .` 
 
 # Sparky Web UI
 
@@ -172,7 +170,7 @@ sparrowdo:
   sync: /tmp/repo
 ```
 
-You can read about the all [available parameters](https://github.com/melezhik/sparrowdo#sparrowdo-cli) in Sparrowdo documentation.
+Follow [sparrowdo cli](https://github.com/melezhik/sparrowdo#sparrowdo-cli) documentation for `sparrowdo` parameters explanation.
 
 # Skip bootstrap
 
@@ -347,6 +345,7 @@ Directory where sparrowfile is located, when a build gets run, the process will 
 Arbitrary text description of build
 
 * `sparrowdo`
+
 Options for sparrowdo run, for example:
 
 ```raku
@@ -357,7 +356,9 @@ Options for sparrowdo run, for example:
 )
 ```
 
-Should follow the format of sparky.yaml, `sparrowdo` section
+Should follow the format of sparky.yaml, `sparrowdo` section.
+
+Follow [sparrowdo cli](https://github.com/melezhik/sparrowdo#sparrowdo-cli) documentation for `sparrowdo` parameters explanation.
 
 * `key`
 
@@ -378,7 +379,7 @@ if tags()<stage> eq "main" {
 
     my $project = "spawned_01";
 
-    my $job-id = job-queue %(
+    my %q = job-queue %(
       project => $project,
       description => "spawned job", 
       tags => %(
@@ -388,7 +389,7 @@ if tags()<stage> eq "main" {
       ),
     );
 
-    say "queue spawned job, job id = {$job-id}";
+    say "queue spawned job, job id = {%q<job-id>}";
 
 } elsif tags()<stage> eq "child" {
 
@@ -415,15 +416,36 @@ code is conditionally branched off based on a `tags()<stage>` value:
 sparrowdo --hosts=host.raku --no_sudo --tags=stage=main
 ``` 
 
-A child job inherits all the main job attributes, including configuration file, one can use
-`tags` parameter to override main scenario tag values.
+## Job attributes
+
+A child job inherits all the main job attributes, including sparrowfile, tags, configuration file
+and sparrowdo configuration.
+
+To override some job configuration attributes, use `sparrowdo` and `tags` parameters:
+
+```raku
+ job-queue %(
+   tags => %(
+     stage => "child",
+     foo => 1,
+     bar => 2,
+   ),
+   sparrowdo => %(
+    no_index_update => True,
+    no_sudo => True,
+    docker => "debian_bullseye"
+  )
+);
+```
+
+Follow [sparrowdo cli](https://github.com/melezhik/sparrowdo#sparrowdo-cli) documentation for `sparrowdo` parameters explanation.
 
 ## Set a project for spawned job
 
 One can choose to set project either explicitly:
 
 ```raku
-  my $job-id = job-queue %(
+  job-queue %(
     project => "spawned_jobs",
     description => "spawned job", 
   );
@@ -471,7 +493,7 @@ using brilliant Raku `supply|tap` method:
 
     use Sparky::JobApi;
 
-    my $job-id = job-queue %(
+    my %q = job-queue %(
       project => "spawned_jobs",
       description => "my spawned job",
       tags => %(
@@ -480,6 +502,8 @@ using brilliant Raku `supply|tap` method:
         bar => 2,
       ),
     );
+
+    my $job-id = %q<job-id>;
 
     say "queue spawned job, job id = {$job-id}";
 
@@ -538,7 +562,7 @@ careful not to end up in endless recursion:
 
     my $project = "spawned_01";
 
-    my $job-id = job-queue %(
+    my %q = job-queue %(
       project => $project,
       description => "spawned job", 
       tags => %(
@@ -548,7 +572,7 @@ careful not to end up in endless recursion:
       ),
     );
 
-    say "queue spawned job, job id = {$job-id}";
+    say "queue spawned job, job id = {%q<job-id>}";
 
   } elsif tags()<stage> eq "child" {
 
@@ -558,7 +582,7 @@ careful not to end up in endless recursion:
 
     my $project = "spawned_02";
 
-    my $job-id = job-queue %(
+    my %q = job-queue %(
       project => $project,
       description => "spawned job2",
       tags => %(
@@ -568,7 +592,7 @@ careful not to end up in endless recursion:
       ),
     );
 
-    say "queue spawned job, job id = {$job-id}";
+    say "queue spawned job, job id = {%q<job-id>}";
 
   } elsif tags()<stage> eq "off" {
 
@@ -633,11 +657,11 @@ if tags()<stage> eq "main" {
           } elsif %r<content>.Int == 0 {
             emit %( id => "job_{$i}", status => "RUNNING");
           }
-          #$j++;
-          #if $j>=300 { # timeout after 300 requests
-          #  emit %( id => "job_{$i}", status => "TIMEOUT");
-          #  done
-          #}
+          $j++;
+          if $j>=30000 { # timeout after 30000 requests
+            emit %( id => "job_{$i}", status => "TIMEOUT");
+            done
+          }
         }
       }
 

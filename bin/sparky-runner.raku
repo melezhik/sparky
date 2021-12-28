@@ -3,7 +3,6 @@
 use Sparky;
 use Data::Dump;
 use YAMLish;
-use Hash::Merge;
 
 state $DIR;
 state $MAKE-REPORT;
@@ -113,7 +112,27 @@ sub MAIN (
 
   my $sparrowdo-run = "sparrowdo --prefix=$project";
 
-  my %sparrowdo-config = merge-hash (%config<sparrowdo> || Hash.new), (%trigger<sparrowdo>|| Hash.new), :!positional-append;
+  my %sparrowdo-config = %config<sparrowdo> || Hash.new;
+
+  if %trigger<sparrowdo> {
+    for %trigger<sparrowdo>.keys -> $k {
+      %sparrowdo-config{$k} = %trigger<sparrowdo>{$k};
+    }
+    # handle conflicting parameters
+    if %trigger<sparrowdo><localhost> {
+      %sparrowdo-config<docker>:delete;
+      %sparrowdo-config<host>:delete;
+    } elsif %trigger<sparrowdo><host> {
+      %sparrowdo-config<docker>:delete;
+      %sparrowdo-config<localhost>:delete;
+    } elsif %trigger<sparrowdo><docker> {
+      %sparrowdo-config<host>:delete;
+      %sparrowdo-config<localhost>:delete;
+    }
+    if %trigger<sparrowdo><sudo> {
+      %sparrowdo-config<no_sudo>:delete;
+    }
+  }
 
   say "merged sparrowdo configuration: {Dump(%sparrowdo-config)}";
 

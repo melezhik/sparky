@@ -5,6 +5,7 @@ Revision history for Sparky
   - New feature - JobApi
   - Minor fixes in web UI templates
   - Use Text::Markdown instead of javascript library to parse README.md in /about page
+  - Refactoring - don't use Hash::Merge anymore (rewritten using better approach)
 
 0.1.4  2021-12-14T00:00:00Z
 

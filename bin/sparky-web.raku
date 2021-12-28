@@ -7,6 +7,8 @@ use Sparky;
 use Sparky::HTML;
 use YAMLish;
 use Text::Markdown;
+use Sparky::JobApi;
+use JSON::Tiny;
 
 my $root = %*ENV<SPARKY_ROOT> || %*ENV<HOME> ~ '/.sparky/projects';
 
@@ -33,6 +35,32 @@ my $application = route {
     copy "$root/../work/$project/.triggers/$key", "$root/$project/.triggers/$key";
 
     content 'text/plain', "$key";
+
+  }
+
+  post -> 'queue' {
+
+    my $res;
+
+    request-body -> %json {
+
+      #say %json.perl;
+
+      try { 
+
+        $res = job-queue-fs(%json<config>,%json<sparrowfile>,%json<sparrowdo-config>);
+
+        CATCH {
+          default {
+            my $err = "Error {.^name}, : , {.Str}";
+            $res = to-json({ error => $err });
+          }
+        }
+      }
+
+    }
+
+    content 'application/json', $res;
 
   }
 
@@ -345,6 +373,8 @@ my $application = route {
   }
 
 }
+
+(.out-buffer = False for $*OUT, $*ERR;);
 
 my Cro::Service $service = Cro::HTTP::Server.new:
     :host<0.0.0.0>, :port<4000>, :$application;
