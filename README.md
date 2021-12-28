@@ -107,6 +107,13 @@ $ nano utils/install-sparky-web-systemd.raku # change working directory, user an
 $ sparrowdo --sparrowfile=utils/install-sparky-web-systemd.raku --no_sudo --localhost
 ```
 
+By default web app starts at tcp port `4000`, to configure web app tcp port 
+edit `~/sparky.yaml` file:
+
+```yaml
+sparky_port: 5000
+``` 
+
 # Creating first sparky project
 
 Sparky project is just a directory located at the sparky root directory:

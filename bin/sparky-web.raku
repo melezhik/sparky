@@ -376,8 +376,10 @@ my $application = route {
 
 (.out-buffer = False for $*OUT, $*ERR;);
 
+my $port = get-sparky-conf()<sparky_port>;
+
 my Cro::Service $service = Cro::HTTP::Server.new:
-    :host<0.0.0.0>, :port<4000>, :$application;
+    :host<0.0.0.0>, :$port, :$application;
 
 $service.start;
 

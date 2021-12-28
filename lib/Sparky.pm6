@@ -20,6 +20,8 @@ sub get-sparky-conf is export {
 
   my %conf = $conf-file.IO ~~ :f ?? load-yaml($conf-file.IO.slurp) !! Hash.new;
 
+  %conf<sparky_port> ||= 4000;
+
   %conf;
 
 }
