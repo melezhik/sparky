@@ -313,13 +313,13 @@ $ nano $project/.triggers/$key
 
 File has to be located in project `.trigger` directory. 
 
-`$key` should be a unique string identifying a build _within_ directory ( on per project basis ).
+And `$key` should be a unique string identifying a build _within_ directory ( on per project basis ).
 
-A content of the file should Raku code returning a Hash:
+A content of the file should be a Raku code returning a Raku Hash:
 
 ```raku
 {
-  description => "Build app",
+  description => "web app build",
   cwd => "/path/to/working/directory",
   sparrowdo => %(
     localhost => True,
