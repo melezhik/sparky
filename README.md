@@ -311,8 +311,9 @@ in special format:
 $ nano $project/.triggers/$key
 ```
 
-File has to be located in project `.trigger` directory. `$key` should be a unique
-string identifying build _within_ directory ( on per project basis ).
+File has to be located in project `.trigger` directory. 
+
+`$key` should be a unique string identifying a build _within_ directory ( on per project basis ).
 
 A content of the file should Raku code returning a Hash:
 
