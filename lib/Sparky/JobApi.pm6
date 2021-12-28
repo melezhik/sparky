@@ -30,7 +30,7 @@ sub job-queue (%config) is export {
     sparrowdo-config => %c,
   );
 
-  my $r = HTTP::Tiny.post: "http://127.0.0.1:4000/queue", 
+  my $r = HTTP::Tiny.post: "http://127.0.0.1:{get-sparky-conf()<sparky_port>}/queue", 
     headers => { content-type => 'application/json' },
     content => to-json(%upload);
 
