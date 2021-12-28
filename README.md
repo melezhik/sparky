@@ -308,10 +308,11 @@ Sparky Triggering Protocol allows to _trigger_ builds automatically by just crea
 in special format:
 
 ```bash
-$ nano $project/.triggers/foo-bar-baz
+$ nano $project/.triggers/$key
 ```
 
-File has to be located in project `.trigger` directory.
+File has to be located in project `.trigger` directory. `$key` should be a unique
+string identifying build _within_ directory ( on per project basis ).
 
 A content of the file should Raku code returning a Hash:
 
@@ -346,23 +347,19 @@ Arbitrary text description of build
 
 * `sparrowdo`
 
-Options for sparrowdo run, for example:
+Options for sparrowdo cli run, for example:
 
 ```raku
-%(
-  host  => "foo.bar",
-  ssh_user  => "admin",
-  tags => "prod,backend"
-)
+sparrowdo => {
+  %(
+    host  => "foo.bar",
+    ssh_user  => "admin",
+    tags => "prod,backend"
+  )
+}
 ```
 
-Should follow the format of sparky.yaml, `sparrowdo` section.
-
 Follow [sparrowdo cli](https://github.com/melezhik/sparrowdo#sparrowdo-cli) documentation for `sparrowdo` parameters explanation.
-
-* `key`
-
-A unique key
 
 # Job API
 
