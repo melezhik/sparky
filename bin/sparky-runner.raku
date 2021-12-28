@@ -141,6 +141,7 @@ sub MAIN (
   } elsif %sparrowdo-config<host> {
     $sparrowdo-run ~= " --host=" ~ %sparrowdo-config<host>;
   } else {
+    %sparrowdo-config<localhost> = True;
     $sparrowdo-run ~= " --localhost";
   }
 
@@ -180,9 +181,15 @@ sub MAIN (
   if  %sparrowdo-config<tags> {
     %sparrowdo-config<tags> ~= ",SPARKY_PROJECT={$project}";
     %sparrowdo-config<tags> ~= ",SPARKY_JOB_ID={$trigger.IO.basename}" if $trigger;
+    %sparrowdo-config<tags> ~= ",SPARKY_WORKER=docker" if %sparrowdo-config<docker>;
+    %sparrowdo-config<tags> ~= ",SPARKY_WORKER=localhost" if %sparrowdo-config<localhost>;
+    %sparrowdo-config<tags> ~= ",SPARKY_WORKER=host" if %sparrowdo-config<host>;
     $sparrowdo-run ~= " --tags='{%sparrowdo-config<tags>}'";
   } elsif $trigger {
     $sparrowdo-run ~= " --tags=SPARKY_PROJECT={$project},SPARKY_JOB_ID={$trigger.IO.basename}";
+    $sparrowdo-run ~= ",SPARKY_WORKER=docker" if %sparrowdo-config<docker>;
+    $sparrowdo-run ~= ",SPARKY_WORKER=localhost" if %sparrowdo-config<localhost>;
+    $sparrowdo-run ~= ",SPARKY_WORKER=host" if %sparrowdo-config<host>;
   }
 
   if %sparrowdo-config<verbose> {
