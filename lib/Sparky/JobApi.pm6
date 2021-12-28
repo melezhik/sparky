@@ -30,7 +30,19 @@ sub job-queue (%config) is export {
     sparrowdo-config => %c,
   );
 
-  my $r = HTTP::Tiny.post: "http://127.0.0.1:{get-sparky-conf()<sparky_port>}/queue", 
+  my $sparky-api;
+
+  if tags()<SPARKY_WORKER> eq "localhost" {
+    $sparky-api = "http://127.0.0.1:{get-sparky-conf()<sparky_port>}";
+  } elsif tags()<SPARKY_WORKER> eq "docker" {
+    $sparky-api = "http://host.docker.internal:{get-sparky-conf()<sparky_port>}";
+  } else {
+    die "Sparky::JobApi is not supported for this type of worker: {tags()<SPARKY_WORKER>}"
+  }
+
+  say "send request to {$sparky-api}/queue ...";
+
+  my $r = HTTP::Tiny.post: "{$sparky-api}/queue", 
     headers => { content-type => 'application/json' },
     content => to-json(%upload);
 
