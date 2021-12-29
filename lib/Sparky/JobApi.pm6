@@ -6,6 +6,21 @@ use HTTP::Tiny;
 use JSON::Tiny;
 use Sparrow6::DSL;
 
+sub sparky-api () is export {
+
+  my $sparky-api;
+
+  if tags()<SPARKY_WORKER> eq "localhost" {
+    $sparky-api = "http://127.0.0.1:{get-sparky-conf()<sparky_port>}";
+  } elsif tags()<SPARKY_WORKER> eq "docker" {
+    $sparky-api = "http://host.docker.internal:{get-sparky-conf()<sparky_port>}";
+  } else {
+    die "Sparky::JobApi is not supported for this type of worker: {tags()<SPARKY_WORKER>}"
+  }
+
+  return $sparky-api;
+}
+
 sub job-queue (%config) is export {
 
   unless %config<project>  {
@@ -30,15 +45,7 @@ sub job-queue (%config) is export {
     sparrowdo-config => %c,
   );
 
-  my $sparky-api;
-
-  if tags()<SPARKY_WORKER> eq "localhost" {
-    $sparky-api = "http://127.0.0.1:{get-sparky-conf()<sparky_port>}";
-  } elsif tags()<SPARKY_WORKER> eq "docker" {
-    $sparky-api = "http://host.docker.internal:{get-sparky-conf()<sparky_port>}";
-  } else {
-    die "Sparky::JobApi is not supported for this type of worker: {tags()<SPARKY_WORKER>}"
-  }
+  my $sparky-api = sparky-api();
 
   say "send request to {$sparky-api}/queue ...";
 
