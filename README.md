@@ -467,12 +467,11 @@ Or implicitly, with _auto generated_ project:
   });
 ```
 
-This code will spawn a new job on project called $currect_project.spawned_$random_number
+This code will spawn a new job on project named `$currect_project.spawned_$random_number`
 
-Where a random number is taken from a range `1..4`.
+Where `$random_number` is random integer number taken from a range `1..4`.
 
-To set a level of parallelism for this case, use `workers` parameter
-to increase $random_number range:
+To increase a level of parallelism, use `workers` parameter:
 
 ```raku
 for 1 .. 10 {
@@ -483,9 +482,7 @@ for 1 .. 10 {
 }
 ```
 
-This code will spawn new jobs on projects called  $currect_project.spawned_$random_number
-
-Where a random number is taken from a range `1..10`.
+This will result in the random number taken from a range `1..10`.
 
 ## Asynchronous (none blocking) wait of child jobs
 
