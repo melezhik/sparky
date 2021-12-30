@@ -719,6 +719,21 @@ The code above will run job on sparky instance located at `http://sparrowhub.io:
 All what has been said before applies to cluster jobs, they are no different from your
 local Sparky jobs.
 
+For example one can run cluster on docker instance `alpine-with-raku` running on remote Sparky server:
+
+```
+  my $j = Sparky::JobApi.new(:api<http://sparrowhub.io:4000>);
+  %j.queue({
+    description => "child job"
+    tags => %(
+      stage => "child"
+    ),
+    sparrowdo => %(
+      docker => "alpine-with-raku",
+      no_sudo => True
+    ),
+  });
+```
 For security reason Sparky server calling jobs on another Sparky server need to have the same
 security token. One need to ensure this on both local and remote Sparky server:
 
