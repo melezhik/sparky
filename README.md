@@ -734,6 +734,7 @@ For example one can run cluster on docker instance `alpine-with-raku` running on
     ),
   });
 ```
+
 For security reason Sparky server calling jobs on another Sparky server need to have the same
 security token. One need to ensure this on both local and remote Sparky server:
 
@@ -743,8 +744,13 @@ nohup sparkyd &
 nohup cro run &
 ```
 
-`SPARKY_API_TOKEN`  should be any random string. For now, only `http` protocol is supported
-for cluster jobs.
+`SPARKY_API_TOKEN` should be any random string. 
+
+Apparently one can have many Sparky servers logically combined into a cluster, and
+all servers within a group can run remote jobs on each other, the only requirement
+is they all have to share the same `SPARKY_API_TOKEN`
+
+For now, only `http` protocol is supported for cluster jobs URLs.
 
 # Sparky plugins
 
