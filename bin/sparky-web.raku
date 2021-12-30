@@ -38,12 +38,11 @@ my $application = route {
 
   }
 
-  post -> 'queue', :$token?  {
+  post -> 'queue', :$token? is header  {
 
-    if sparky-api-token() {
-      say sparky-api-token();
-      forbidden("text/plain","bad token") unless $token;
-      forbidden("text/plain", "bad token") unless  "{sparky-api-token()}" eq "{$token}";
+    if sparky-api-token() && sparky-api-token() ne $token {
+
+      forbidden("text/plain","bad token");
 
     } else {
 

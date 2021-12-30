@@ -186,12 +186,14 @@ sub MAIN (
     %sparrowdo-config<tags> ~= ",SPARKY_WORKER=localhost" if %sparrowdo-config<localhost>;
     %sparrowdo-config<tags> ~= ",SPARKY_WORKER=host" if %sparrowdo-config<host>;
     %sparrowdo-config<tags> ~= ",SPARKY_TCP_PORT={sparky-tcp-port()}";
+    %sparrowdo-config<tags> ~= ",SPARKY_API_TOKEN={sparky-api-token()}" if sparky-api-token();
     $sparrowdo-run ~= " --tags='{%sparrowdo-config<tags>}'";
   } elsif $trigger {
     $sparrowdo-run ~= " --tags=SPARKY_PROJECT={$project},SPARKY_JOB_ID={$trigger.IO.basename},SPARKY_TCP_PORT={sparky-tcp-port()}";
     $sparrowdo-run ~= ",SPARKY_WORKER=docker" if %sparrowdo-config<docker>;
     $sparrowdo-run ~= ",SPARKY_WORKER=localhost" if %sparrowdo-config<localhost>;
     $sparrowdo-run ~= ",SPARKY_WORKER=host" if %sparrowdo-config<host>;
+    $sparrowdo-run ~= ",SPARKY_API_TOKEN={sparky-api-token()}" if sparky-api-token();
   }
 
   if %sparrowdo-config<verbose> {

@@ -21,8 +21,8 @@ Sparky features:
 # Sparky workflow in 4 lines:
 
 ```bash
-$ sparkyd # run Sparky daemon to trigger build jobs
-$ cron run # run Sparky CI UI to see build statuses and reports
+$ nohup sparkyd & # run Sparky daemon to trigger build jobs
+$ nohup cro run & # run Sparky CI UI to see build statuses and reports
 $ nano ~/.sparky/projects/my-project/sparrowfile  # write a build scenario
 $ firefox 127.0.0.1:4000 # run builds and get reports
 ```
@@ -97,7 +97,7 @@ And finally Sparky has a simple web UI to show builds statuses and reports.
 To run Sparky CI web app:
 
 ```bash
-$ cro run
+$ nohup cro run &
 ```
 
 To install Sparky CI web app as a systemd unit:
@@ -111,7 +111,9 @@ By default web app starts at tcp port `4000`, to configure web app tcp port
 use `SPARKY_TCP_PORT` environment variable:
 
 ```bash
-SPARKY_TCP_PORT=5000 cro run
+$ export SPARKY_TCP_PORT=5000 
+$ nohup cro run &
+$ nohup sparkyd &
 ```
 
 # Creating first sparky project
@@ -645,7 +647,7 @@ if tags()<stage> eq "main" {
       }
 
       $supply.tap( -> $v {
-        push @jobs, $v;
+        push @jobs, $v if $v<status> eq "FAIL" or $v<status> eq "OK";
         say $v;
       });
 
@@ -692,7 +694,42 @@ subsequent jobs.
 
 Main scenario waits till all recursive jobs finishes in none blocking Raku `supply|tap` fashion.
 
-Neat!
+## Cluster jobs
+
+One can have more then one Sparky instances and run jobs across them.
+
+This feature is called cluster jobs:
+
+```raku
+use Sparky::JobApi;
+
+if tags()<stage> eq "main" {
+  my $j = Sparky::JobApi.new(:api<http://sparrowhub.io:4000>);
+  %j.queue({
+    description => "child job"
+    tags => %(
+      stage => "child"
+    )
+  });
+}
+```
+
+The code above will run job on sparky instance located at `http://sparrowhub.io:4000` address.
+
+All what has been said before applies to cluster jobs, they are no different from your
+local Sparky jobs.
+
+For security reason Sparky server calling jobs on another Sparky server need to have the same
+security token. One need to ensure this on both local and remote Sparky server:
+
+```bash
+export SPARKY_API_TOKEN=secret123456 
+nohup sparkyd &
+nohup cro run &
+```
+
+`SPARKY_API_TOKEN`  should be any random string. For now, only `http` protocol is supported
+for cluster jobs.
 
 # Sparky plugins
 
