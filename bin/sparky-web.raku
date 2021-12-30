@@ -38,29 +38,38 @@ my $application = route {
 
   }
 
-  post -> 'queue' {
+  post -> 'queue', :$token?  {
 
-    my $res;
+    if sparky-api-token() {
+      say sparky-api-token();
+      forbidden("text/plain","bad token") unless $token;
+      forbidden("text/plain", "bad token") unless  "{sparky-api-token()}" eq "{$token}";
 
-    request-body -> %json {
+    } else {
 
-      #say %json.perl;
+      my $res;
 
-      try { 
+      request-body -> %json {
 
-        $res = job-queue-fs(%json<config>,%json<sparrowfile>,%json<sparrowdo-config>);
+        #say %json.perl;
 
-        CATCH {
-          default {
-            my $err = "Error {.^name}, : , {.Str}";
-            $res = to-json({ error => $err });
+        try { 
+
+          $res = job-queue-fs(%json<config>,%json<sparrowfile>,%json<sparrowdo-config>);
+
+          CATCH {
+            default {
+              my $err = "Error {.^name}, : , {.Str}";
+              $res = to-json({ error => $err });
+            }
           }
         }
+
       }
 
-    }
+      content 'application/json', $res;
 
-    content 'application/json', $res;
+    }
 
   }
 

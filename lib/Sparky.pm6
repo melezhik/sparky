@@ -20,6 +20,12 @@ sub sparky-tcp-port is export {
 
 }
 
+sub sparky-api-token is export {
+
+  %*ENV<SPARKY_API_TOKEN>;
+
+}
+
 sub get-sparky-conf is export {
 
   return %conf if %conf;
