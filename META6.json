@@ -25,7 +25,7 @@
   "provides" : {
     "Sparky" : "lib/Sparky.pm6",
     "Sparky::HTML" : "lib/Sparky/HTML.pm6",
-    "Sparky::JobApi" : "lib/Sparky/JobApi.pm6"
+    "Sparky::Job" : "lib/Sparky/Job.pm6"
   },
   "resources" : [ ],
   "source-type" : "git",

@@ -108,11 +108,11 @@ $ sparrowdo --sparrowfile=utils/install-sparky-web-systemd.raku --no_sudo --loca
 ```
 
 By default web app starts at tcp port `4000`, to configure web app tcp port 
-edit `~/sparky.yaml` file:
+use `SPARKY_TCP_PORT` environment variable:
 
-```yaml
-sparky_port: 5000
-``` 
+```bash
+SPARKY_TCP_PORT=5000 cro run
+```
 
 # Creating first sparky project
 
@@ -382,19 +382,18 @@ if tags()<stage> eq "main" {
 
     use Sparky::JobApi;
 
-    my $project = "spawned_01";
+    my $j = Sparky::JobApi.new(:project<spawned_01>);
 
-    my %q = job-queue %(
-      project => $project,
+    $j.queue({
       description => "spawned job", 
       tags => %(
         stage => "child",
         foo => 1,
         bar => 2,
       ),
-    );
+    });
 
-    say "queue spawned job, job id = {%q<job-id>}";
+    say "job info: ", $j.info.perl;
 
 } elsif tags()<stage> eq "child" {
 
@@ -429,18 +428,19 @@ and sparrowdo configuration.
 To override some job configuration attributes, use `sparrowdo` and `tags` parameters:
 
 ```raku
- job-queue %(
+my $j = Sparky::JobApi.new;
+$j.queue({
    tags => %(
      stage => "child",
      foo => 1,
      bar => 2,
    ),
    sparrowdo => %(
-    no_index_update => True,
-    no_sudo => True,
-    docker => "debian_bullseye"
+      no_index_update => True,
+      no_sudo => True,
+      docker => "debian_bullseye"
   )
-);
+});
 ```
 
 Follow [sparrowdo cli](https://github.com/melezhik/sparrowdo#sparrowdo-cli) documentation for `sparrowdo` parameters explanation.
@@ -450,10 +450,10 @@ Follow [sparrowdo cli](https://github.com/melezhik/sparrowdo#sparrowdo-cli) docu
 One can choose to set project either explicitly:
 
 ```raku
-  job-queue %(
-    project => "spawned_jobs",
+  my $j = Sparky::JobApi.new(:project<spawned_jobs>);
+  $j.queue({
     description => "spawned job", 
-  );
+  });
 ```
 
 The code will spawn a new job on project called "spawned_jobs"
@@ -461,9 +461,10 @@ The code will spawn a new job on project called "spawned_jobs"
 Or implicitly, with _auto generated_ project:
 
 ```raku
-  job-queue %(
+  my $j = Sparky::JobApi.new();
+  $j.queue({
     description => "spawned job", 
-  );
+  });
 ```
 
 This code will spawn a new job on project called $currect_project.spawned_$random_number
@@ -475,10 +476,10 @@ to increase $random_number range:
 
 ```raku
 for 1 .. 10 {
-  job-queue %(
-    description => "spawned job", 
-    workers => 10,
-  );
+  my $j = Sparky::JobApi.new(:workers<10>);
+  $j.queue({
+    description => "spawned job"
+  });
 }
 ```
 
@@ -492,58 +493,38 @@ Main scenario could asynchronously wait till a child job finishes,
 using brilliant Raku `supply|tap` method:
 
 ```raku
- if tags()<stage> eq "main" {
+  if tags()<stage> eq "main" {
 
     # spawns a child job
 
     use Sparky::JobApi;
-
-    my %q = job-queue %(
-      project => "spawned_jobs",
+    my $j = Sparky::JobApi.new(:project<spawned_jobs>);
+    $j.queue({
       description => "my spawned job",
       tags => %(
         stage => "child",
         foo => 1,
         bar => 2,
       ),
-    );
+    });
 
-    my $job-id = %q<job-id>;
-
-    say "queue spawned job, job id = {$job-id}";
-
-    use HTTP::Tinyish;
-
-    my $http = HTTP::Tinyish.new;
+    say "queue spawned job, ",$j.info.perl;
 
     my $supply = supply {
 
-      my $i = 1;
+        while True {
 
-      while True {
-          my %r = $http.get("http://127.0.0.1:4000/status/spawned_jobs/{$job-id}");
-          %r<status> == 200 or next;
-          if %r<content>.Int == 1 {
-            emit %( id => $job-id, status => "OK");
-            done;
-          } elsif %r<content>.Int == -1 {
-            emit %( id => $job-id, status => "FAIL");
-            done;
-          } elsif %r<content>.Int == 0 {
-            emit %( id => $job-id, status => "RUNNING");
-          }
-          $i++;
-          if $i>=3000 { # timeout after 3000 requests
-            emit %( id => $job-id, status => "TIMEOUT");
-            done
-          }
-      }
+          my $status = $j.status;
+
+          emit %( job-id => $j.info<job-id>, status => $status );
+
+          done if $status eq "FAIL" or $status eq "OK";
+
+        }
     }
 
     $supply.tap( -> $v {
-      if $v<status> eq "FAIL" or $v<status> eq "OK"  or $v<status> eq "TIMEOUT" {
         say $v;
-      }
     });
   } elsif tags()<stage> eq "child" {
 
@@ -567,17 +548,21 @@ careful not to end up in endless recursion:
 
     my $project = "spawned_01";
 
-    my %q = job-queue %(
-      project => $project,
-      description => "spawned job", 
+    my $j = Sparky::JobApi.new(:project<spawned_01>);
+
+    $j.queue({
+      description => "spawned job. 02", 
       tags => %(
         stage => "child",
         foo => 1,
         bar => 2,
       ),
-    );
+      sparrowdo => %(
+        no_index_update => True
+      )
+    });
 
-    say "queue spawned job, job id = {%q<job-id>}";
+    say "queue spawned job ", $j.info.perl;
 
   } elsif tags()<stage> eq "child" {
 
@@ -585,19 +570,18 @@ careful not to end up in endless recursion:
 
     say "I am a child scenario";
 
-    my $project = "spawned_02";
+    my $j = Sparky::JobApi.new(:project<spawned_02>);
 
-    my %q = job-queue %(
-      project => $project,
-      description => "spawned job2",
+    $j.queue({
+      description => "spawned job2. 02",
       tags => %(
         stage => "off",
         foo => 1,
         bar => 2,
       ),
-    );
+    });
 
-    say "queue spawned job, job id = {%q<job-id>}";
+    say "queue spawned job ",$j.info.perl;
 
   } elsif tags()<stage> eq "off" {
 
@@ -621,20 +605,16 @@ if tags()<stage> eq "main" {
 
     my $rand = ('a' .. 'z').pick(20).join('');
 
-    job-queue %(
-      project => "worker_1",
-      job-id => "{$rand}_1",
-      description => "spawned job",
+    my $job-id = "{$rand}_1";
+
+    Sparky::JobApi.new(:project<worker_1>,:$job-id).queue({
+      description => "spawned job. 03.1",
       tags => %(
         seed => $rand,
         stage => "child",
         i => 1,
       ),
-     );
-
-    use HTTP::Tinyish;
-
-    my $http = HTTP::Tinyish.new;
+    });
 
     my @jobs;
 
@@ -643,37 +623,32 @@ if tags()<stage> eq "main" {
     # but will be launched recursively
     # in "child" jobs 
 
-
     for 1 .. 10 -> $i {
 
       my $supply = supply {
 
-        #my $j = 1;
+        my $project = "worker_{$i}";
+
+        my $job-id = "{$rand}_{$i}";
+
+        my $j = Sparky::JobApi.new(:$project,:$job-id);
 
         while True {
-          my %r = $http.get("http://127.0.0.1:4000/status/worker_{$i}/{$rand}_{$i}");
-          %r<status> == 200 or next;
-          if %r<content>.Int == 1 {
-            emit %( id => "job_{$i}", status => "OK");
-            done;
-          } elsif %r<content>.Int == -1 {
-            emit %( id => "job_{$i}", status => "FAIL");
-            done;
-          } elsif %r<content>.Int == 0 {
-            emit %( id => "job_{$i}", status => "RUNNING");
-          }
-          $j++;
-          if $j>=30000 { # timeout after 30000 requests
-            emit %( id => "job_{$i}", status => "TIMEOUT");
-            done
-          }
+
+          my $status = $j.status;
+
+          emit %( id => "{$project}/{$job-id}", status => $status );
+
+          done if $status eq "FAIL" or $status eq "OK";
+
+          sleep(1);
+
         }
+
       }
 
       $supply.tap( -> $v {
-        if $v<status> eq "FAIL" or $v<status> eq "OK"  or $v<status> eq "TIMEOUT" {
-          push @jobs, $v;
-        }
+        push @jobs, $v;
         say $v;
       });
 
@@ -691,7 +666,7 @@ if tags()<stage> eq "main" {
 
     if tags()<i> < 10 {
 
-      my $i = tags()<i> + 1;
+      my $i = tags()<i>.Int + 1;
 
       # do some useful stuff here
       # and launch another recursive job
@@ -700,16 +675,17 @@ if tags()<stage> eq "main" {
       # recursively launched jobs
       # get waited in a "main" scenario 
 
-      job-queue %(
-        project => "worker_{$i}",
-        job-id => "{tags()<seed>}_{$i}",
-        description => "spawned job",
+      my $project = "worker_{$i}"; 
+      my $job-id = "{tags()<seed>}_{$i}";
+
+      Sparky::JobApi.new(:$project,:$job-id).queue({
+        description => "spawned job. 03.{$i}",
         tags => %(
           seed => tags()<seed>,
           stage => "child",
           i => $i,
         ),
-     );
+      });
    }
 }
 ```

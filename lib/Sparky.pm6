@@ -6,31 +6,39 @@ use DBIish;
 use Time::Crontab;
 
 my $root = %*ENV<SPARKY_ROOT> || %*ENV<HOME> ~ '/.sparky/projects';
+my %conf;
+my $dbh;
 
 sub sparky-http-root is export {
 
   %*ENV<SPARKY_HTTP_ROOT> || "";
 
 }
+sub sparky-tcp-port is export {
+
+  %*ENV<SPARKY_TCP_PORT> || 4000;
+
+}
+
 sub get-sparky-conf is export {
 
+  return %conf if %conf;
+ 
   my $conf-file = %*ENV<HOME> ~ '/sparky.yaml';
 
   # say ">>> ", $conf-file.IO.slurp;
 
-  my %conf = $conf-file.IO ~~ :f ?? load-yaml($conf-file.IO.slurp) !! Hash.new;
+  %conf = $conf-file.IO ~~ :f ?? load-yaml($conf-file.IO.slurp) !! Hash.new;
 
-  %conf<sparky_port> ||= 4000;
-
-  %conf;
+  return %conf;
 
 }
 
 multi sub get-dbh ( $dir ) is export {
 
-  my %conf = get-sparky-conf();
-
   my $dbh;
+
+  my %conf = get-sparky-conf();
 
   if %conf<database> && %conf<database><engine> && %conf<database><engine> !~~ / :i sqlite / {
 
@@ -53,16 +61,16 @@ multi sub get-dbh ( $dir ) is export {
 
   }
 
-  $dbh
+  return $dbh
 
 }
 
 
 multi sub get-dbh {
 
-  my %conf = get-sparky-conf();
-
   my $dbh;
+
+  my %conf = get-sparky-conf();
 
   if %conf<database> && %conf<database><engine> && %conf<database><engine> !~~ / :i sqlite / {
 
@@ -81,6 +89,8 @@ multi sub get-dbh {
     $dbh  = DBIish.connect("SQLite", database => $db-name );
 
   }
+
+  return $dbh;
 
 }
 

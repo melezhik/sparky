@@ -7,7 +7,7 @@ use Sparky;
 use Sparky::HTML;
 use YAMLish;
 use Text::Markdown;
-use Sparky::JobApi;
+use Sparky::Job;
 use JSON::Tiny;
 
 my $root = %*ENV<SPARKY_ROOT> || %*ENV<HOME> ~ '/.sparky/projects';
@@ -376,7 +376,9 @@ my $application = route {
 
 (.out-buffer = False for $*OUT, $*ERR;);
 
-my $port = get-sparky-conf()<sparky_port>;
+my $port = sparky-tcp-port();;
+
+say "run sparky web ui on port: {$port} ...";
 
 my Cro::Service $service = Cro::HTTP::Server.new:
     :host<0.0.0.0>, :$port, :$application;
