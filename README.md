@@ -721,7 +721,7 @@ local Sparky jobs.
 
 For example one can run cluster on docker instance `alpine-with-raku` running on remote Sparky server:
 
-```
+```raku
   my $j = Sparky::JobApi.new(:api<http://sparrowhub.io:4000>);
   %j.queue({
     description => "child job"
