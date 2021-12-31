@@ -81,8 +81,11 @@ sub put-job-stash (%config,%data) is export {
 
   mkdir "{$sparky-project-dir}/.stash" unless "{$sparky-project-dir}/.stash".IO ~~ :d;
 
+  say "put-job-stash: put data to stash - {$sparky-project-dir}/.stash/$job-id ...";
+
   "{$sparky-project-dir}/.stash/$job-id".IO.spurt(to-json(%data));
 
+  return { path => "{$sparky-project-dir}/.stash/$job-id" };
 }
 
 sub get-job-stash ($project,$job-id) is export {
