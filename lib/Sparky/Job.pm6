@@ -1,4 +1,6 @@
 unit module Sparky::Job;
+use JSON::Tiny;
+
 
 sub job-queue-fs (%config,$sparrowfile,$sparrowdo-config) is export {
 
@@ -69,3 +71,26 @@ sub job-queue-fs (%config,$sparrowfile,$sparrowdo-config) is export {
 }
 
 
+sub put-job-stash (%config,%data) is export {
+
+  my $project = %config<project>;
+
+  my $job-id =  %config<job-id>;
+
+  my $sparky-project-dir = "{%*ENV<HOME>}/.sparky/projects/{$project}";
+
+  mkdir "{$sparky-project-dir}/.stash" unless "{$sparky-project-dir}/.stash".IO ~~ :d;
+
+  "{$sparky-project-dir}/.stash/$job-id".IO.spurt(to-json(%data));
+
+}
+
+sub get-job-stash ($project,$job-id) is export {
+
+  my $sparky-project-dir = "{%*ENV<HOME>}/.sparky/projects/{$project}";
+
+  return 
+    "{$sparky-project-dir}/.stash/$job-id".IO ~~ :f ??
+    "{$sparky-project-dir}/.stash/$job-id".IO.slurp !!
+    '{}'
+}

@@ -50,8 +50,6 @@ my $application = route {
 
       request-body -> %json {
 
-        #say %json.perl;
-
         try { 
 
           $res = job-queue-fs(%json<config>,%json<sparrowfile>,%json<sparrowdo-config>);
@@ -69,6 +67,44 @@ my $application = route {
       content 'application/json', $res;
 
     }
+
+  }
+
+  post -> 'stash', :$token? is header  {
+
+    if sparky-api-token() && sparky-api-token() ne $token {
+
+      forbidden("text/plain","bad token");
+
+    } else {
+
+      my $res;
+
+      request-body -> %json {
+
+        try { 
+
+          $res = put-job-stash(%json<config>,%json<data>);
+
+          CATCH {
+            default {
+              my $err = "Error {.^name}, : , {.Str}";
+              $res = to-json({ error => $err });
+            }
+          }
+        }
+
+      }
+
+      content 'application/json', $res;
+
+    }
+
+  }
+
+  get -> 'stash', $project, $key is header  {
+
+      content 'application/json', get-job-stash($project,$key);
 
   }
 
