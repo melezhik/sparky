@@ -22,7 +22,13 @@ sub job-queue-fs (%config,$sparrowfile,$sparrowdo-config) is export {
 
   "{$cache-dir}/config.pl6".IO.spurt($sparrowdo-config.perl);
 
-  my %trigger = EVALFILE("{%*ENV<HOME>}/.sparky/work/{%config<parent-project>}/.triggers/{%config<parent-job-id>}");
+  my %trigger = %();
+
+  my $parent-trigger-file = "{%*ENV<HOME>}/.sparky/work/{%config<parent-project>}/.triggers/{%config<parent-job-id>}";
+
+  if $parent-trigger-file.IO ~~ :f {
+    %trigger = EVALFILE("{%*ENV<HOME>}/.sparky/work/{%config<parent-project>}/.triggers/{%config<parent-job-id>}");
+  }
 
   %trigger<cwd> = $cache-dir;
 
