@@ -204,7 +204,7 @@ sub MAIN (
     $sparrowdo-run ~= " --debug";
   }
 
-  %sparrowdo-config<bootstrap> = True unless %sparrowdo-config<bootstrap>:exists;
+  %sparrowdo-config<bootstrap> = True if %sparrowdo-config<bootstrap>;
 
   if  %sparrowdo-config<bootstrap> {
     $sparrowdo-run ~= " --bootstrap";

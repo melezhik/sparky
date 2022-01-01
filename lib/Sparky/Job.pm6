@@ -72,7 +72,7 @@ sub job-queue-fs (%config,$sparrowfile,$sparrowdo-config) is export {
 
   "{$cache-dir}/sparrowfile".IO.spurt($sparrowfile);
 
-  return  { project => $project, job-id => $job-id };
+   return  { project => $project, job-id => $job-id };
 
 }
 
