@@ -40,7 +40,7 @@ my $application = route {
 
   post -> 'queue', :$token? is header  {
 
-    if sparky-api-token() && sparky-api-token() ne $token {
+    if sparky-api-token() and  ( sparky-api-token() ne $token ) {
 
       forbidden("text/plain","bad token");
 
