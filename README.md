@@ -694,6 +694,162 @@ subsequent jobs.
 
 Main scenario waits till all recursive jobs finishes in none blocking Raku `supply|tap` fashion.
 
+## Job stash
+
+Stash is a piece of data a job could write or read. There are two ways to use stashes.
+
+When a child job writes a data and the a parent job reads it:
+
+```raku
+  use Sparky::JobApi;
+
+  if tags()<stage> eq "main" {
+
+    # spawns a child job
+
+    my $j = Sparky::JobApi.new(:project<spawned_jobs>);
+    $j.queue({
+      description => "my spawned job",
+      tags => %(
+        stage => "child",
+        foo => 1,
+        bar => 2,
+      ),
+    });
+
+    say "queue spawned job, ",$j.info.perl;
+
+    my $supply = supply {
+
+        while True {
+
+          my $status = $j.status;
+
+          emit %( job-id => $j.info<job-id>, status => $status );
+
+          done if $status eq "FAIL" or $status eq "OK";
+
+          sleep(5);
+
+        }
+    }
+
+    $supply.tap( -> $v {
+        say $v;
+    });
+
+    # read a data from child job
+    say $j.get-stash().perl;
+
+
+  } elsif tags()<stage> eq "child" {
+
+    # child job here
+
+    say "config: ", config().perl;
+    say "tags: ", tags().perl;
+
+    my $j = Sparky::JobApi.new( mine => True );
+
+    # puts a data so that other jobs could read it
+    $j.put-stash({ hello => "Sparky" });
+
+  }
+``` 
+
+When a parent job writes a data to a child job ( before it's spawned ) and
+then a child job reads it:
+
+```raku
+  use Sparky::JobApi;
+
+  if tags()<stage> eq "main" {
+
+    # spawns a child job
+
+    my $j = Sparky::JobApi.new(:project<spawned_jobs>);
+
+    # prepare a data for a child job
+    # so that when it starts
+    # it could read it
+
+    $j.put-stash({ hello => "world" });
+
+    $j.queue({
+      description => "my spawned job",
+      tags => %(
+        stage => "child",
+        foo => 1,
+        bar => 2,
+      ),
+    });
+
+    say "queue spawned job, ",$j.info.perl;
+
+    my $supply = supply {
+
+        while True {
+
+          my $status = $j.status;
+
+          emit %( job-id => $j.info<job-id>, status => $status );
+
+          done if $status eq "FAIL" or $status eq "OK";
+
+          sleep(5);
+
+        }
+    }
+
+    $supply.tap( -> $v {
+        say $v;
+    });
+
+  } elsif tags()<stage> eq "child" {
+
+    # child job here
+
+    say "config: ", config().perl;
+    say "tags: ", tags().perl;
+
+    # read a data prepared by a parent job
+
+    my $j = Sparky::JobApi.new( mine => True );
+
+    say $j.get-stash().perl;
+
+  }
+```
+
+In general form a job write a data to stash by using `put-stash` method:
+
+```raku
+my $j = Sparky::JobApi.new();
+$j.put-stash({ hello => "world", list => [ 1, 2, 3] });
+$j.queue; # job will be queued and get an access to a data via `get-stash` method
+```
+
+A data written has to a be any Raku data structure that could be
+converted into JSON format.
+
+To read a data from a  _current_ job, use `mine => True` parameter of
+Sparky::JobApi constructor.
+
+```raku
+# read a data in this job stash
+my $j = Sparky::JobApi.new( mine => True );
+$j.get-stash();
+```
+
+To read a data from a  _specific_ job, specify `project` and `job-id` in
+Sparky::JobApi constructor:
+
+```raku
+# read a data from a specific job stash
+my $j = Sparky::JobApi.new( :$project, :$job-id );
+$j.get-stash();
+```
+
 ## Cluster jobs
 
 One can have more then one Sparky instances and run jobs across them.
