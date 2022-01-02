@@ -2,9 +2,9 @@ use Sparky::JobApi;
 
 if tags()<stage> && tags<stage> eq "child" {
 
-  bash "echo 'SPARKY_API_TOKEN: {tags()<SPARKY_API_TOKEN>}' > ~/sparky.yaml", %(
-    description => "set token"
-  );
+  #bash "echo 'SPARKY_API_TOKEN: {tags()<SPARKY_API_TOKEN>}' > ~/sparky.yaml", %(
+  #  description => "set token"
+  #);
 
   for  'sparky', 'sparky-job-api', 'sparrowdo' -> $app {
 
