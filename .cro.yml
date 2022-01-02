@@ -6,3 +6,4 @@ ignore:
   - .cache
   - icons/
   - README.md
+  - utils/
