@@ -16,13 +16,13 @@ sub sparky-http-root is export {
 }
 sub sparky-tcp-port is export {
 
-  %*ENV<SPARKY_TCP_PORT> || 4000;
+  get-sparky-conf()<SPARKY_TCP_PORT> || 4000;
 
 }
 
 sub sparky-api-token is export {
 
-  %*ENV<SPARKY_API_TOKEN>;
+  get-sparky-conf()<SPARKY_API_TOKEN>;
 
 }
 

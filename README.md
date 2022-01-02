@@ -108,12 +108,10 @@ $ sparrowdo --sparrowfile=utils/install-sparky-web-systemd.raku --no_sudo --loca
 ```
 
 By default web app starts at tcp port `4000`, to configure web app tcp port 
-use `SPARKY_TCP_PORT` environment variable:
+set `SPARKY_TCP_PORT` variable in `~/sparky.yaml`
 
-```bash
-$ export SPARKY_TCP_PORT=5000 
-$ nohup cro run &
-$ nohup sparkyd &
+```yaml
+SPARKY_TCP_PORT: 5000 
 ```
 
 # Creating first sparky project
@@ -892,12 +890,12 @@ For example one can run cluster on docker instance `alpine-with-raku` running on
 ```
 
 For security reason Sparky server calling jobs on another Sparky server need to have the same
-security token. One need to ensure this on both local and remote Sparky server:
+security token. 
 
-```bash
-export SPARKY_API_TOKEN=secret123456 
-nohup sparkyd &
-nohup cro run &
+Set up `~/sparky.yaml` file on both local and remote Sparky servers:
+
+```yaml
+SPARKY_API_TOKEN: secret123456
 ```
 
 `SPARKY_API_TOKEN` should be any random string. 
