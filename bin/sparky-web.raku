@@ -292,6 +292,14 @@ my $application = route {
 
       $dbh.dispose;
 
+      my $data = "$reports-dir/$project/build-$build_id.txt".IO.slurp;
+
+      if sparky-api-token() {
+
+        $data.=subst(sparky-api-token(),"*******",:g);
+      
+      }
+
       template 'templates/report.crotmp', {
         css => css(), 
         navbar => navbar(), 
@@ -301,7 +309,7 @@ my $application = route {
         key => $key, 
         dt => $dt, 
         description => $description, 
-        data => "$reports-dir/$project/build-$build_id.txt".IO.slurp
+        data => $data
       }
 
     } else {
@@ -359,8 +367,17 @@ my $application = route {
 
       $dbh.dispose;
 
+
       if $build_id.defined {
-        content 'text/plain', "$reports-dir/$project/build-$build_id.txt".IO.slurp
+
+        my $data = "$reports-dir/$project/build-$build_id.txt".IO.slurp;
+
+        if sparky-api-token() {
+
+          $data.=subst(sparky-api-token(),"*******",:g);
+      
+        }
+        content 'text/plain', $data;
       } else {
         not-found();
       }
