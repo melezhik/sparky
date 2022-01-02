@@ -40,7 +40,7 @@ my $application = route {
 
   post -> 'queue', :$token? is header  {
 
-    if sparky-api-token() and  ( sparky-api-token() ne $token ) {
+    if sparky-api-token() and ( ! $token || (sparky-api-token() ne $token) ) {
 
       forbidden("text/plain","bad token");
 
@@ -72,7 +72,7 @@ my $application = route {
 
   post -> 'stash', :$token? is header  {
 
-    if sparky-api-token() && sparky-api-token() ne $token {
+    if sparky-api-token() and ( ! $token || (sparky-api-token() ne $token) ) {
 
       forbidden("text/plain","bad token");
 
@@ -381,6 +381,30 @@ my $application = route {
       } else {
         not-found();
       }
+    }
+
+  }
+
+  get -> 'trigger', $project, $key, :$token? is header {
+
+    if sparky-api-token() and ( ! $token || (sparky-api-token() ne $token) ) {
+
+      forbidden("text/plain","bad token");
+  
+    } elsif "$root/$project/.triggers/$key".IO ~~ :f  {
+
+        my $data = "$root/$project/.triggers/$key".IO.slurp;
+
+        content 'text/plain', $data;
+
+    } elsif "$root/../work/$project/.triggers/$key".IO ~~ :f  {
+
+        my $data = "$root/../work/$project/.triggers/$key".IO.slurp;
+
+        content 'text/plain', $data;
+
+     } else {
+       not-found();
     }
 
   }
