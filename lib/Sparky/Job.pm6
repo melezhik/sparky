@@ -2,7 +2,7 @@ unit module Sparky::Job;
 use JSON::Tiny;
 
 
-sub job-queue-fs (%config,$sparrowfile,$sparrowdo-config) is export {
+sub job-queue-fs (%config,%trigger,$sparrowfile,$sparrowdo-config) is export {
 
   my $project = %config<project>;
 
@@ -21,14 +21,6 @@ sub job-queue-fs (%config,$sparrowfile,$sparrowdo-config) is export {
   mkdir $cache-dir;
 
   "{$cache-dir}/config.pl6".IO.spurt($sparrowdo-config.perl);
-
-  my %trigger = %();
-
-  my $parent-trigger-file = "{%*ENV<HOME>}/.sparky/work/{%config<parent-project>}/.triggers/{%config<parent-job-id>}";
-
-  if $parent-trigger-file.IO ~~ :f {
-    %trigger = EVALFILE("{%*ENV<HOME>}/.sparky/work/{%config<parent-project>}/.triggers/{%config<parent-job-id>}");
-  }
 
   %trigger<cwd> = $cache-dir;
 

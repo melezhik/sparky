@@ -52,7 +52,7 @@ my $application = route {
 
         try { 
 
-          $res = job-queue-fs(%json<config>,%json<sparrowfile>,%json<sparrowdo-config>);
+          $res = job-queue-fs(%json<config>,%json<trigger>,%json<sparrowfile>,%json<sparrowdo-config>);
 
           CATCH {
             default {
