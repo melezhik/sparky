@@ -29,7 +29,7 @@ class Pipeline {
     my $j = Sparky::JobApi.new();
 
     $j.queue({
-      description => "sparky libs",
+      description => "sparky libs on {$.host}",
       tags => %(
         stage => "libs",
         ip => $.host,
@@ -50,7 +50,7 @@ class Pipeline {
     $j = Sparky::JobApi.new();
 
     $j.queue({
-      description => "sparky raku libs",
+      description => "sparky raku libs on {$.host}",
       tags => %(
         stage => "raku-libs",
         ip => $.host,
@@ -72,7 +72,7 @@ class Pipeline {
     $j = Sparky::JobApi.new();
 
     $j.queue({
-      description => "sparky services",
+      description => "sparky services on {$.host}",
       tags => %(
         stage => "services",
         ip => $.host,
