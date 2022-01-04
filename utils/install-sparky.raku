@@ -2,6 +2,7 @@ use Sparky::JobApi;
 
 class Pipeline {
 
+  has Str $.comp = tags()<comp> || "main";
   has Str $.ssh-user = tags()<ssh-user>  || "sparky";
   has Str $.host = tags()<ip>;
   has Str $.api-token =  tags()<api-token> || "";
@@ -24,7 +25,7 @@ class Pipeline {
 
   }
 
-  method stage-main() {
+  method !queue-libs() {
 
     my $j = Sparky::JobApi.new();
 
@@ -47,7 +48,11 @@ class Pipeline {
 
     self!wait-job($j);
 
-    $j = Sparky::JobApi.new();
+  }
+
+  method !queue-raku-libs() {
+
+    my $j = Sparky::JobApi.new();
 
     $j.queue({
       description => "sparky raku libs on {$.host}",
@@ -69,7 +74,11 @@ class Pipeline {
 
     self!wait-job($j);
 
-    $j = Sparky::JobApi.new();
+  }
+
+  method !queue-services() {
+
+    my $j = Sparky::JobApi.new();
 
     $j.queue({
       description => "sparky services on {$.host}",
@@ -90,6 +99,16 @@ class Pipeline {
 
     self!wait-job($j);
 
+  }
+
+  method stage-main() {
+  
+    self!queue-libs() if $.comp eq "main" or $.comp eq "libs";
+
+    self!queue-raku-libs() if $.comp eq "main" or $.comp eq "raku-libs";
+
+    self!queue-services() if $.comp eq "main" or $.comp eq "services";
+    
   } 
 
   method stage-libs {
@@ -134,7 +153,7 @@ class Pipeline {
     systemd-service "sparky-web", %(
       user => $.ssh-user,
       workdir => "/home/{$.ssh-user}/projects/Sparky",
-      command => "/usr/bin/bash --login -c 'cd /home/{$.ssh-user}/projects/Sparky && cro run'"
+      command => "/usr/bin/bash --login -c 'export PATH=~/.raku/bin:\$PATH && cd /home/{$.ssh-user}/projects/Sparky && cro run'"
     );
 
     service-restart "sparky-web";
