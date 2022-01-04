@@ -32,6 +32,8 @@ class Pipeline {
       description => "sparky libs",
       tags => %(
         stage => "libs",
+        ip => $.host,
+        ssh-user => $.ssh-user,
       ),
       sparrowdo => %(
         bootstrap => True,
@@ -51,6 +53,9 @@ class Pipeline {
       description => "sparky raku libs",
       tags => %(
         stage => "raku-libs",
+        ip => $.host,
+        ssh-user => $.ssh-user,
+        api-token => $.api-token,
       ),
       sparrowdo => %(
         bootstrap => False,
@@ -70,6 +75,8 @@ class Pipeline {
       description => "sparky services",
       tags => %(
         stage => "services",
+        ip => $.host,
+        ssh-user => $.ssh-user,
       ),
       sparrowdo => %(
         bootstrap => False,
