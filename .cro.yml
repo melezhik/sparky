@@ -7,3 +7,4 @@ ignore:
   - icons/
   - README.md
   - utils/
+  - hosts

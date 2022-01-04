@@ -1,6 +1,8 @@
 [
   %(
     host => "localhost",
-    description => "install sparky",
-  );
+    tags => %( 
+      name => "install_sparky"
+    ),
+  ),
 ]

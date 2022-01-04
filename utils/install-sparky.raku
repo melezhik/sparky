@@ -1,10 +1,30 @@
 use Sparky::JobApi;
 
-my $ssh-user = tags()<ssh-user>  || "sparky";
+class Pipeline {
 
-if ! tags()<stage> {
+  has Str $.ssh-user = tags()<ssh-user>  || "sparky";
+  has Str $.host = tags()<ip>;
+  has Str $.api-token =  tags()<api-token>;
 
-    my $status;
+  method !wait-job($j){
+
+    my $s = supply { 
+      while True {  
+        emit $j.status; 
+        done if $j.status eq "FAIL" or $j.status eq "OK"; 
+        sleep(5) 
+      } 
+    }
+
+   my $status;
+
+   $s.tap( -> $v { say $v; $status = $v } );
+
+   die unless $status eq "OK";
+
+  }
+
+  method stage-main() {
 
     my $j = Sparky::JobApi.new();
 
@@ -16,58 +36,104 @@ if ! tags()<stage> {
       sparrowdo => %(
         bootstrap => True,
         sudo => True,
-        host => tags()<ip>,
-        ssh_user => $ssh-user
+        host => $.host,
+        ssh_user => $.ssh-user
       );
     });
 
     say "queue spawned job, ",$j.info.perl;
-  
-    my $supply = supply { while True {  emit $j.status; done if $j.status eq "FAIL" or $j.status eq "OK"; sleep(5) } }
 
-    $supply.tap( -> $v { say $v; $status = $v } );
-
-    die unless $status eq "OK";
+    self!wait-job($j);
 
     $j = Sparky::JobApi.new();
 
     $j.queue({
-      description => "sparky rakulibs",
+      description => "sparky raku libs",
       tags => %(
-        stage => "rakulibs",
+        stage => "raku-libs",
       ),
       sparrowdo => %(
         bootstrap => False,
         no_sudo => True,
-        host => tags()<ip>,
-        ssh_user => $ssh-user,
+        host => $.host,
+        ssh_user => $.ssh-user,
       );
     });
 
     say "queue spawned job, ",$j.info.perl;
-  
-    $supply = supply { while True {  emit $j.status; done if $j.status eq "FAIL" or $j.status eq "OK"; sleep(5) } }
 
-    $supply.tap( -> $v { say $v; $status = $v } );
+    self!wait-job($j);
 
-    die unless $status eq "OK";
+    $j = Sparky::JobApi.new();
 
-} elsif tags()<stage> && tags()<stage> eq "libs" {
+    $j.queue({
+      description => "sparky services",
+      tags => %(
+        stage => "services",
+      ),
+      sparrowdo => %(
+        bootstrap => False,
+        no_sudo => False,
+        host => $.host,
+        ssh_user => $.ssh-user,
+      );
+    });
+
+    say "queue spawned job, ",$j.info.perl;
+
+    self!wait-job($j);
+
+  } 
+
+  method stage-libs {
 
     package-install "libssl-dev";
+    package-install "libtemplate-perl carton";
 
-}  elsif tags()<stage> && tags()<stage> eq "rakulibs" {
+  }
 
-  bash "zef --version || /opt/rakudo-pkg/bin/install-zef";
+  method stage-raku-libs() {
 
-  for 'https://github.com/melezhik/sparrowdo.git',
-      'https://github.com/melezhik/sparky.git',
-      'https://github.com/melezhik/sparky-job-api.git' -> $i {
+    bash "zef --version || /opt/rakudo-pkg/bin/install-zef";
 
-      zef $i, %( notest => True );
+    for 'https://github.com/melezhik/sparrowdo.git',
+        'https://github.com/melezhik/sparky.git',
+        'https://github.com/melezhik/sparky-job-api.git' -> $i {
+
+        zef $i, %( notest => True );
+
+    }
+
+    directory "/home/{$.ssh-user}/projects/";
+
+    directory "/home/{$.ssh-user}/projects/Sparky";
+
+    git-scm "https://github.com/melezhik/sparky.git", %(
+      to => "/home/{$.ssh-user}/projects/Sparky";
+    );
+
+    bash "raku db-init.raku", %(
+      cwd => "/home/{$.ssh-user}/projects/Sparky"
+    );
+
+    "/home/{$.ssh-user}/sparky.yaml".IO.spurt("SPARKY_API_TOKEN: {$.api-token}");
+
+  }
+
+  method stage-services() {
+
+    systemd-service "sparky-web", %(
+      user => $.ssh-user,
+      workdir => "/home/{$.ssh-user}/projects/Sparky",
+      command => "/usr/bin/bash --login -c 'cd /home/{$.ssh-user}/projects/Sparky && cro run'"
+    );
+
+    service-restart "sparky-web";
 
   }
 
 }
 
+
+Pipeline.new."{tags()<stage>||'stage-main'}"();
 
