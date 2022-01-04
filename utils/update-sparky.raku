@@ -30,10 +30,10 @@ if tags()<stage> && tags<stage> eq "child" {
       tags => %(
         stage => "child",
       ),
-      sparrowdo => %(
-        no_sudo => True,
-        bootstrap => False
-      )
+      #sparrowdo => %(
+      #  no_sudo => True,
+      #  bootstrap => False
+      #)
     });
 
     say "queue spawned job, ",$j.info.perl;
