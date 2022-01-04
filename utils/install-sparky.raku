@@ -1,5 +1,7 @@
 use Sparky::JobApi;
 
+my $ssh-user = tags()<ssh-user>  || "sparky";
+
 if ! tags()<stage> {
 
     my $status;
@@ -15,7 +17,7 @@ if ! tags()<stage> {
         bootstrap => True,
         sudo => True,
         host => tags()<ip>,
-        ssh_user => "sparky"
+        ssh_user => $ssh-user
       );
     });
 
@@ -38,7 +40,7 @@ if ! tags()<stage> {
         bootstrap => False,
         no_sudo => True,
         host => tags()<ip>,
-        ssh_user => "sparky"
+        ssh_user => $ssh-user,
       );
     });
 
