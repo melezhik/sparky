@@ -144,5 +144,5 @@ class Pipeline {
 }
 
 
-Pipeline.new."{tags()<stage>||'stage-main'}"();
+Pipeline.new."stage-{tags()<stage>||'main'}"();
 
