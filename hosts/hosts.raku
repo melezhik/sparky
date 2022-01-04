@@ -12,7 +12,7 @@
     tags => %( 
       name => "install sparky on 40.83.40.131",
       ssh-user => "azureuser",
-      ip => "azureuser"
+      ip => "40.83.40.131"
     ),
   ),
 ]
