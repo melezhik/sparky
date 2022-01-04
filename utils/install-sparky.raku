@@ -156,7 +156,19 @@ class Pipeline {
       command => "/usr/bin/bash --login -c 'export PATH=~/.raku/bin:\$PATH && cd /home/{$.ssh-user}/projects/Sparky && cro run'"
     );
 
+    systemd-service "sparkyd", %(
+      user => $.ssh-user,
+      workdir => "/home/{$.ssh-user}/projects/Sparky",
+      command => "/usr/bin/bash --login -c 'export PATH=~/.raku/bin:\$PATH && sparkyd'"
+    );
+
+    sleep(3);
+
+    bash "systemctl daemon-reload";
+
     service-restart "sparky-web";
+
+    service-restart "sparkyd";
 
   }
 
