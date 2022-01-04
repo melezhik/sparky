@@ -4,7 +4,7 @@ class Pipeline {
 
   has Str $.ssh-user = tags()<ssh-user>  || "sparky";
   has Str $.host = tags()<ip>;
-  has Str $.api-token =  tags()<api-token>;
+  has Str $.api-token =  tags()<api-token> || "";
 
   method !wait-job($j){
 
@@ -123,7 +123,9 @@ class Pipeline {
       cwd => "/home/{$.ssh-user}/projects/Sparky"
     );
 
-    "/home/{$.ssh-user}/sparky.yaml".IO.spurt("SPARKY_API_TOKEN: {$.api-token}");
+    if $.api-token {
+      "/home/{$.ssh-user}/sparky.yaml".IO.spurt("SPARKY_API_TOKEN: {$.api-token}");
+    }
 
   }
 
