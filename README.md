@@ -1046,20 +1046,6 @@ An example Sparky plugins are:
 * [Sparky::Plugin::Hello](https://github.com/melezhik/sparky-plugin-hello)
 * [Sparky::Plugin::Notify::Email](https://github.com/melezhik/sparky-plugin-notify-email)
 
-# Command line client
-
-You can build the certain project using sparky command client called `sparky-runner.raku`:
-
-```bash
-$ sparky-runner.raku --dir=/home/user/.sparky/projects/teddy-bear-app
-```
-
-Or just:
-
-```bash
-$ cd ~/.sparky/projects/teddy-bear-app && sparky-runner.raku
-```
-
 # SSL Support
 
 Sparky web server may run on SSL. To enable this add a couple of parameters to `~/sparky.yaml`
@@ -1074,6 +1060,21 @@ tls:
 ```
 
 `SPARKY_USE_TLS` enables SSL mode and `tls` section has paths to ssl certificate ( key and certificate parts ).
+
+
+# Command line client
+
+You can build the certain project using sparky command client called `sparky-runner.raku`:
+
+```bash
+$ sparky-runner.raku --dir=/home/user/.sparky/projects/teddy-bear-app
+```
+
+Or just:
+
+```bash
+$ cd ~/.sparky/projects/teddy-bear-app && sparky-runner.raku
+```
 
 # Sparky runtime parameters
 
