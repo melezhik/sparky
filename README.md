@@ -904,7 +904,9 @@ Apparently one can have many Sparky servers logically combined into a cluster, a
 all servers within a group can run remote jobs on each other, the only requirement
 is they all have to share the same `SPARKY_API_TOKEN`
 
-For now, only `http` protocol is supported for cluster jobs URLs.
+For now `http/https` protocol are supported for cluster jobs URLs. 
+
+See also "SSL support" section.
 
 # Sparky plugins
 
