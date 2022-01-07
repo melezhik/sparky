@@ -18,7 +18,7 @@ my $application = route {
 
   post -> 'build', 'project', $project {
 
-    my $id = "{('a' .. 'z').pick(20).join('')}{$*PID}";
+    my $id = "{('a' .. 'z').pick(20).join('')}.{$*PID}";
 
     mkdir "$root/$project/.triggers";
 
@@ -465,8 +465,22 @@ my $port = sparky-tcp-port();;
 
 say "run sparky web ui on port: {$port} ...";
 
-my Cro::Service $service = Cro::HTTP::Server.new:
-    :host<0.0.0.0>, :$port, :$application;
+my Cro::Service $service;
+
+if sparky-use-tls() {
+
+  say "use tls mode ...";
+
+  my %tls = sparky-tls-settings();
+
+  say "load tls settings: ", %tls.perl;
+
+  $service = Cro::HTTP::Server.new: :host<0.0.0.0>, :$port, :$application, :%tls;
+
+} else {
+
+  $service = Cro::HTTP::Server.new: :host<0.0.0.0>, :$port, :$application;
+}
 
 $service.start;
 

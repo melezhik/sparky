@@ -47,9 +47,8 @@ sub MAIN (
   my %trigger =  Hash.new;
 
   if $trigger {
-    #say "move trigger to cache dir ... [$trigger] => [{$build-cache-dir}/{$trigger.IO.basename}] ";
+    say "loading trigger $trigger into Raku ...";
     %trigger = EVALFILE($trigger);
-    move($trigger,"{$build-cache-dir}/{$trigger.IO.basename}");
   }
 
   if $make-report {
@@ -136,6 +135,14 @@ sub MAIN (
 
   say "merged sparrowdo configuration: {Dump(%sparrowdo-config)}";
 
+  if $trigger {
+    say "moving trigger to {$build-cache-dir}/{$trigger.IO.basename} ...";
+    my %t = EVALFILE($trigger);
+    %t<sparrowdo> = %sparrowdo-config;
+    unlink $trigger;
+    "{$build-cache-dir}/{$trigger.IO.basename}".IO.spurt(%t.perl);
+  }
+
   if %sparrowdo-config<docker> {
     $sparrowdo-run ~= " --docker=" ~ %sparrowdo-config<docker>;
   } elsif %sparrowdo-config<host> {
@@ -187,6 +194,7 @@ sub MAIN (
     %sparrowdo-config<tags> ~= ",SPARKY_WORKER=host" if %sparrowdo-config<host>;
     %sparrowdo-config<tags> ~= ",SPARKY_TCP_PORT={sparky-tcp-port()}";
     %sparrowdo-config<tags> ~= ",SPARKY_API_TOKEN={sparky-api-token()}" if sparky-api-token();
+    %sparrowdo-config<tags> ~= ",SPARKY_USE_TLS=1" if sparky-use-tls();
     $sparrowdo-run ~= " --tags='{%sparrowdo-config<tags>}'";
   } elsif $trigger {
     $sparrowdo-run ~= " --tags=SPARKY_PROJECT={$project},SPARKY_JOB_ID={$trigger.IO.basename},SPARKY_TCP_PORT={sparky-tcp-port()}";
@@ -194,6 +202,7 @@ sub MAIN (
     $sparrowdo-run ~= ",SPARKY_WORKER=localhost" if %sparrowdo-config<localhost>;
     $sparrowdo-run ~= ",SPARKY_WORKER=host" if %sparrowdo-config<host>;
     $sparrowdo-run ~= ",SPARKY_API_TOKEN={sparky-api-token()}" if sparky-api-token();
+    $sparrowdo-run ~= ",SPARKY_USE_TLS" if sparky-use-tls();
   }
 
   if %sparrowdo-config<verbose> {

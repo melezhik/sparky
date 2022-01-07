@@ -14,6 +14,17 @@ sub sparky-http-root is export {
   %*ENV<SPARKY_HTTP_ROOT> || "";
 
 }
+
+sub sparky-use-tls is export {
+
+  get-sparky-conf()<SPARKY_USE_TLS>;
+
+}
+
+sub sparky-tls-settings is export {
+  get-sparky-conf()<tls>
+}
+
 sub sparky-tcp-port is export {
 
   get-sparky-conf()<SPARKY_TCP_PORT> || 4000;

@@ -1,0 +1,37 @@
+if tags()<stage> eq "main" {
+
+    use Sparky::JobApi;
+
+    my $j = Sparky::JobApi.new :workers<10>;
+
+    $j.queue({
+      description => "spawned job (localhost)", 
+      tags => %(
+        stage => "child",
+        foo => 1,
+        bar => 2,
+      ),
+    });
+
+    say "job info: ", $j.info.perl;
+
+    $j = Sparky::JobApi.new: :api<https://127.0.0.1:4000>, :workers<10>;
+
+    $j.queue({
+      description => "spawned job (api)",
+      tags => %(
+        stage => "child",
+        foo => 1,
+        bar => 2,
+      ),
+    });
+
+    say "job info: ", $j.info.perl;
+
+} elsif tags()<stage> eq "child" {
+
+  say "I am a child scenario";
+  say "config: ", config().perl;
+  say "tags: ", tags().perl;
+
+}
