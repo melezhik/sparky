@@ -1060,6 +1060,21 @@ Or just:
 $ cd ~/.sparky/projects/teddy-bear-app && sparky-runner.raku
 ```
 
+# SSL Support
+
+Sparky web server may run on SSL. To enable this add a couple of parameters to `~/sparky.yaml`
+
+configuration file:
+
+```
+SPARKY_USE_TLS: true
+tls:
+ private-key-file: '/home/user/.sparky/certs/www.example.com.key'
+ certificate-file: '/home/user/.sparky/certs/www.example.com.cert'
+```
+
+`SPARKY_USE_TLS` enables SSL mode and `tls` section has paths to ssl certificate ( key and certificate parts ).
+
 # Sparky runtime parameters
 
 All this parameters could be overridden by command line ( `--root`, `--work-root` )
