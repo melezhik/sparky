@@ -859,7 +859,7 @@ use Sparky::JobApi;
 
 if tags()<stage> eq "main" {
   my $j = Sparky::JobApi.new(:api<http://sparrowhub.io:4000>);
-  %j.queue({
+  $j.queue({
     description => "child job"
     tags => %(
       stage => "child"
@@ -877,7 +877,7 @@ For example one can run cluster on docker instance `alpine-with-raku` running on
 
 ```raku
   my $j = Sparky::JobApi.new(:api<http://sparrowhub.io:4000>);
-  %j.queue({
+  $j.queue({
     description => "child job"
     tags => %(
       stage => "child"
