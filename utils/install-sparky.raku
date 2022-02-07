@@ -4,8 +4,9 @@ class Pipeline {
 
   has Str $.comp = tags()<comp> || "main";
   has Str $.ssh-user = tags()<ssh-user>  || "sparky";
-  has Str $.host = tags()<ip>;
+  has Str $.host = tags()<host> || "";
   has Str $.api-token =  tags()<api-token> || "";
+  has Str $.ssl = tags()<ssl> || "True";
 
   method !wait-job($j){
 
@@ -25,6 +26,30 @@ class Pipeline {
 
   }
 
+  method !wait-jobs(@q){
+
+    my @jobs;
+
+    for @q -> $j {
+      my $s = supply { 
+        while True {
+          my %out = $j.info; %out<status> = $j.status;  
+          emit %out; 
+          done if $j.status eq "FAIL" or $j.status eq "OK"; 
+          sleep(5) 
+        } 
+      }
+     $s.tap( -> $v { say $v; push @jobs, $v if $v<status> eq "FAIL" or $v<status> eq "OK" } );
+   }
+
+    say @jobs.grep({$_<status> eq "OK"}).elems, " jobs finished successfully";
+
+    say @jobs.grep({$_<status> eq "FAIL"}).elems, " jobs failed";
+
+    die "found failed jobs" if @jobs.grep({$_<status> eq "FAIL"}).elems;
+
+  }
+
   method !queue-libs() {
 
     my $j = Sparky::JobApi.new();
@@ -33,7 +58,7 @@ class Pipeline {
       description => "sparky libs on {$.host}",
       tags => %(
         stage => "libs",
-        ip => $.host,
+        host => $.host,
         ssh-user => $.ssh-user,
       ),
       sparrowdo => %(
@@ -58,7 +83,7 @@ class Pipeline {
       description => "sparky raku libs on {$.host}",
       tags => %(
         stage => "raku-libs",
-        ip => $.host,
+        host => $.host,
         ssh-user => $.ssh-user,
         api-token => $.api-token,
       ),
@@ -84,8 +109,9 @@ class Pipeline {
       description => "sparky services on {$.host}",
       tags => %(
         stage => "services",
-        ip => $.host,
+        host => $.host,
         ssh-user => $.ssh-user,
+        ssl => $.ssl,
       ),
       sparrowdo => %(
         bootstrap => False,
@@ -101,7 +127,39 @@ class Pipeline {
 
   }
 
+
   method stage-main() {
+
+    my @q;  
+
+    for config()<cluster>.keys -> $w {
+
+      my $host = config()<cluster>{$w};
+
+      my $j = Sparky::JobApi.new( project => "install-sparky-{$w}" );
+
+      $j.queue({
+        description => "bootstrap sparky on {$w}",
+        tags => %(
+          stage => "worker",
+          host => $host,
+          ssh-user => "sparky",
+          ssl => $.ssl,
+          comp => $.comp,
+        ),
+      });
+
+      @q.push: $j;
+
+      say "queue spawned job, ",$j.info.perl;
+
+    }
+
+    self!wait-jobs(@q);
+
+  }
+  
+  method stage-worker() {
   
     self!queue-libs() if $.comp eq "main" or $.comp eq "libs";
 
@@ -138,17 +196,45 @@ class Pipeline {
       to => "/home/{$.ssh-user}/projects/Sparky";
     );
 
-    bash "raku db-init.raku", %(
+    bash "if test -f ~/.sparky/projects/db.sqlite3; then echo db.sqlite3 exists; else raku db-init.raku; fi", %(
+      description => "create sparky database",
       cwd => "/home/{$.ssh-user}/projects/Sparky"
     );
-
-    if $.api-token {
-      "/home/{$.ssh-user}/sparky.yaml".IO.spurt("SPARKY_API_TOKEN: {$.api-token}");
-    }
 
   }
 
   method stage-services() {
+
+    my $sc; # sparky config
+
+    if $.api-token { 
+      $sc~="SPARKY_API_TOKEN: {$.api-token}\n";
+    }
+
+    if $.ssl eq 'True' {
+
+      $sc~="SPARKY_USE_TLS: True\n";
+
+        my %state = task-run "create", "openssl-cert", %(
+          CN => "www.{$.host}"
+        );
+
+        file "/home/{$.ssh-user}/.sparky/key", %(
+          owner => "{$.ssh-user}",
+          content => %state<key>,
+        );  
+
+        file "/home/{$.ssh-user}/.sparky/cert", %(
+          owner => "{$.ssh-user}",
+          content => %state<cert>,
+        );
+
+      $sc~="tls:\n private-key-file: /home/{$.ssh-user}/.sparky/key\n";
+      $sc~="\n certificate-file: /home/{$.ssh-user}/.sparky/cert\n";
+
+    }
+
+    "/home/{$.ssh-user}/sparky.yaml".IO.spurt($sc);
 
     systemd-service "sparky-web", %(
       user => $.ssh-user,
@@ -168,7 +254,11 @@ class Pipeline {
 
     service-restart "sparky-web";
 
+    service-enable "sparky-web";
+
     service-restart "sparkyd";
+
+    service-enable "sparkyd";
 
   }
 
