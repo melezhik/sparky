@@ -883,7 +883,7 @@ class Pipeline
 
     }
 
-}
+  }
 
 Pipeline.new."stage-{tags()<stage>||'main'}"();
 ```
