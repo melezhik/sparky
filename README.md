@@ -407,17 +407,8 @@ if tags()<stage> eq "main" {
 In this example the same scenario runs for a main and child job, but
 code is conditionally branched off based on a `tags()<stage>` value:
 
-
-`hosts.raku`:
-
-```raku
-[
-  "localhost"
-]
-```
-
 ```bash
-sparrowdo --hosts=host.raku --no_sudo --tags=stage=main
+sparrowdo --localhost --no_sudo --sparky --tags=stage=main
 ``` 
 
 ## Job attributes
