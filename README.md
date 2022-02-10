@@ -850,38 +850,38 @@ class Pipeline
 
   does Sparky::JobApi::Role
 
-{
+  {
 
-  method stage-main {
+    method stage-main {
 
-    my $j = self.new-job: :project<spawned_011>;
+      my $j = self.new-job: :project<spawned_011>;
 
-    $j.queue({
-      description => "spawned job. 01", 
-      tags => %(
-        stage => "child",
-        foo => 1,
-        bar => 2,
-      ),
-    });
+      $j.queue({
+        description => "spawned job. 01", 
+        tags => %(
+          stage => "child",
+          foo => 1,
+          bar => 2,
+        ),
+      });
 
-    say "job info: ", $j.info.perl;
+      say "job info: ", $j.info.perl;
 
-    my $st = self.wait-job($j);
+      my $st = self.wait-job($j);
   
-    say $st.perl;
+      say $st.perl;
 
-    die if $st<FAIL>;
+      die if $st<FAIL>;
 
-  }
+    }
 
-  method stage-child {
+    method stage-child {
 
-    say "I am a child scenario";
-    say "config: ", config().perl;
-    say "tags: ", tags().perl;
+      say "I am a child scenario";
+      say "config: ", config().perl;
+      say "tags: ", tags().perl;
 
-  }
+    }
 
 }
 
@@ -907,7 +907,7 @@ Wait jobs and return state as Raku hash:
 
 * `wait-job($job)`
 
-The same as `wait-jobs()`, but for a single job
+The same as `wait-jobs(@jobs)`, but for a single job
 
 ## Cluster jobs
 
