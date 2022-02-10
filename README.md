@@ -841,7 +841,7 @@ $j.get-stash();
 
 ## Class API
 
-For OOP lovers there is Sparky::JobApi::Role that implements some Sparky::JobApi-ish methods,
+For OOP lovers there is a Sparky::JobApi::Role that implements some Sparky::JobApi-ish methods,
 so one can write scenarios in OOP style:
 
 
