@@ -408,7 +408,7 @@ In this example the same scenario runs for a main and child job, but
 code is conditionally branched off based on a `tags()<stage>` value:
 
 ```bash
-sparrowdo --localhost --no_sudo --sparky --tags=stage=main
+sparrowdo --localhost --no_sudo --with_sparky --tags=stage=main
 ``` 
 
 ## Job attributes
