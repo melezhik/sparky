@@ -839,6 +839,76 @@ my $j = Sparky::JobApi.new( :$project, :$job-id );
 $j.get-stash();
 ```
 
+## Class API
+
+For OOP lovers there is Sparky::JobApi::Role that implements some Sparky::JobApi-ish methods,
+so one can write scenarios in OOP style:
+
+
+```raku
+class Pipeline
+
+  does Sparky::JobApi::Role
+
+{
+
+  method stage-main {
+
+    my $j = self.new-job: :project<spawned_011>;
+
+    $j.queue({
+      description => "spawned job. 01", 
+      tags => %(
+        stage => "child",
+        foo => 1,
+        bar => 2,
+      ),
+    });
+
+    say "job info: ", $j.info.perl;
+
+    my $st = self.wait-job($j);
+  
+    say $st.perl;
+
+    die if $st<FAIL>;
+
+  }
+
+  method stage-child {
+
+    say "I am a child scenario";
+    say "config: ", config().perl;
+    say "tags: ", tags().perl;
+
+  }
+
+}
+
+Pipeline.new."stage-{tags()<stage>||'main'}"();
+```
+
+Sparky::JobApi::Role methods:
+
+* `new-job(params)`
+
+Wrapper around Sparky::JobApi.new, takes the same parameters and return an instance of Sparky::JobApi class
+
+* `wait-jobs(@jobs)`
+
+Wait jobs and return state as Raku hash:
+
+```raku
+%(
+  OK => $number-of-successfully-finished jobs,
+  FAIL => $number-of-failed jobs,
+)
+```
+
+* `wait-job($job)`
+
+The same as `wait-jobs()`, but for a single job
+
 ## Cluster jobs
 
 One can have more then one Sparky instances and run jobs across them.

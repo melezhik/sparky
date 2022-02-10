@@ -1,0 +1,42 @@
+use Sparky::JobApi;
+
+class Pipeline
+
+  does Sparky::JobApi::Role
+
+{
+
+  method stage-main {
+
+    my $j = self.new-job: :project<spawned_011>;
+
+    $j.queue({
+      description => "spawned job. 01", 
+      tags => %(
+        stage => "child",
+        foo => 1,
+        bar => 2,
+      ),
+    });
+
+    say "job info: ", $j.info.perl;
+
+    my $st = self.wait-job($j);
+  
+    say $st.perl;
+
+    die if $st<FAIL>;
+
+  }
+
+  method stage-child {
+
+    say "I am a child scenario";
+    say "config: ", config().perl;
+    say "tags: ", tags().perl;
+
+  }
+
+}
+
+Pipeline.new."stage-{tags()<stage>||'main'}"();
