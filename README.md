@@ -589,6 +589,45 @@ within main job and  will lead to such an interesting  scenario:
 ```raku
 use Sparky::JobApi;
 
+sub wait-jobs(@q) {
+
+    my @jobs;
+
+    for @q -> $j {
+
+      my $supply = supply {
+
+        while True {
+
+          my %info = $j.info;
+
+          my $status = $j.status;
+
+          %info<status> = $status;
+
+          emit %info;
+
+          done if $status eq "FAIL" or $status eq "OK";
+
+          sleep(1);
+
+        }
+
+      }
+
+      $supply.tap( -> $v {
+        push @jobs, $v if $v<status> eq "FAIL" or $v<status> eq "OK";
+        say $v;
+      });
+
+    }
+
+    say @jobs.grep({$_<status> eq "OK"}).elems, " jobs finished successfully";
+    say @jobs.grep({$_<status> eq "FAIL"}).elems, " jobs failed";
+    say @jobs.grep({$_<status> eq "TIMEOUT"}).elems, " jobs timeouted";
+
+}
+
 if tags()<stage> eq "main" {
 
     my $rand = ('a' .. 'z').pick(20).join('');
@@ -613,38 +652,17 @@ if tags()<stage> eq "main" {
 
     for 1 .. 10 -> $i {
 
-      my $supply = supply {
+      my $project = "worker_{$i}";
 
-        my $project = "worker_{$i}";
+      my $job-id = "{$rand}_{$i}";
 
-        my $job-id = "{$rand}_{$i}";
-
-        my $j = Sparky::JobApi.new(:$project,:$job-id);
-
-        while True {
-
-          my $status = $j.status;
-
-          emit %( id => "{$project}/{$job-id}", status => $status );
-
-          done if $status eq "FAIL" or $status eq "OK";
-
-          sleep(1);
-
-        }
-
-      }
-
-      $supply.tap( -> $v {
-        push @jobs, $v if $v<status> eq "FAIL" or $v<status> eq "OK";
-        say $v;
-      });
+      my $j = Sparky::JobApi.new: :$project, :$job-id;
+        
+     @jobs.push: $j;
 
     }
 
-    say @jobs.grep({$_<status> eq "OK"}).elems, " jobs finished successfully";
-    say @jobs.grep({$_<status> eq "FAIL"}).elems, " jobs failed";
-    say @jobs.grep({$_<status> eq "TIMEOUT"}).elems, " jobs timeouted";
+    wait-jobs @jobs;
 
   } elsif tags()<stage> eq "child" {
 
@@ -659,9 +677,10 @@ if tags()<stage> eq "main" {
       # do some useful stuff here
       # and launch another recursive job
       # with predefined project and job ID
-      # i tagged variable gets incremented
-      # recursively launched jobs
-      # get waited in a "main" scenario 
+      # $i variable gets incremented
+      # and all recursively launched jobs
+      # get waited in a "main" scenario, 
+      # function  wait-jobs
 
       my $project = "worker_{$i}"; 
       my $job-id = "{tags()<seed>}_{$i}";
@@ -775,24 +794,7 @@ then a child job reads it:
 
     say "queue spawned job, ",$j.info.perl;
 
-    my $supply = supply {
-
-        while True {
-
-          my $status = $j.status;
-
-          emit %( job-id => $j.info<job-id>, status => $status );
-
-          done if $status eq "FAIL" or $status eq "OK";
-
-          sleep(5);
-
-        }
-    }
-
-    $supply.tap( -> $v {
-        say $v;
-    });
+    wait-jobs(($j,)) # wait till a job has finished
 
   } elsif tags()<stage> eq "child" {
 
@@ -860,8 +862,6 @@ class Pipeline
         description => "spawned job. 01", 
         tags => %(
           stage => "child",
-          foo => 1,
-          bar => 2,
         ),
       });
 
@@ -885,7 +885,13 @@ class Pipeline
 
   }
 
-Pipeline.new."stage-{tags()<stage>||'main'}"();
+Pipeline.new.run;
+```
+
+To run pipeline:
+
+```bash
+sparrowdo --localhost --no_sudo --with_sparky --tags=stage=main
 ```
 
 Sparky::JobApi::Role methods:
@@ -894,7 +900,7 @@ Sparky::JobApi::Role methods:
 
 Wrapper around Sparky::JobApi.new, takes the same parameters and return an instance of Sparky::JobApi class
 
-* `wait-jobs(@jobs)`
+* `wait-jobs(@jobs,%args?)`
 
 Wait jobs and return state as Raku hash:
 
@@ -905,9 +911,21 @@ Wait jobs and return state as Raku hash:
 )
 ```
 
-* `wait-job($job)`
+To set timeout for making http request to get job statues, use `%args`:
 
-The same as `wait-jobs(@jobs)`, but for a single job
+```raku
+  self.wait-jobs(@jobs, %( timeout => 10));
+```
+
+To enable debug mode:
+
+```raku
+  self.wait-jobs(@jobs, %( debug => True));
+```
+
+* `wait-job($job,%args?)`
+
+The same as `wait-jobs(@jobs,%args?)`, but for a single job
 
 ## Cluster jobs
 

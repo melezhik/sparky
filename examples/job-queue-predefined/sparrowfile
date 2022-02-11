@@ -1,5 +1,44 @@
 use Sparky::JobApi;
 
+sub wait-jobs(@q) {
+
+    my @jobs;
+
+    for @q -> $j {
+
+      my $supply = supply {
+
+        while True {
+
+          my %info = $j.info;
+
+          my $status = $j.status;
+
+          %info<status> = $status;
+
+          emit %info;
+
+          done if $status eq "FAIL" or $status eq "OK";
+
+          sleep(1);
+
+        }
+
+      }
+
+      $supply.tap( -> $v {
+        push @jobs, $v if $v<status> eq "FAIL" or $v<status> eq "OK";
+        say $v;
+      });
+
+    }
+
+    say @jobs.grep({$_<status> eq "OK"}).elems, " jobs finished successfully";
+    say @jobs.grep({$_<status> eq "FAIL"}).elems, " jobs failed";
+    say @jobs.grep({$_<status> eq "TIMEOUT"}).elems, " jobs timeouted";
+
+}
+
 if tags()<stage> eq "main" {
 
     my $rand = ('a' .. 'z').pick(20).join('');
@@ -24,38 +63,17 @@ if tags()<stage> eq "main" {
 
     for 1 .. 10 -> $i {
 
-      my $supply = supply {
+      my $project = "worker_{$i}";
 
-        my $project = "worker_{$i}";
+      my $job-id = "{$rand}_{$i}";
 
-        my $job-id = "{$rand}_{$i}";
-
-        my $j = Sparky::JobApi.new(:$project,:$job-id);
-
-        while True {
-
-          my $status = $j.status;
-
-          emit %( id => "{$project}/{$job-id}", status => $status );
-
-          done if $status eq "FAIL" or $status eq "OK";
-
-          sleep(1);
-
-        }
-
-      }
-
-      $supply.tap( -> $v {
-        push @jobs, $v if $v<status> eq "FAIL" or $v<status> eq "OK";
-        say $v;
-      });
+      my $j = Sparky::JobApi.new: :$project, :$job-id;
+        
+     @jobs.push: $j;
 
     }
 
-    say @jobs.grep({$_<status> eq "OK"}).elems, " jobs finished successfully";
-    say @jobs.grep({$_<status> eq "FAIL"}).elems, " jobs failed";
-    say @jobs.grep({$_<status> eq "TIMEOUT"}).elems, " jobs timeouted";
+    wait-jobs @jobs;
 
   } elsif tags()<stage> eq "child" {
 
@@ -70,9 +88,10 @@ if tags()<stage> eq "main" {
       # do some useful stuff here
       # and launch another recursive job
       # with predefined project and job ID
-      # i tagged variable gets incremented
-      # recursively launched jobs
-      # get waited in a "main" scenario 
+      # $i variable gets incremented
+      # and all recursively launched jobs
+      # get waited in a "main" scenario, 
+      # function  wait-jobs
 
       my $project = "worker_{$i}"; 
       my $job-id = "{tags()<seed>}_{$i}";
