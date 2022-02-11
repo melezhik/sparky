@@ -848,6 +848,8 @@ so one can write scenarios in OOP style:
 
 
 ```raku
+use Sparky::JobApi;
+
 class Pipeline
 
   does Sparky::JobApi::Role
