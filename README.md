@@ -373,7 +373,7 @@ Follow [sparrowdo cli](https://github.com/melezhik/sparrowdo#sparrowdo-cli) docu
 
 Job API allows to trigger new builds from a main scenario. 
 
-This allow create multi stage scenarios.
+This allow one to create multi stage scenarios.
 
 For example:
 
@@ -382,7 +382,7 @@ if tags()<stage> eq "main" {
 
     use Sparky::JobApi;
 
-    my $j = Sparky::JobApi.new(:project<spawned_01>);
+    my $j = Sparky::JobApi.new;
 
     $j.queue({
       description => "spawned job", 
@@ -438,21 +438,21 @@ Follow [sparrowdo cli](https://github.com/melezhik/sparrowdo#sparrowdo-cli) docu
 
 ## Set a project for spawned job
 
-One can choose to set project either explicitly:
+One can choose to set a job project either explicitly:
 
 ```raku
-  my $j = Sparky::JobApi.new(:project<spawned_jobs>);
+  my $j = Sparky::JobApi.new: project<spawned_job>;
   $j.queue({
     description => "spawned job", 
   });
 ```
 
-The code will spawn a new job on project called "spawned_jobs"
+The code will spawn a new job for a project called "spawned_job"
 
-Or implicitly, with _auto generated_ project:
+Or implicitly, with _auto generated_ project name:
 
 ```raku
-  my $j = Sparky::JobApi.new();
+  my $j = Sparky::JobApi.new;
   $j.queue({
     description => "spawned job", 
   });
@@ -460,25 +460,25 @@ Or implicitly, with _auto generated_ project:
 
 This code will spawn a new job on project named `$currect_project.spawned_$random_number`
 
-Where `$random_number` is random integer number taken from a range `1..4`.
+Where `$random_number` is random integer number taken from a default range - `1..4`.
 
 To increase a level of parallelism, use `workers` parameter:
 
 ```raku
 for 1 .. 10 {
-  my $j = Sparky::JobApi.new(:workers<10>);
+  my $j = Sparky::JobApi.new: :workers<10>;
   $j.queue({
     description => "spawned job"
   });
 }
 ```
 
-This will result in the random number taken from a range `1..10`.
+For this case a random number will be taken from a range `1..10`.
 
 ## Asynchronous (none blocking) wait of child jobs
 
-Main scenario could asynchronously wait till a child job finishes,
-using brilliant Raku `supply|tap` method:
+Main scenario could asynchronously wait a child job
+using Raku `supply|tap` method:
 
 ```raku
   if tags()<stage> eq "main" {
@@ -486,7 +486,7 @@ using brilliant Raku `supply|tap` method:
     # spawns a child job
 
     use Sparky::JobApi;
-    my $j = Sparky::JobApi.new(:project<spawned_jobs>);
+    my $j = Sparky::JobApi.new: :project<spawned_jobs>;
     $j.queue({
       description => "my spawned job",
       tags => %(
@@ -526,20 +526,19 @@ using brilliant Raku `supply|tap` method:
 
 ## Recursive jobs
 
-Recursive jobs are possible when a child job spawns another job and so on. Just be
-careful not to end up in endless recursion:
+Recursive jobs are when a child job spawns another job and so on. 
+
+Be careful not to end up in endless recursion:
 
 ```raku
+  use Sparky::JobApi;
+
   if tags()<stage> eq "main" {
 
-    use Sparky::JobApi;
-
-    my $project = "spawned_01";
-
-    my $j = Sparky::JobApi.new(:project<spawned_01>);
+    my $j = Sparky::JobApi.new: :project<spawned_01>;
 
     $j.queue({
-      description => "spawned job. 02", 
+      description => "spawned job", 
       tags => %(
         stage => "child",
         foo => 1,
@@ -554,11 +553,9 @@ careful not to end up in endless recursion:
 
   } elsif tags()<stage> eq "child" {
 
-    use Sparky::JobApi;
-
     say "I am a child scenario";
 
-    my $j = Sparky::JobApi.new(:project<spawned_02>);
+    my $j = Sparky::JobApi.new: :project<spawned_02>;
 
     $j.queue({
       description => "spawned job2. 02",
@@ -582,8 +579,10 @@ careful not to end up in endless recursion:
 
 ## Predefined job IDs
 
-One can also pass `job-id` explicitly, this is for example to wait all recursive jobs
-within main job and  will lead to such an interesting  scenario:
+Explicitly passing `job-id` allow to wait
+to jobs that have not yet started. 
+
+Consider this scenario with recursive jobs:
 
 
 ```raku
