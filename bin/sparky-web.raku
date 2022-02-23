@@ -20,13 +20,42 @@ my $application = route {
 
     my $id = "{('a' .. 'z').pick(20).join('')}.{$*PID}";
 
-    mkdir "$root/$project/.triggers";
+    my %trigger = %(
+      #description => $description || "triggered by user",
+      description =>  "triggered by user",
+      #sparrowdo => %(
+      #  tags => $tags || "",
+      #),
+    );
 
-    spurt "$root/$project/.triggers/$id", "%( description => 'triggered by user');\n";
+    spurt "$root/$project/.triggers/$id", %trigger.perl;
 
     content 'text/plain', "$id";
 
   }
+
+  post -> 'build-with-tags', 'project', $project {
+
+    my $id = "{('a' .. 'z').pick(20).join('')}.{$*PID}";
+
+    request-body 'application/json' => -> (:$tags?, :$description?) {
+
+      mkdir "$root/$project/.triggers";
+
+      my %trigger = %(
+        description => $description || "triggered by user",
+        sparrowdo => %(
+          tags => $tags || "",
+        ),
+      );
+      spurt "$root/$project/.triggers/$id", %trigger.perl;
+
+    }
+
+    content 'text/plain', "$id";
+
+  }
+
 
   post -> 'build', 'project', $project, $key {
 
