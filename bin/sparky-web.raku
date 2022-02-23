@@ -21,11 +21,7 @@ my $application = route {
     my $id = "{('a' .. 'z').pick(20).join('')}.{$*PID}";
 
     my %trigger = %(
-      #description => $description || "triggered by user",
       description =>  "triggered by user",
-      #sparrowdo => %(
-      #  tags => $tags || "",
-      #),
     );
 
     spurt "$root/$project/.triggers/$id", %trigger.perl;
@@ -38,7 +34,7 @@ my $application = route {
 
     my $id = "{('a' .. 'z').pick(20).join('')}.{$*PID}";
 
-    request-body 'application/json' => -> (:$tags?, :$description?) {
+    request-body 'application/json' => -> (:$tags?, :$description?) { {
 
       mkdir "$root/$project/.triggers";
 
