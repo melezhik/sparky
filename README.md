@@ -1290,6 +1290,40 @@ POST /build/project/$project
 
 Returns `$key` - unique build identification ( aka Sparky Job ID )
 
+## Trigger build with params
+
+```http
+POST /build-with-tags/project/$project @json
+```
+
+For example:
+
+Request data - `request.json`:
+
+```json
+{ 
+  "description" : "test build",
+  "tags" : "message=hello,from=Sparky"
+}
+```
+
+Request via curl:
+
+```bash
+curl -k  -H "Content-Type: application/json" \
+--data "@request.json" \
+https://127.0.0.1:4000/build-with-tags/project/hello-world
+```
+
+Will trigger build for `hello-world` project, with named parameters `message` and `from`.
+
+Parameters are handled within Sparky scenario as:
+
+```raku
+my $message = tags()<message>;
+my $from = tags()<from>;
+```
+
 ## Build status
 
 Get project's status ( image/status of the last build ):

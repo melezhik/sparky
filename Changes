@@ -2,6 +2,8 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+  - HTTP API - new endpoint - build-with-tags, to pass named parameters to a build
+
 0.1.5 2022-02-12T00:00:00Z
 
   - New feature - JobApi
@@ -38,7 +40,7 @@ Revision history for Sparky
 0.0.30  2021-01-10T23:54:47Z
 
   - JS markdown parser and syntax highlighter in about page. Removing Text::Markdown
-  - Hightlight code on project page
+  - Highlight code on project page
 
 0.0.29  2021-01-04T00:22:18Z
 
@@ -87,7 +89,7 @@ Revision history for Sparky
 
 # 0.0.22
 
-* Sparky distributuin moved to CPAN
+* Sparky distribution moved to CPAN
 * sparky.yaml - respect for `docker` parameter
 * docker exec do not allocate pseudo tty
 * format error fix

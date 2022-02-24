@@ -1,4 +1,4 @@
-{
-  "tags" : "foo=bar,hello=world",
-  "description" : "OKOK"
+{ 
+  "description" : "test build",
+  "tags" : "message=hello,from=Sparky"
 }
