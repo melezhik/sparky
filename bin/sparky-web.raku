@@ -34,7 +34,7 @@ my $application = route {
 
     my $id = "{('a' .. 'z').pick(20).join('')}.{$*PID}";
 
-    request-body 'application/json' => -> (:$tags?, :$description?) { {
+    request-body  -> (:$tags?, :$description?) {
 
       mkdir "$root/$project/.triggers";
 
