@@ -1,6 +1,6 @@
 use Sparky::JobApi;
 
-class Pipeline {
+class Pipeline does Sparky::JobApi::Role {
 
   has Str $.comp = tags()<comp> || "main";
   has Str $.ssh-user = tags()<ssh-user>  || "sparky";
@@ -8,51 +8,9 @@ class Pipeline {
   has Str $.api-token =  tags()<api-token> || "";
   has Str $.ssl = tags()<ssl> || "True";
 
-  method !wait-job($j){
-
-    my $s = supply { 
-      while True {  
-        emit $j.status; 
-        done if $j.status eq "FAIL" or $j.status eq "OK"; 
-        sleep(5) 
-      } 
-    }
-
-   my $status;
-
-   $s.tap( -> $v { say $v; $status = $v } );
-
-   die unless $status eq "OK";
-
-  }
-
-  method !wait-jobs(@q){
-
-    my @jobs;
-
-    for @q -> $j {
-      my $s = supply { 
-        while True {
-          my %out = $j.info; %out<status> = $j.status;  
-          emit %out; 
-          done if $j.status eq "FAIL" or $j.status eq "OK"; 
-          sleep(5) 
-        } 
-      }
-     $s.tap( -> $v { say $v; push @jobs, $v if $v<status> eq "FAIL" or $v<status> eq "OK" } );
-   }
-
-    say @jobs.grep({$_<status> eq "OK"}).elems, " jobs finished successfully";
-
-    say @jobs.grep({$_<status> eq "FAIL"}).elems, " jobs failed";
-
-    die "found failed jobs" if @jobs.grep({$_<status> eq "FAIL"}).elems;
-
-  }
-
   method !queue-libs() {
 
-    my $j = Sparky::JobApi.new();
+    my $j = self.new-job;
 
     $j.queue({
       description => "sparky libs on {$.host}",
@@ -71,13 +29,13 @@ class Pipeline {
 
     say "queue spawned job, ",$j.info.perl;
 
-    self!wait-job($j);
+    self.wait-job($j);
 
   }
 
   method !queue-raku-libs() {
 
-    my $j = Sparky::JobApi.new();
+    my $j = self.new-job;
 
     $j.queue({
       description => "sparky raku libs on {$.host}",
@@ -97,13 +55,13 @@ class Pipeline {
 
     say "queue spawned job, ",$j.info.perl;
 
-    self!wait-job($j);
+    self.wait-job($j);
 
   }
 
   method !queue-services() {
 
-    my $j = Sparky::JobApi.new();
+    my $j = self.new-job;
 
     $j.queue({
       description => "sparky services on {$.host}",
@@ -123,7 +81,7 @@ class Pipeline {
 
     say "queue spawned job, ",$j.info.perl;
 
-    self!wait-job($j);
+    self.wait-job($j);
 
   }
 
@@ -155,7 +113,7 @@ class Pipeline {
 
     }
 
-    self!wait-jobs(@q);
+    self.wait-jobs(@q);
 
   }
   
