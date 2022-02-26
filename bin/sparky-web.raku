@@ -24,6 +24,8 @@ my $application = route {
       description =>  "triggered by user",
     );
 
+    mkdir "$root/$project/.triggers";
+
     spurt "$root/$project/.triggers/$id", %trigger.perl;
 
     content 'text/plain', "$id";

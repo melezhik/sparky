@@ -226,11 +226,11 @@ class Pipeline does Sparky::JobApi::Role {
 
     bash "systemctl daemon-reload";
 
-    service-restart "sparky-web";
+    #service-restart "sparky-web";
 
     service-enable "sparky-web";
 
-    service-restart "sparkyd";
+    #service-restart "sparkyd";
 
     service-enable "sparkyd";
 
