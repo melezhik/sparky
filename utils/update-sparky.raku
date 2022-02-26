@@ -25,24 +25,29 @@ class Pipeline does Sparky::JobApi::Role {
 
   method stage-main {
 
-    my $status;
+    my @q;
 
-    my $j = self.new-job: (:api<http://sparrowhub.io:4000>);
+    for config()<workers><> -> $w {
 
-    $j.queue({
-      description => "sparky update",
-      tags => %(
-        stage => "update",
-      ),
-      #sparrowdo => %(
-      #  no_sudo => True,
-      #  bootstrap => False
-      #)
-    });
+      my $j = self.new-job: :project("update-sparky"), :api($w<api>);
 
-    say "queue spawned job, ",$j.info.perl;
+      $j.queue({
+        description => "sparky update",
+        tags => %(
+          stage => "update",
+        ),
+        #sparrowdo => %(
+        #  no_sudo => True,
+        #  bootstrap => False
+        #),
+      });
 
-    my $s = self.wait-job($j);
+      say "queue spawned job, ",$j.info.perl;
+      @q.push: $j;
+
+    }
+
+    my $s = self.wait-jobs(@q);
 
     die if $s<FAIL>;
 
