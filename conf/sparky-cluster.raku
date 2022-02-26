@@ -1,5 +1,9 @@
 %(
-  cluster => %(
-    "spk-02" => "spk-02",
-  ),
+  workers => [
+    %(
+      name => "spk01",
+      host => "spk01.eastus.cloudapp.azure.com",
+      ssh-user => "sparky"
+    ),
+  ],
 )

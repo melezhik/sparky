@@ -1,5 +1,8 @@
-sparrowdo  \
---ssh_user=sparky \
---bootstrap \
+sparrowdo \
+--desc="install sparky" \
+--localhost  \
 --sparrowfile=utils/install-sparky.raku \
---tags=api-token=secret,host=spk01.centralus.cloudapp.azure.com
+--tags=api-token=secret \
+--conf=conf/sparky-cluster.raku \
+--no_sudo \
+--with_sparky

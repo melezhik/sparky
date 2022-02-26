@@ -5,6 +5,7 @@ class Pipeline does Sparky::JobApi::Role {
   has Str $.comp = tags()<comp> || "main";
   has Str $.ssh-user = tags()<ssh-user>  || "sparky";
   has Str $.host = tags()<host> || "";
+  has Str $.name = tags()<name> || "";
   has Str $.api-token =  tags()<api-token> || "";
   has Str $.ssl = tags()<ssl> || "True";
 
@@ -12,24 +13,31 @@ class Pipeline does Sparky::JobApi::Role {
 
     my $j = self.new-job;
 
+    say "host={$.host}";
+    say "ssh_user={$.ssh-user}";
+
     $j.queue({
-      description => "sparky libs on {$.host}",
+      description => "sparky libs on {$.name}",
       tags => %(
         stage => "libs",
         host => $.host,
+        name => $.name,
         ssh-user => $.ssh-user,
       ),
       sparrowdo => %(
         bootstrap => True,
         sudo => True,
         host => $.host,
-        ssh_user => $.ssh-user
+        ssh_user => $.ssh-user,
+        verbose => True,
       );
     });
 
     say "queue spawned job, ",$j.info.perl;
 
-    self.wait-job($j);
+    my $s = self.wait-job($j); 
+
+    die if $s<FAIL>;
 
   }
 
@@ -38,10 +46,11 @@ class Pipeline does Sparky::JobApi::Role {
     my $j = self.new-job;
 
     $j.queue({
-      description => "sparky raku libs on {$.host}",
+      description => "sparky raku libs on {$.name}",
       tags => %(
         stage => "raku-libs",
         host => $.host,
+        name => $.name,
         ssh-user => $.ssh-user,
         api-token => $.api-token,
       ),
@@ -55,7 +64,9 @@ class Pipeline does Sparky::JobApi::Role {
 
     say "queue spawned job, ",$j.info.perl;
 
-    self.wait-job($j);
+    my $s = self.wait-job($j);
+
+    die if $s<FAIL>;
 
   }
 
@@ -64,10 +75,11 @@ class Pipeline does Sparky::JobApi::Role {
     my $j = self.new-job;
 
     $j.queue({
-      description => "sparky services on {$.host}",
+      description => "sparky services on {$.name}",
       tags => %(
         stage => "services",
         host => $.host,
+        name => $.name,
         ssh-user => $.ssh-user,
         ssl => $.ssl,
       ),
@@ -81,7 +93,9 @@ class Pipeline does Sparky::JobApi::Role {
 
     say "queue spawned job, ",$j.info.perl;
 
-    self.wait-job($j);
+    my $s = self.wait-job($j);
+
+    die if $s<FAIL>;
 
   }
 
@@ -90,18 +104,17 @@ class Pipeline does Sparky::JobApi::Role {
 
     my @q;  
 
-    for config()<cluster>.keys -> $w {
+    for config()<workers><> -> $w {
 
-      my $host = config()<cluster>{$w};
-
-      my $j = Sparky::JobApi.new( project => "install-sparky-{$w}" );
+      my $j = self.new-job: :project("install-sparky-{$w<host>}");
 
       $j.queue({
-        description => "bootstrap sparky on {$w}",
+        description => "bootstrap sparky on {$w<name>}",
         tags => %(
           stage => "worker",
-          host => $host,
-          ssh-user => "sparky",
+          host => $w<host>,
+          name => $w<name>,
+          ssh-user => $w<ssh-user>,
           ssl => $.ssl,
           comp => $.comp,
         ),
@@ -109,11 +122,14 @@ class Pipeline does Sparky::JobApi::Role {
 
       @q.push: $j;
 
-      say "queue spawned job, ",$j.info.perl;
+      say "queue spawned job:", $j.info.perl;
 
     }
 
-    self.wait-jobs(@q);
+    my $s = self.wait-jobs(@q);
+
+    die if $s<FAIL>;
+
 
   }
   
@@ -223,5 +239,5 @@ class Pipeline does Sparky::JobApi::Role {
 }
 
 
-Pipeline.new."stage-{tags()<stage>||'main'}"();
+Pipeline.new.run();
 
