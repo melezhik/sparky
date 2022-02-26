@@ -4,15 +4,19 @@ class Pipeline does Sparky::JobApi::Role {
 
   method stage-update {
 
-  #bash "echo 'SPARKY_API_TOKEN: {tags()<SPARKY_API_TOKEN>}' > ~/sparky.yaml", %(
-  #  description => "set token"
-  #);
+    #bash "echo 'SPARKY_API_TOKEN: {tags()<SPARKY_API_TOKEN>}' > ~/sparky.yaml", %(
+    #  description => "set token"
+    #);
 
-    for  'sparky', 'sparky-job-api', 'sparrowdo' -> $app {
+    for  'Sparky', 'sparky-job-api', 'sparrowdo' -> $app {
 
       say "update [$app] ...";
 
-      bash "cd ~/projects/$app && git pull";
+      directory "{%*ENV<HOME>}/projects/$app";
+
+      git-scm "https://github.com/melezhik/{$app}.git", %(
+        to => "{%*ENV<HOME>}/projects/$app"
+      );
 
       chdir "{%*ENV<HOME>}/projects/$app";
 
