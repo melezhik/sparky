@@ -1,34 +1,38 @@
 use Sparky::JobApi;
 
-if tags()<stage> && tags<stage> eq "child" {
+class Pipeline does Sparky::JobApi::Role {
+
+  method stage-update {
 
   #bash "echo 'SPARKY_API_TOKEN: {tags()<SPARKY_API_TOKEN>}' > ~/sparky.yaml", %(
   #  description => "set token"
   #);
 
-  for  'sparky', 'sparky-job-api', 'sparrowdo' -> $app {
+    for  'sparky', 'sparky-job-api', 'sparrowdo' -> $app {
 
-    say "update [$app] ...";
+      say "update [$app] ...";
 
-    bash "cd ~/projects/$app && git pull";
+      bash "cd ~/projects/$app && git pull";
 
-    chdir "{%*ENV<HOME>}/projects/$app";
+      chdir "{%*ENV<HOME>}/projects/$app";
 
-    zef '.', %( force => True );
+      zef '.', %( force => True );
+
+    }
 
   }
 
 
-} else {
+  method stage-main {
 
     my $status;
 
-    my $j = Sparky::JobApi.new(:api<http://sparrowhub.io:4000>);
+    my $j = self.new-job: (:api<http://sparrowhub.io:4000>);
 
     $j.queue({
       description => "sparky update",
       tags => %(
-        stage => "child",
+        stage => "update",
       ),
       #sparrowdo => %(
       #  no_sudo => True,
@@ -38,22 +42,12 @@ if tags()<stage> && tags<stage> eq "child" {
 
     say "queue spawned job, ",$j.info.perl;
 
-    my $supply = supply {
+    my $s = self.wait-job($j);
 
-        while True {
+    die if $s<FAIL>;
 
-          emit $j.status;
+  }
 
-          done if $j.status eq "FAIL" or $status eq "OK";
-
-          sleep(5);
-
-        }
-    }
-
-    $supply.tap( -> $v {
-        say $v;
-        $status = $v;
-    });
 }
 
+Pipeline.new.run;  
