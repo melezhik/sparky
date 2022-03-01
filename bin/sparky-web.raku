@@ -489,8 +489,9 @@ my $application = route {
 (.out-buffer = False for $*OUT, $*ERR;);
 
 my $port = sparky-tcp-port();;
+my $host = sparky-host();
 
-say "run sparky web ui on port: {$port} ...";
+say "run sparky web ui on host: {$host}, port: {$port} ...";
 
 my Cro::Service $service;
 
@@ -502,11 +503,11 @@ if sparky-use-tls() {
 
   say "load tls settings: ", %tls.perl;
 
-  $service = Cro::HTTP::Server.new: :host<0.0.0.0>, :$port, :$application, :%tls;
+  $service = Cro::HTTP::Server.new: :$host, :$port, :$application, :%tls;
 
 } else {
 
-  $service = Cro::HTTP::Server.new: :host<0.0.0.0>, :$port, :$application;
+  $service = Cro::HTTP::Server.new: :$host, :$port, :$application;
 }
 
 $service.start;

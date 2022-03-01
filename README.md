@@ -107,10 +107,13 @@ $ nano utils/install-sparky-web-systemd.raku # change working directory, user an
 $ sparrowdo --sparrowfile=utils/install-sparky-web-systemd.raku --no_sudo --localhost
 ```
 
-By default web app starts at tcp port `4000`, to configure web app tcp port 
-set `SPARKY_TCP_PORT` variable in `~/sparky.yaml`
+## Setting web app tcp parameters
+
+By default web app listens on host `0.0.0.0`, port `4000`, to configure web app tcp host and port 
+set `SPARKY_HOST` and  `SPARKY_TCP_PORT` variables in `~/sparky.yaml`
 
 ```yaml
+SPARKY_HOST: 127.0.0.1
 SPARKY_TCP_PORT: 5000 
 ```
 

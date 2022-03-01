@@ -15,6 +15,12 @@ sub sparky-http-root is export {
 
 }
 
+sub sparky-host is export {
+
+  get-sparky-conf()<SPARKY_HOST> || "0.0.0.0";
+
+}
+
 sub sparky-use-tls is export {
 
   get-sparky-conf()<SPARKY_USE_TLS>;
