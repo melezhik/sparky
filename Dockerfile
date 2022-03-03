@@ -10,7 +10,7 @@ RUN apk add openssl-dev sqlite sqlite-dev
 USER raku
 RUN zef install Cro::TLS --/test
 RUN zef install --/test https://github.com/melezhik/sparky.git 
-RUN git clone https://github.com/melezhik/sparky.git sparky
+RUN git clone https://github.com/melezhik/sparky.git sparky && date
 WORKDIR sparky
 RUN raku db-init.raku
 EXPOSE 4000
