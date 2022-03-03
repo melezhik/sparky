@@ -9,3 +9,4 @@ ignore:
   - utils/
   - hosts
   - examples/
+  - sparkyd.log

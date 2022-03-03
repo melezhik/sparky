@@ -18,5 +18,5 @@ WORKDIR Sparky
 RUN raku db-init.raku
 EXPOSE 4000
 RUN cp -r examples/hello-world/ /home/raku/.sparky/projects/
-ENTRYPOINT nohup sparkyd 1>sparkyd.log 2>&1 & cro run
+ENTRYPOINT nohup sparkyd 2>&1 & cro run
 
