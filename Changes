@@ -3,6 +3,7 @@ Revision history for Sparky
 {{$NEXT}}
 
   - HTTP API - new endpoint - build-with-tags, to pass named parameters to a build
+  - `SPARKY_HOST` variable now allows changes web app tcp host
 
 0.1.5 2022-02-12T00:00:00Z
 
