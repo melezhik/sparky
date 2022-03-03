@@ -6,3 +6,4 @@ sparrowdo:
   format: default
 disabled: false
 keep_builds: 5
+allow_manual_run: true
