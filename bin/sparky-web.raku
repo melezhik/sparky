@@ -226,7 +226,7 @@ sub create-cro-app ($dbh) {
 
     $sth.finish;
 
-    $dbh.dispose;
+    #$dbh.dispose;
 
     #say @rows.perl;
   
