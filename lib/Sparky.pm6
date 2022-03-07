@@ -7,7 +7,7 @@ use Time::Crontab;
 
 my $root = %*ENV<SPARKY_ROOT> || %*ENV<HOME> ~ '/.sparky/projects';
 my %conf;
-my $dbh;
+our $dbh;
 
 sub sparky-http-root is export {
 
@@ -59,6 +59,8 @@ sub get-sparky-conf is export {
 
 multi sub get-dbh ( $dir ) is export {
 
+  #return $dbh if $dbh;
+  
   my $dbh;
 
   my %conf = get-sparky-conf();
@@ -90,6 +92,8 @@ multi sub get-dbh ( $dir ) is export {
 
 
 multi sub get-dbh {
+
+  #return $dbh if $dbh;
 
   my $dbh;
 

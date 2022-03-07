@@ -335,7 +335,7 @@ my $application = route {
         http-root => sparky-http-root(),
         project => $project,
         build_id => $build_id,
-        key => "{$key}", 
+        job_id => "{$key}", 
         dt => $dt, 
         description => $description, 
         data => $data
@@ -356,7 +356,7 @@ my $application = route {
 
       my $dbh = get-dbh();
 
-      my $sth = $dbh.prepare("SELECT state, description, dt FROM builds where project = '{$project}' and key = '{$key}'");
+      my $sth = $dbh.prepare("SELECT state, description, dt FROM builds where project = '{$project}' and job_id = '{$key}'");
 
       $sth.execute();
 
