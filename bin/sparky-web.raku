@@ -201,7 +201,7 @@ sub create-cro-app ($dbh) {
 
     }
 
-    $dbh.dispose;
+    #$dbh.dispose;
 
     template 'templates/projects.crotmp', {
 
@@ -266,7 +266,7 @@ sub create-cro-app ($dbh) {
       $state = @r[0]<state>;
     }
 
-    $dbh.dispose;
+    #$dbh.dispose;
 
     if $state == -1 {
       redirect :permanent, '/icons/build-fail.png';
@@ -314,7 +314,7 @@ sub create-cro-app ($dbh) {
 
       $sth.finish;
 
-      $dbh.dispose;
+      #$dbh.dispose;
 
       my $data = "$reports-dir/$project/build-$build_id.txt".IO.slurp;
 
@@ -359,7 +359,7 @@ sub create-cro-app ($dbh) {
 
       $sth.finish;
 
-      $dbh.dispose;
+      #$dbh.dispose;
 
       if $state.defined {
         content 'text/plain', "$state"
@@ -385,8 +385,7 @@ sub create-cro-app ($dbh) {
 
       $sth.finish;
 
-      $dbh.dispose;
-
+      #$dbh.dispose;
 
       if $build_id.defined {
 
