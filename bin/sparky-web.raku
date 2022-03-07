@@ -14,9 +14,9 @@ my $root = %*ENV<SPARKY_ROOT> || %*ENV<HOME> ~ '/.sparky/projects';
 
 my $reports-dir = "$root/.reports";
 
-my $application = route { 
+sub create-cro-app ($dbh) {
 
- state $dbh = get-dbh();
+  my $application = route { 
 
   post -> 'build', 'project', $project {
 
@@ -478,6 +478,10 @@ my $application = route {
   }
 
 }
+
+}
+
+my $application = create-cro-app(get-dbh());
 
 (.out-buffer = False for $*OUT, $*ERR;);
 
