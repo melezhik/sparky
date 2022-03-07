@@ -2,6 +2,11 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+  - Improvement - cache database connections to avoid
+    too many database connection bug
+
+  - Bug fix - various small fixes for mysql db engine
+
   - Breaking change, DB schema. builds.key column renamed to builds.job_id because mysql does
     not allow to name a column as a `key`
 
