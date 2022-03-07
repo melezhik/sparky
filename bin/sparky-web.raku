@@ -301,7 +301,7 @@ my $application = route {
 
       my $dbh = get-dbh();
 
-      my $sth = $dbh.prepare("SELECT state, description, dt, key FROM builds where id = {$build_id}");
+      my $sth = $dbh.prepare("SELECT state, description, dt, job_id FROM builds where id = {$build_id}");
 
       $sth.execute();
 
@@ -382,7 +382,7 @@ my $application = route {
 
       my $dbh = get-dbh();
 
-      my $sth = $dbh.prepare("SELECT id FROM builds where project = '{$project}' and key = '{$key}'");
+      my $sth = $dbh.prepare("SELECT id FROM builds where project = '{$project}' and job_id = '{$key}'");
 
       $sth.execute();
 

@@ -270,7 +270,7 @@ sub MAIN (
     say "keep builds: " ~ %config<keep_builds>;
 
     my $sth = $dbh.prepare(q:to/STATEMENT/);
-        SELECT id, key from builds where project = ? order by id asc
+        SELECT id, job_id from builds where project = ? order by id asc
     STATEMENT
 
     $sth.execute($project);

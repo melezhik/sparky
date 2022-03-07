@@ -2,6 +2,9 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+  - Breaking change, DB schema. builds.key column renamed to builds.job_id because mysql does
+    not allow to name a column as a `key`
+
   - HTTP API - new endpoint - build-with-tags, to pass named parameters to a build
   - `SPARKY_HOST` variable now allows changes web app tcp host
 
