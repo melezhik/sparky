@@ -16,6 +16,8 @@ my $reports-dir = "$root/.reports";
 
 my $application = route { 
 
+ state $dbh = get-dbh();
+
   post -> 'build', 'project', $project {
 
     my $id = "{('a' .. 'z').pick(20).join('')}.{$*PID}";
@@ -137,8 +139,6 @@ my $application = route {
 
   get -> {
   
-    my $dbh = get-dbh();
-
     my @projects = Array.new;
 
     for dir($root) -> $dir {
@@ -216,8 +216,6 @@ my $application = route {
   
   get -> 'builds' {
 
-    my $dbh = get-dbh();
-
     my $sth = $dbh.prepare(q:to/STATEMENT/);
         SELECT * FROM builds order by id desc limit 500
     STATEMENT
@@ -253,7 +251,6 @@ my $application = route {
 
   get -> 'badge', $project {
 
-    my $dbh = get-dbh();
     my $sth = $dbh.prepare("SELECT max(id) as last_build_id FROM builds where project = '{$project}'");
     $sth.execute();
     my @r = $sth.allrows(:array-of-hash);
@@ -300,8 +297,6 @@ my $application = route {
   get -> 'report', $project, $build_id  {
 
     if "$reports-dir/$project/build-$build_id.txt".IO ~~ :f {
-
-      my $dbh = get-dbh();
 
       my $sth = $dbh.prepare("SELECT state, description, dt, job_id FROM builds where id = {$build_id}");
 
@@ -354,8 +349,6 @@ my $application = route {
       content 'text/plain', "-2"  # "queued"
     } else {
 
-      my $dbh = get-dbh();
-
       my $sth = $dbh.prepare("SELECT state, description, dt FROM builds where project = '{$project}' and job_id = '{$key}'");
 
       $sth.execute();
@@ -381,8 +374,6 @@ my $application = route {
     if trigger-exists($root,$project,$key) {
        content 'text/plain', "build is queued, wait till it gets run\n"
     } else {
-
-      my $dbh = get-dbh();
 
       my $sth = $dbh.prepare("SELECT id FROM builds where project = '{$project}' and job_id = '{$key}'");
 
@@ -490,7 +481,8 @@ my $application = route {
 
 (.out-buffer = False for $*OUT, $*ERR;);
 
-my $port = sparky-tcp-port();;
+my $port = sparky-tcp-port();
+
 my $host = sparky-host();
 
 say "run sparky web ui on host: {$host}, port: {$port} ...";
