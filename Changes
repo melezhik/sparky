@@ -5,6 +5,9 @@ Revision history for Sparky
   - Improvement - cache database connections to avoid
     too many database connection bug
 
+  - Bug fix - calculate build_id using job_id condition
+    to avoid subtle / random bugs
+
   - Bug fix - various small fixes for mysql db engine
 
   - Breaking change, DB schema. builds.key column renamed to builds.job_id because mysql does

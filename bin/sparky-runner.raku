@@ -69,18 +69,18 @@ sub MAIN (
 
     $sth = $dbh.prepare(q:to/STATEMENT/);
         SELECT max(ID) AS build_id
-        FROM builds
+        FROM builds where job_id = ? 
         STATEMENT
 
-    $sth.execute();
+    $sth.execute($key);
 
     my @rows = $sth.allrows();
+
     $build_id = @rows[0][0];
 
     $sth.finish;
 
     $SPARKY-BUILD-ID = $build_id;
-
 
     $sth = $dbh.prepare(q:to/STATEMENT/);
         SELECT count(*) AS build_cnt
