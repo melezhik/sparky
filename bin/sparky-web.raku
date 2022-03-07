@@ -229,8 +229,10 @@ my $application = route {
     $sth.finish;
 
     $dbh.dispose;
+
+    #say @rows.perl;
   
-     template 'templates/builds.crotmp', {
+    template 'templates/builds.crotmp', {
 
       css => css(), 
       navbar => navbar(),
@@ -313,7 +315,7 @@ my $application = route {
 
       my $description = @r[0]<description>;
 
-      my $key = @r[0]<key>;
+      my $key = @r[0]<job_id>;
 
       $sth.finish;
 
@@ -333,7 +335,7 @@ my $application = route {
         http-root => sparky-http-root(),
         project => $project,
         build_id => $build_id,
-        key => $key, 
+        key => "{$key}", 
         dt => $dt, 
         description => $description, 
         data => $data
@@ -451,7 +453,7 @@ my $application = route {
         if $! { 
 
           $error = $!;
- 
+
           say "error parsing $root/$project/sparky.yaml";
           say $error;
         }

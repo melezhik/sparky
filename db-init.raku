@@ -63,10 +63,10 @@ if $engine ~~ /:i sqlite/ {
           id          int primary key auto_increment,
           project     varchar(255),
           job_id      varchar(255),
-          description text,
+          description varchar(255),
           state       int,
           dt timestamp default CURRENT_TIMESTAMP
-      )
+      ) CHARACTER SET utf8
       STATEMENT
 
 }

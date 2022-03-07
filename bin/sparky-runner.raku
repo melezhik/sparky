@@ -61,7 +61,7 @@ sub MAIN (
     my $key = $trigger.IO.basename;
 
     my $sth = $dbh.prepare(q:to/STATEMENT/);
-      INSERT INTO builds (project, state, description, key)
+      INSERT INTO builds (project, state, description, job_id)
       VALUES ( ?,?,?,? )
     STATEMENT
 
