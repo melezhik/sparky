@@ -2,6 +2,8 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.1.6 2022-03-13T05:20:00Z
+
   - Improvement - cache database connections to avoid
     too many database connection bug
 
@@ -14,7 +16,8 @@ Revision history for Sparky
     not allow to name a column as a `key`
 
   - HTTP API - new endpoint - build-with-tags, to pass named parameters to a build
-  - `SPARKY_HOST` variable now allows changes web app tcp host
+
+  - `SPARKY_HOST` variable now allows to change web app tcp host
 
 0.1.5 2022-02-12T00:00:00Z
 
