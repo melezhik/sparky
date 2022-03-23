@@ -59,11 +59,19 @@ sub create-cro-app ($dbh) {
 
   post -> 'build', 'project', $project, $key {
 
-    mkdir "$root/$project/.triggers";
+    if "$root/$project/sparky.yaml".IO ~~ :e {
 
-    copy "$root/../work/$project/.triggers/$key", "$root/$project/.triggers/$key";
+      mkdir "$root/$project/.triggers";
 
-    content 'text/plain', "$key";
+      copy "$root/../work/$project/.triggers/$key", "$root/$project/.triggers/$key";
+
+      content 'text/plain', "$key";
+
+    } else {
+
+      bad-request 'text/plain', 'rebuilding for project without sparky.yaml is forbidden';
+
+    }
 
   }
 

@@ -2,6 +2,9 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+  - Bug fix - fix broken rebuild button
+  - Security fix - rebuilding for project without sparky.yaml is forbidden
+
 0.1.6 2022-03-13T05:20:00Z
 
   - Improvement - cache database connections to avoid
