@@ -9,7 +9,7 @@
 function reBuild(){
 
   var xhr = new XMLHttpRequest();
-  xhr.open("POST", "<.http-root>/build/project/<.project>/<.key>", true );
+  xhr.open("POST", "<.http-root>/build/project/<.project>/<.job_id>", true );
   xhr.send("");
   
 }
