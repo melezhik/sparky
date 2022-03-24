@@ -1,6 +1,7 @@
 use Cro::HTTP::Server;
 use Cro::HTTP::Router;
 use Cro::WebApp::Template;
+use Cro::HTTP::Auth::Basic;
 
 use DBIish;
 use Sparky;
@@ -14,11 +15,23 @@ my $root = %*ENV<SPARKY_ROOT> || %*ENV<HOME> ~ '/.sparky/projects';
 
 my $reports-dir = "$root/.reports";
 
+class MyUser does Cro::HTTP::Auth {
+    has $.username;
+}
+
+class MyBasicAuth does Cro::HTTP::Auth::Basic[MyUser, "username"] {
+    method authenticate(Str $user, Str $pass --> Bool) {
+        return $user eq sparky-http-basic-user() && $pass eq sparky-http-basic-password();
+    }
+}
+
 sub create-cro-app ($dbh) {
 
   my $application = route { 
 
-  post -> 'build', 'project', $project {
+  before MyBasicAuth.new;
+
+  post -> Cro::HTTP::Auth $session, 'build', 'project', $project {
 
     my $id = "{('a' .. 'z').pick(20).join('')}.{$*PID}";
 
@@ -34,7 +47,7 @@ sub create-cro-app ($dbh) {
 
   }
 
-  post -> 'build-with-tags', 'project', $project {
+  post -> Cro::HTTP::Auth $session, 'build-with-tags', 'project', $project {
 
     my $id = "{('a' .. 'z').pick(20).join('')}.{$*PID}";
 
@@ -57,7 +70,7 @@ sub create-cro-app ($dbh) {
   }
 
 
-  post -> 'build', 'project', $project, $key {
+  post -> Cro::HTTP::Auth $session, 'build', 'project', $project, $key {
 
     if "$root/$project/sparky.yaml".IO ~~ :e {
 
@@ -145,7 +158,7 @@ sub create-cro-app ($dbh) {
 
   }
 
-  get -> {
+  get -> Cro::HTTP::Auth $session {
   
     my @projects = Array.new;
 
@@ -222,7 +235,7 @@ sub create-cro-app ($dbh) {
   
   }
   
-  get -> 'builds' {
+  get -> Cro::HTTP::Auth $session, 'builds' {
 
     my $sth = $dbh.prepare(q:to/STATEMENT/);
         SELECT * FROM builds order by id desc limit 500
@@ -249,7 +262,7 @@ sub create-cro-app ($dbh) {
  
   }
   
-  get -> 'queue' {
+  get -> Cro::HTTP::Auth $session, 'queue' {
     template 'templates/queue.crotmp', {
       css => css(), 
       navbar => navbar(), 
@@ -436,7 +449,7 @@ sub create-cro-app ($dbh) {
 
   }
 
-  get -> 'project', $project {
+  get -> Cro::HTTP::Auth $session, 'project', $project {
     if "$root/$project/sparrowfile".IO ~~ :f {
       my $project-conf-str; 
       my %project-conf;

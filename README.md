@@ -1146,6 +1146,14 @@ tls:
 
 `SPARKY_USE_TLS` enables SSL mode and `tls` section has paths to ssl certificate ( key and certificate parts ).
 
+# HTTP Basic authentication support
+
+Sparky web server supports https basic authentication. 
+
+To enable this add a couple of parameters to `~/sparky.yaml` configuration file:
+
+    SPARKY_HTTP_BASIC_USER: user
+    SPARKY_HTTP_BASIC_PASSWORD: paSsworD
 
 # Command line client
 

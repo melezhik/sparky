@@ -26,6 +26,18 @@ sub sparky-use-tls is export {
 
 }
 
+sub sparky-http-basic-user is export {
+
+  get-sparky-conf()<SPARKY_HTTP_BASIC_USER>;
+
+}
+
+sub sparky-http-basic-password is export {
+
+  get-sparky-conf()<SPARKY_HTTP_BASIC_PASSWORD>;
+
+}
+
 sub sparky-tls-settings is export {
   get-sparky-conf()<tls>
 }
