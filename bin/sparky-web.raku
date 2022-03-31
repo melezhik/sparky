@@ -10,6 +10,7 @@ use YAMLish;
 use Text::Markdown;
 use Sparky::Job;
 use JSON::Tiny;
+use DBIish::Pool;
 
 my $root = %*ENV<SPARKY_ROOT> || %*ENV<HOME> ~ '/.sparky/projects';
 
@@ -25,7 +26,7 @@ class MyBasicAuth does Cro::HTTP::Auth::Basic[MyUser, "username"] {
     }
 }
 
-sub create-cro-app ($dbh) {
+sub create-cro-app ($pool) {
 
   my $application = route { 
 
@@ -162,6 +163,8 @@ sub create-cro-app ($dbh) {
   
     my @projects = Array.new;
 
+    my $dbh = $pool ?? $pool.get-connection() !! get-dbh();
+
     for dir($root) -> $dir {
 
       next if "$dir".IO ~~ :f;
@@ -222,7 +225,7 @@ sub create-cro-app ($dbh) {
 
     }
 
-    #$dbh.dispose;
+    $dbh.dispose;
 
     template 'templates/projects.crotmp', {
 
@@ -237,6 +240,8 @@ sub create-cro-app ($dbh) {
   
   get -> Cro::HTTP::Auth $session, 'builds' {
 
+    my $dbh = $pool ?? $pool.get-connection() !! get-dbh();
+
     my $sth = $dbh.prepare(q:to/STATEMENT/);
         SELECT * FROM builds order by id desc limit 500
     STATEMENT
@@ -247,7 +252,7 @@ sub create-cro-app ($dbh) {
 
     $sth.finish;
 
-    #$dbh.dispose;
+    $dbh.dispose;
 
     #say @rows.perl;
   
@@ -272,6 +277,8 @@ sub create-cro-app ($dbh) {
 
   get -> 'badge', $project {
 
+    my $dbh = $pool ?? $pool.get-connection() !! get-dbh();
+
     my $sth = $dbh.prepare("SELECT max(id) as last_build_id FROM builds where project = '{$project}'");
     $sth.execute();
     my @r = $sth.allrows(:array-of-hash);
@@ -287,7 +294,7 @@ sub create-cro-app ($dbh) {
       $state = @r[0]<state>;
     }
 
-    #$dbh.dispose;
+    $dbh.dispose;
 
     if $state == -1 {
       redirect :permanent, '/icons/build-fail.png';
@@ -319,6 +326,8 @@ sub create-cro-app ($dbh) {
 
     if "$reports-dir/$project/build-$build_id.txt".IO ~~ :f {
 
+      my $dbh = $pool ?? $pool.get-connection() !! get-dbh();
+
       my $sth = $dbh.prepare("SELECT state, description, dt, job_id FROM builds where id = {$build_id}");
 
       $sth.execute();
@@ -335,7 +344,7 @@ sub create-cro-app ($dbh) {
 
       $sth.finish;
 
-      #$dbh.dispose;
+      $dbh.dispose;
 
       my $data = "$reports-dir/$project/build-$build_id.txt".IO.slurp;
 
@@ -370,6 +379,8 @@ sub create-cro-app ($dbh) {
       content 'text/plain', "-2"  # "queued"
     } else {
 
+      my $dbh = $pool ?? $pool.get-connection() !! get-dbh();
+  
       my $sth = $dbh.prepare("SELECT state, description, dt FROM builds where project = '{$project}' and job_id = '{$key}'");
 
       $sth.execute();
@@ -380,7 +391,7 @@ sub create-cro-app ($dbh) {
 
       $sth.finish;
 
-      #$dbh.dispose;
+      $dbh.dispose;
 
       if $state.defined {
         content 'text/plain', "$state"
@@ -396,6 +407,8 @@ sub create-cro-app ($dbh) {
        content 'text/plain', "build is queued, wait till it gets run\n"
     } else {
 
+      my $dbh = $pool ?? $pool.get-connection() !! get-dbh();
+
       my $sth = $dbh.prepare("SELECT id FROM builds where project = '{$project}' and job_id = '{$key}'");
 
       $sth.execute();
@@ -406,7 +419,7 @@ sub create-cro-app ($dbh) {
 
       $sth.finish;
 
-      #$dbh.dispose;
+      $dbh.dispose;
 
       if $build_id.defined {
 
@@ -501,7 +514,30 @@ sub create-cro-app ($dbh) {
 
 }
 
-my $application = create-cro-app(get-dbh());
+my $pool;
+
+if get-database-engine() ne "sqlite" {
+
+    my %conf = get-sparky-conf();
+    my %connection-parameters = 
+        host      => %conf<database><host>,
+        port      => %conf<database><port>,
+        database  => %conf<database><name>,
+        user      => %conf<database><user>,
+        password  => %conf<database><pass>;
+
+    my $pool = DBIish::Pool.new(
+      driver => get-database-engine(), 
+      max-connections => 50, 
+      max-idle-duration => Duration.new(60),
+      min-spare-connections => 3,  
+      initial-size => 5, 
+      |%connection-parameters
+    );
+
+}
+
+my $application = create-cro-app($pool);
 
 (.out-buffer = False for $*OUT, $*ERR;);
 

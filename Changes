@@ -5,6 +5,8 @@ Revision history for Sparky
   - Bug fix - fix broken rebuild button
   - Security fix - rebuilding for project without sparky.yaml is forbidden
   - New feature - http basic authentication support
+  - New feature - use DBIish::Pool with mysql/postgresql drivers to
+    deal with https://github.com/raku-community-modules/DBIish/issues/222
 
 0.1.6 2022-03-13T05:20:00Z
 

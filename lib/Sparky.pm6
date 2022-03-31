@@ -68,6 +68,17 @@ sub get-sparky-conf is export {
 
 }
 
+sub get-database-engine is export {
+
+  my %conf = get-sparky-conf();
+
+  if %conf<database> && %conf<database><engine> {
+    return %conf<database><engine>
+  } else {
+    return "sqlite"
+  }
+}
+
 multi sub get-dbh ( $dir ) is export {
 
   #return $dbh if $dbh;
