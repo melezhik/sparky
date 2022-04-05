@@ -168,11 +168,43 @@ sub build-is-running ( $dir ) {
 
 }
 
+sub builds-running-cnt {
+
+  my @proc-check-cmd = ("bash", "-c", "ps aux | grep sparky-runner.raku | grep -v grep | wc -l");
+
+  my $proc-run = run @proc-check-cmd, :out;
+
+  if $proc-run.exitcode == 0 {
+
+      $proc-run.out.get ~~ m/(\d+)/;
+
+      my $cnt = $0;
+
+      say "{DateTime.now} --- sparky jobs running, cnt:  $cnt";
+
+      return $cnt
+
+  } else {
+
+    return 0
+  }
+
+}
+
 sub schedule-build ( $dir, %opts? ) is export {
 
   my $project = $dir.IO.basename;
 
   my %config = Hash.new;
+
+  my $jobs-cnt = builds-running-cnt();
+
+  if %*ENV<SPARKI_MAX_JOBS> {
+    if $jobs-cnt > %*ENV<SPARKI_MAX_JOBS> {
+        say "{DateTime.now} --- $jobs-cnt builds run, SPARKI_MAX_JOBS={%*ENV<SPARKI_MAX_JOBS>}, SKIP ... ";
+        return;
+    }
+  }
 
   if "$dir/sparky.yaml".IO ~~ :f {
 
