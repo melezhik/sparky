@@ -200,7 +200,7 @@ sub schedule-build ( $dir, %opts? ) is export {
   my $jobs-cnt = builds-running-cnt();
 
   if %*ENV<SPARKY_MAX_JOBS> {
-    if $jobs-cnt > %*ENV<SPARKY_MAX_JOBS> {
+    if $jobs-cnt >= %*ENV<SPARKY_MAX_JOBS> {
         say "{DateTime.now} --- $jobs-cnt builds run, SPARKY_MAX_JOBS={%*ENV<SPARKY_MAX_JOBS>}, SKIP ... ";
         return;
     }
