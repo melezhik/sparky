@@ -7,7 +7,7 @@ Revision history for Sparky
   - New feature - http basic authentication support
   - New feature - use DBIish::Pool with mysql/postgresql drivers to
     deal with https://github.com/raku-community-modules/DBIish/issues/222
-  - New feature - `SPARKI_MAX_JOBS` - threshold of concurrent jobs maximum 
+  - New feature - `SPARKY_MAX_JOBS` - threshold of concurrent jobs maximum 
     number to protect Sparky server from overload.
 
 0.1.6 2022-03-13T05:20:00Z
