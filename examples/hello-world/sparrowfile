@@ -4,4 +4,5 @@ bash "echo Hello World";
 
 say config().perl;
 
-sleep(30);
+say tags().perl;
+
