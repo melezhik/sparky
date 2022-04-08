@@ -1,19 +1,16 @@
 FROM ghcr.io/jj/raku-zef-gha:latest
 USER root
+#RUN adduser -D -s /bin/bash sparky
+RUN echo '%wheel ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+RUN addgroup raku wheel
 RUN apk update && apk add openssl bash curl wget perl openssl-dev sqlite sqlite-dev
-#USER raku
-RUN zef install --verbose File::Find && raku -e 'use File::Find' 
+USER raku
 RUN zef install --/test https://github.com/melezhik/Sparrow6.git
 RUN zef install --/test https://github.com/melezhik/sparrowdo.git
 RUN zef install --/test https://github.com/melezhik/sparky-job-api.git
-#USER root
-#USER raku
-RUN zef install Cro::TLS --/test
-RUN zef install --/test https://github.com/melezhik/sparky.git  && echo OK2
+RUN zef install cro --/test
+RUN zef install --/test https://github.com/melezhik/sparky.git
 RUN git clone https://github.com/melezhik/sparky.git Sparky
-#USER root
-RUN apk add bash curl wget perl
-#USER raku
 WORKDIR Sparky
 RUN raku db-init.raku
 EXPOSE 4000
