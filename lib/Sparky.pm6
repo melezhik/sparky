@@ -197,14 +197,14 @@ sub schedule-build ( $dir, %opts? ) is export {
 
   my %config = Hash.new;
 
-  my $jobs-cnt = builds-running-cnt();
+#  my $jobs-cnt = builds-running-cnt();
 
-  if %*ENV<SPARKY_MAX_JOBS> {
-    if $jobs-cnt >= %*ENV<SPARKY_MAX_JOBS> {
-        say "{DateTime.now} --- $jobs-cnt builds run, SPARKY_MAX_JOBS={%*ENV<SPARKY_MAX_JOBS>}, SKIP ... ";
-        return;
-    }
-  }
+#  if %*ENV<SPARKY_MAX_JOBS> {
+#    if $jobs-cnt >= %*ENV<SPARKY_MAX_JOBS> {
+#        say "{DateTime.now} --- $jobs-cnt builds run, SPARKY_MAX_JOBS={%*ENV<SPARKY_MAX_JOBS>}, SKIP ... ";
+#        return;
+#    }
+#  }
 
   if "$dir/sparky.yaml".IO ~~ :f {
 
