@@ -115,7 +115,15 @@ sub MAIN (
 
   if %trigger<sparrowdo> {
     for %trigger<sparrowdo>.keys -> $k {
-      %sparrowdo-config{$k} = %trigger<sparrowdo>{$k};
+      if $k eq "tags" {
+        if %sparrowdo-config{$k} {
+          %sparrowdo-config{$k} ~= ",{%trigger<sparrowdo>{$k}}"
+        } else {
+          %sparrowdo-config{$k} = %trigger<sparrowdo>{$k}
+        }
+      } else {
+        %sparrowdo-config{$k} = %trigger<sparrowdo>{$k};
+      }
     }
     # handle conflicting parameters
     if %trigger<sparrowdo><localhost> {
@@ -132,8 +140,6 @@ sub MAIN (
       %sparrowdo-config<no_sudo>:delete;
     }
   }
-
-  say "merged sparrowdo configuration: {Dump(%sparrowdo-config)}";
 
   if $trigger {
     say "moving trigger to {$build-cache-dir}/{$trigger.IO.basename} ...";
@@ -218,6 +224,8 @@ sub MAIN (
   if  %sparrowdo-config<bootstrap> {
     $sparrowdo-run ~= " --bootstrap";
   }
+
+  say "merged sparrowdo configuration: {Dump(%sparrowdo-config)}";
 
   my $run-dir = $dir;
 
