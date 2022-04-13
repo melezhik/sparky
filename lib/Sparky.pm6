@@ -294,7 +294,7 @@ sub schedule-build ( $dir, %opts? ) is export {
 
     mkdir "{$dir}/../../work/{$project}/.scm" unless "{$dir}/../../work/{$project}/.scm".IO ~~ :d;
 
-    shell("git ls-remote {$scm-url} {$scm-branch} | awk '\{ print \$1 \}' 1>{$dir}/../../work/{$project}/.scm/current.commit 2>{$dir}/../../work/{$project}/.scm/git-ls-remote.err");
+    shell("timeout 10 git ls-remote {$scm-url} {$scm-branch} | awk '\{ print \$1 \}' 1>{$dir}/../../work/{$project}/.scm/current.commit 2>{$dir}/../../work/{$project}/.scm/git-ls-remote.err");
 
     my $current-commit = "{$dir}/../../work/{$project}/.scm/current.commit".IO.slurp.chomp;
 
