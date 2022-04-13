@@ -10,6 +10,7 @@ Revision history for Sparky
   - New feature - `SPARKY_MAX_JOBS` - threshold of concurrent jobs maximum 
     number to protect Sparky server from overload.
   - Bug fix - proper merge of sparky.yaml/sparrowdo.tags and .trigger/sparrowdo.tags
+  - Improvements - add timeout for `git ls-remote` to prevent hanging for protected URLs
 
 0.1.6 2022-03-13T05:20:00Z
 
