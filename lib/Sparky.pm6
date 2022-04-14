@@ -292,30 +292,46 @@ sub schedule-build ( $dir, %opts? ) is export {
 
     my $scm-dir =   "{$dir}/../../work/{$project}/.scm";
 
-    mkdir "{$dir}/../../work/{$project}/.scm" unless "{$dir}/../../work/{$project}/.scm".IO ~~ :d;
+    mkdir $scm-dir unless $scm-dir.IO ~~ :d;
 
     say "scm: fetch commits from {$scm-url} {$scm-branch} ...";
 
-    shell("timeout 10 git ls-remote {$scm-url} {$scm-branch} | awk '\{ print \$1 \}' 1>{$dir}/../../work/{$project}/.scm/current.commit 2>{$dir}/../../work/{$project}/.scm/git-ls-remote.err ; echo");
+    shell("timeout 5 git ls-remote {$scm-url} {$scm-branch} 1>{$scm-dir}/data; echo \$? > {$scm-dir}/exit-code");
 
-    my $current-commit = "{$dir}/../../work/{$project}/.scm/current.commit".IO.slurp.chomp;
+    my $ex-code = "{$scm-dir}/exit-code".IO.slurp.chomp;
 
+    if $ex-code ne "0" {
+      say "scm: {$scm-url} {$scm-branch} - bad exit code - {$ex-code}";
+      return $ex-code;
+    } else {
+      say "scm: {$scm-url} {$scm-branch} - good exit code - {$ex-code}";
+    }
+
+    my $commit-data = "{$scm-dir}/data".IO.slurp.chomp;
+
+    my $current-commit;
+
+    if $commit-data ~~ /^^ (\S+) / {
+      $current-commit = "{$0}";
+    }
+    
     my $current-commit-short = $current-commit.chop(32);
 
     if $current-commit ~~ /\S/ {
 
       my $last-commit;
+
       my $trigger-build = False;
 
-      if  "{$dir}/../../work/{$project}/.scm/last.commit".IO ~~ :f {
-        $last-commit = "{$dir}/../../work/{$project}/.scm/last.commit".IO.slurp;
+      if  "{$scm-dir}/last.commit".IO ~~ :f {
+        $last-commit = "{$scm-dir}/last.commit".IO.slurp;
         if $current-commit ne $last-commit {
           $trigger-build = True;
-         "{$dir}/../../work/{$project}/.scm/last.commit".IO.spurt($current-commit);
+         "{$scm-dir}/last.commit".IO.spurt($current-commit);
         }
 
       } else {
-        "{$dir}/../../work/{$project}/.scm/last.commit".IO.spurt($current-commit);
+        "{$scm-dir}/last.commit".IO.spurt($current-commit);
         $trigger-build = True;
       }
 
@@ -338,6 +354,8 @@ sub schedule-build ( $dir, %opts? ) is export {
       }
 
     }
+
+    return;
 
   } elsif !%config<crontab>  {
       say "{DateTime.now} --- [$project] crontab entry not found, consider manual start or set up cron later, SKIP ... ";

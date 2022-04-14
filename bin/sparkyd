@@ -10,6 +10,8 @@ sub MAIN (
 
 {
 
+  my %flappers;
+
   while True {
 
     for dir($root) -> $dir {
@@ -20,6 +22,12 @@ sub MAIN (
       next if $dir.basename eq 'db.sqlite3-journal';  
       next unless "$dir/sparrowfile".IO ~~ :f;
 
+      if "$dir/sparky.yaml".IO !~~ :f {
+        next unless "{$dir}/.triggers/".IO ~~ :d;
+        my @a = dir("{$dir}/.triggers/");
+        next unless @a.elems;
+      }
+
       mkdir $root;
       mkdir $work-root;
 
@@ -27,9 +35,19 @@ sub MAIN (
 
       mkdir "$work-root/$project/.lock";
 
-      schedule-build($dir);
-
-
+      if %flappers{$dir}:exists &&  %flappers{$dir} >= 3 {
+        say "project {$dir.basename} marked as a flapper and skipped from scheduling";
+      } else { 
+        my $status = schedule-build($dir);
+        if defined($status) {
+          # mark project a flapper
+          # if more then 3 timeouts happened
+          if $status eq "124" {
+            %flappers{$dir} ||= 0;
+            %flappers{$dir}++; 
+          }
+        }
+      }
     }
 
     sleep($timeout);
