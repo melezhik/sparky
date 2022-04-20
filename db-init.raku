@@ -56,7 +56,7 @@ if $engine ~~ /:i sqlite/ {
       )
       STATEMENT
 
-} else {
+} elsif $engine ~~ /:i mysql/ {
 
   $dbh.do(q:to/STATEMENT/);
       CREATE TABLE builds (
@@ -67,6 +67,19 @@ if $engine ~~ /:i sqlite/ {
           state       int,
           dt timestamp default CURRENT_TIMESTAMP
       ) CHARACTER SET utf8
+      STATEMENT
+
+} elsif $engine ~~ /:i pg/ {
+
+  $dbh.do(q:to/STATEMENT/);
+      CREATE TABLE builds (
+          id          SERIAL PRIMARY KEY,
+          project     varchar(255),
+          job_id      varchar(255),
+          description varchar(255),
+          state       int,
+          dt timestamp default CURRENT_TIMESTAMP
+      )
       STATEMENT
 
 }
