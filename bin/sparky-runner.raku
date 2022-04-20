@@ -35,8 +35,10 @@ sub MAIN (
   mkdir $dir;
 
   my $build-cache-dir = "$dir/../../work/$project/.triggers".IO.absolute;
+  my $build-state-dir = "$dir/../../work/$project/.states".IO.absolute;
 
   mkdir $build-cache-dir; # cache dir for triggered builds
+  mkdir $build-state-dir; # state dir for triggered builds
 
   my $build_id;
 
@@ -45,6 +47,8 @@ sub MAIN (
   my $run-first-time = False;
 
   my %trigger =  Hash.new;
+
+  my $job-id = $trigger.IO.basename;
 
   if $trigger {
     say "loading trigger $trigger into Raku ...";
@@ -58,21 +62,32 @@ sub MAIN (
     $dbh = get-dbh( $dir );
 
     my $description = %trigger<description>;
-    my $key = $trigger.IO.basename;
 
     my $sth = $dbh.prepare(q:to/STATEMENT/);
       INSERT INTO builds (project, state, description, job_id)
       VALUES ( ?,?,?,? )
     STATEMENT
 
-    $sth.execute($project, 0, $description, $key);
+    $sth.execute($project, 0, $description, $job-id);
+
+    # SPEED optimization:
+    # we use file cache instead of database
+    # to return build states from http API (sparky-job-api calls f.e.)
+    # states still exit in a database
+    # but for the sake of speed and 
+    # not to overload database with requests
+    # we would rather return states
+    # by reading them from static files
+    # not from as database entries
+
+    "{$build-state-dir}/{$job-id}".IO.spurt(0);
 
     $sth = $dbh.prepare(q:to/STATEMENT/);
         SELECT max(ID) AS build_id
         FROM builds where job_id = ? 
         STATEMENT
 
-    $sth.execute($key);
+    $sth.execute($job-id);
 
     my @rows = $sth.allrows();
 
@@ -243,14 +258,14 @@ sub MAIN (
   }
 
 
-  if $make-report {
-    $dbh.do("UPDATE builds SET state = 1 WHERE id = $build_id");
-    say "BUILD SUCCEED $project" ~ '@' ~ $build_id;
-    $SPARKY-BUILD-STATE="OK";
+  if $make-report { $dbh.do("UPDATE builds SET state = 1 WHERE id = $build_id"); 
+    say "BUILD SUCCEED 
+    $project" ~ '@' ~ $build_id; $SPARKY-BUILD-STATE="OK"; 
+    "{$build-state-dir}/{$job-id}".IO.spurt(1);
   } else {
-    $SPARKY-BUILD-STATE="OK";
     say "BUILD SUCCEED <$project>";
-
+    $SPARKY-BUILD-STATE="OK";
+    "{$build-state-dir}/{$job-id}".IO.spurt(1);
   }
 
   CATCH {
@@ -262,10 +277,11 @@ sub MAIN (
           say "BUILD FAILED $project" ~ '@' ~ $build_id;
           $dbh.do("UPDATE builds SET state = -1 WHERE id = $build_id");
           $SPARKY-BUILD-STATE="FAILED";
-
+         "{$build-state-dir}/{$job-id}".IO.spurt(-1);
         } else {
           say "BUILD FAILED <$project>";
           $SPARKY-BUILD-STATE="FAILED";
+         "{$build-state-dir}/{$job-id}".IO.spurt(-1);
         }
       }
 
@@ -296,7 +312,7 @@ sub MAIN (
       for @rows -> @r {
         $i++;
         my $bid = @r[0];
-        my $key = @r[1];
+        my $job-id = @r[1];
         if $i <= $remove-builds {
           if $dbh.do("delete from builds WHERE id = $bid") {
             say "remove build database entry: $project" ~ '@' ~ $bid;
@@ -308,11 +324,16 @@ sub MAIN (
           } else {
             say "!!! can't remove report: $reports-dir/build-$bid.txt";
           }
-          if $key {
-            if unlink "{$build-cache-dir}/{$key}".IO {
-              say "remove trigger cache: {$build-cache-dir}/{$key}";
+          if $job-id {
+            if unlink "{$build-cache-dir}/{$job-id}".IO {
+              say "remove trigger cache: {$build-cache-dir}/{$job-id}";
             } else {
-              say "!!! can't remove trigger cache: {$build-cache-dir}/{$key}";
+              say "!!! can't remove trigger cache: {$build-cache-dir}/{$job-id}";
+            }
+            if unlink "{$build-state-dir}/{$job-id}".IO {
+              say "remove state cache: {$build-state-dir}/{$job-id}";
+            } else {
+              say "!!! can't remove state cache: {$build-state-dir}/{$job-id}";
             }
           }
 
@@ -401,9 +422,9 @@ LEAVE {
 
     mkdir "$downstream_dir/.triggers";
 
-    spurt "$downstream_dir/.triggers/$id", "%(
+    "{$downstream_dir}/.triggers/{$id}".IO.spurt("%(
       description => 'triggered by {$SPARKY-PROJECT}\@{$SPARKY-BUILD-ID}',
-    )";
+    )");
 
     # fixme: we need to set --make-report
     # to trigger file

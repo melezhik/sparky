@@ -395,12 +395,28 @@ sub find-triggers ($root) is export {
   return @triggers;
 }
 
-sub trigger-exists ($root,$project,$trigger) is export {
+sub trigger-exists ($root,$project,$job-id) is export {
 
-  if "{$root}/$project/.triggers/{$trigger}".IO ~~ :f {
+  if "{$root}/$project/.triggers/{$job-id}".IO ~~ :f {
     return True
   } else {
     return False
   }
+
+}
+
+sub job-state-exists ($root,$project,$job-id) is export {
+
+  if "{$root}/../work/$project/.states/$job-id".IO ~~ :f {
+    return True
+  } else {
+    return False
+  }
+
+}
+
+sub job-state ($root,$project,$job-id) is export {
+
+  "{$root}/../work/$project/.states/$job-id".IO.slurp
 
 }

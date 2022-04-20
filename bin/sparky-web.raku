@@ -376,9 +376,10 @@ sub create-cro-app ($pool) {
   get -> 'status', $project, $key {
 
     if trigger-exists($root,$project,$key) {
-      content 'text/plain', "-2"  # "queued"
+    } elsif job-state-exists($root,$project,$key) { 
+      # get state from file cache if cache exists
+      content 'text/plain', "{job-state($root,$project,$key)}"
     } else {
-
       my $dbh = $pool ?? $pool.get-connection() !! get-dbh();
   
       my $sth = $dbh.prepare("SELECT state, description, dt FROM builds where project = '{$project}' and job_id = '{$key}'");
