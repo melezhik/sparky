@@ -376,6 +376,7 @@ sub create-cro-app ($pool) {
   get -> 'status', $project, $key {
 
     if trigger-exists($root,$project,$key) {
+      content 'text/plain', "-2" 
     } elsif job-state-exists($root,$project,$key) { 
       # get state from file cache if cache exists
       content 'text/plain', "{job-state($root,$project,$key)}"

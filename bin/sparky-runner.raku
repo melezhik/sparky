@@ -259,8 +259,8 @@ sub MAIN (
 
 
   if $make-report { $dbh.do("UPDATE builds SET state = 1 WHERE id = $build_id"); 
-    say "BUILD SUCCEED 
-    $project" ~ '@' ~ $build_id; $SPARKY-BUILD-STATE="OK"; 
+    say "BUILD SUCCEED $project" ~ '@' ~ $build_id; 
+    $SPARKY-BUILD-STATE="OK"; 
     "{$build-state-dir}/{$job-id}".IO.spurt(1);
   } else {
     say "BUILD SUCCEED <$project>";
