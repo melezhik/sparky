@@ -1,4 +1,5 @@
 FROM ghcr.io/jj/raku-zef-gha:latest
+RUN raku --version
 USER root
 RUN apk update && apk add openssl bash curl wget perl openssl-dev sqlite sqlite-dev sudo
 RUN echo '%wheel ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
