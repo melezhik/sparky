@@ -296,7 +296,7 @@ sub schedule-build ( $dir, %opts? ) is export {
 
     say "scm: fetch commits from {$scm-url} {$scm-branch} ...";
 
-    shell("timeout 5 git ls-remote {$scm-url} {$scm-branch} 1>{$scm-dir}/data; echo \$? > {$scm-dir}/exit-code");
+    shell("timeout 10 git ls-remote {$scm-url} {$scm-branch} 1>{$scm-dir}/data; echo \$? > {$scm-dir}/exit-code");
 
     my $ex-code = "{$scm-dir}/exit-code".IO.slurp.chomp;
 
