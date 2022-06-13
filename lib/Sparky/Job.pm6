@@ -86,6 +86,22 @@ sub put-job-stash (%config,%data) is export {
   return { path => "{$sparky-project-dir}/.stash/$job-id" };
 }
 
+sub put-job-file ($project,$job-id,$filename,$data) is export {
+
+  my $sparky-project-dir = "{%*ENV<HOME>}/.sparky/projects/{$project}";
+
+  mkdir "{$sparky-project-dir}/.files" unless "{$sparky-project-dir}/.files".IO ~~ :d;
+
+  mkdir "{$sparky-project-dir}/.files/{$job-id}" unless "{$sparky-project-dir}/.files/{$job-id}".IO ~~ :d;
+
+  say "put-job-file: create job file - {$sparky-project-dir}/.files/$job-id/{$filename} ...";
+
+  "{$sparky-project-dir}/.files/{$filename}".IO.spurt($data);
+
+  return { path => "{$sparky-project-dir}/.files/$job-id/$filename" };
+
+ }
+
 sub get-job-stash ($project,$job-id) is export {
 
   my $sparky-project-dir = "{%*ENV<HOME>}/.sparky/projects/{$project}";
@@ -94,4 +110,12 @@ sub get-job-stash ($project,$job-id) is export {
     "{$sparky-project-dir}/.stash/$job-id".IO ~~ :f ??
     "{$sparky-project-dir}/.stash/$job-id".IO.slurp !!
     '{}'
+}
+
+sub get-job-file ($project,$job-id,$filename) is export {
+
+  my $sparky-project-dir = "{%*ENV<HOME>}/.sparky/projects/{$project}";
+
+  return "{$sparky-project-dir}/.files/$job-id/$filename";
+
 }

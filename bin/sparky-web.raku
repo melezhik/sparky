@@ -159,6 +159,47 @@ sub create-cro-app ($pool) {
 
   }
 
+  put -> 'file', 'project', $project, 'job', $job-id, 'filename', $filename, :$token? is header  {
+
+    if sparky-api-token() and ( ! $token || (sparky-api-token() ne $token) ) {
+
+      forbidden("text/plain","bad token");
+
+    } else {
+
+      my $res;
+
+      request-body-blob  -> $data {
+
+        try { 
+
+          $res = put-job-file($project,$job-id,$filename,$data);
+
+          CATCH {
+            default {
+              my $err = "Error {.^name}, : , {.Str}";
+              $res = to-json({ error => $err });
+            }
+          }
+        }
+
+      }
+
+      content 'application/json', $res;
+
+    }
+
+  }
+
+  get -> 'file', $project, $key, $filepath is header  {
+
+      if get-job-file($project,$key,$filepath).IO ~~ :f {
+        content 'application/octet-stream', get-job-file($project,$key,$filepath).IO.slurp;
+      } else {
+        not-found()
+      } 
+  }
+
   get -> Cro::HTTP::Auth $session {
   
     my @projects = Array.new;
