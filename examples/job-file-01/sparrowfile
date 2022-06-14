@@ -1,0 +1,38 @@
+use Sparky::JobApi;
+
+class Pipeline
+
+  does Sparky::JobApi::Role
+
+  {
+
+    method stage-main {
+
+      say "hello from main ...";
+
+      my $j = self.new-job;
+  
+      $j.queue: %(
+        tags => %(
+          stage => "child"
+        )
+      )
+
+    }
+
+    method stage-child {
+
+      say "hello from child";
+
+      my $j = Sparky::JobApi.new: mine => True;
+
+      $j.put-file($*PROGRAM.IO,"file1");
+
+    }
+
+  }
+
+
+Pipeline.new.run;
+
+
