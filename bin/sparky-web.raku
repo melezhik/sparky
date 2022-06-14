@@ -153,7 +153,7 @@ sub create-cro-app ($pool) {
 
   }
 
-  get -> 'stash', $project, $key is header  {
+  get -> 'stash', $project, $key   {
 
       content 'application/json', get-job-stash($project,$key);
 
@@ -191,7 +191,7 @@ sub create-cro-app ($pool) {
 
   }
 
-  get -> 'file', $project, $key, $filepath is header  {
+  get -> 'file', $project, $key, $filepath  {
 
       if get-job-file($project,$key,$filepath).IO ~~ :f {
         content 'application/octet-stream', get-job-file($project,$key,$filepath).IO.slurp;
