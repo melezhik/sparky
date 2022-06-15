@@ -8,7 +8,6 @@ USER raku
 RUN sudo echo
 RUN zef install --/test https://github.com/melezhik/Sparrow6.git
 RUN zef install --/test https://github.com/melezhik/sparrowdo.git
-RUN zef install --/test https://github.com/melezhik/sparky-job-api.git
 RUN zef install --/test JSON::Unmarshal 
 RUN zef install --/test IO::Socket::Async::SSL
 RUN zef install --/test JSON::Fast
@@ -28,6 +27,7 @@ RUN zef install --/test Base64
 RUN zef install --/test Digest::SHA1::Native
 RUN zef install --/test Crypt::Random
 RUN zef install --/test https://github.com/melezhik/sparky.git --verbose
+RUN echo OK && zef install --/test https://github.com/melezhik/sparky-job-api.git
 RUN git clone https://github.com/melezhik/sparky.git Sparky
 WORKDIR Sparky
 RUN raku db-init.raku
