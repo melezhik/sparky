@@ -16,8 +16,14 @@ class Pipeline
         tags => %(
           stage => "child"
         )
-      )
+      );
 
+      my $st = self.wait-job($j);
+      
+      die unless $st<OK>;
+
+      say $j.get-file("README2.md");
+  
     }
 
     method stage-child {
