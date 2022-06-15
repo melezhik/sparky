@@ -338,11 +338,11 @@ sub MAIN (
             } else {
               say "!!! can't remove state cache: {$build-state-dir}/{$job-id}";
             }
-            if $build-files-dir.IO ~~ :d {
-              if rmtree $build-files-dir {
-                say "remove files dir: $build-files-dir";
+            if "{$build-files-dir}/{$job-id}".IO ~~ :d {
+              if rmtree "{$build-files-dir}/{$job-id}" {
+                say "remove files dir: {$build-files-dir}/{$job-id}";
               } else {
-                say "!!! can't remove files dir: $build-files-dir";
+                say "!!! can't remove files dir: {$build-files-dir}/{$job-id}";
               }
             }
           }
