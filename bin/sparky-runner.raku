@@ -3,6 +3,7 @@
 use Sparky;
 use Data::Dump;
 use YAMLish;
+use File::Directory::Tree;
 
 state $DIR;
 state $MAKE-REPORT;
@@ -36,9 +37,11 @@ sub MAIN (
 
   my $build-cache-dir = "$dir/../../work/$project/.triggers".IO.absolute;
   my $build-state-dir = "$dir/../../work/$project/.states".IO.absolute;
+  my $build-files-dir = "$dir/../../work/$project/.files".IO.absolute;
 
   mkdir $build-cache-dir; # cache dir for triggered builds
   mkdir $build-state-dir; # state dir for triggered builds
+  mkdir $build-files-dir; # files dir for triggered builds
 
   my $build_id;
 
@@ -334,6 +337,13 @@ sub MAIN (
               say "remove state cache: {$build-state-dir}/{$job-id}";
             } else {
               say "!!! can't remove state cache: {$build-state-dir}/{$job-id}";
+            }
+            if $build-files-dir.IO ~~ :d {
+              if rmtree $build-files-dir {
+                say "remove files dir: $build-files-dir";
+              } else {
+                say "!!! can't remove files dir: $build-files-dir";
+              }
             }
           }
 

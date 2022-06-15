@@ -26,7 +26,22 @@ class Pipeline
 
       my $j = Sparky::JobApi.new: mine => True;
 
-      $j.put-file($*PROGRAM.IO,"file1");
+      task-run "http/GET 1.png", "curl", %(
+        args => [
+          %( 
+            'output' => "{$*CWD}/README.md"
+          ),
+        [
+          'silent',
+          '-f',
+          'location'
+        ],
+        #'https://raw.githubusercontent.com/melezhik/images/master/1.png'
+        'https://raw.githubusercontent.com/melezhik/images/master/README.md'
+        ]
+      );
+
+      $j.put-file("{$*CWD}/README.md","README2.md");
 
     }
 

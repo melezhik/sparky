@@ -9,6 +9,7 @@ Revision history for Sparky
     deal with https://github.com/raku-community-modules/DBIish/issues/222
   - New feature - `SPARKY_MAX_JOBS` - threshold of concurrent jobs maximum 
     number to protect Sparky server from overload.
+  - New feature - job files API
   - Bug fix - proper merge of sparky.yaml/sparrowdo.tags and .trigger/sparrowdo.tags
   - Improvement - add timeout for `git ls-remote` to prevent hanging for protected URLs
   - Improvement - flappering scm jobs protection (removal from scheduler)

@@ -12,6 +12,7 @@
     "HTTP::Tiny",
     "Sparrowdo:ver<0.1.15+>",
     "Time::Crontab",
+    "File::Directory::Tree",
     "cro",
     "Cro::HTTP::Server",
     "Cro::HTTP::Router",
