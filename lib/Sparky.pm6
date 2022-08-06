@@ -1,6 +1,6 @@
 use v6;
 
-unit module Sparky:ver<0.1.6>;
+unit module Sparky:ver<0.1.7>;
 use YAMLish;
 use DBIish;
 use Time::Crontab;
@@ -28,13 +28,13 @@ sub sparky-use-tls is export {
 
 sub sparky-http-basic-user is export {
 
-  get-sparky-conf()<SPARKY_HTTP_BASIC_USER>;
+  get-sparky-conf()<SPARKY_HTTP_BASIC_USER> || "user";
 
 }
 
 sub sparky-http-basic-password is export {
 
-  get-sparky-conf()<SPARKY_HTTP_BASIC_PASSWORD>;
+  get-sparky-conf()<SPARKY_HTTP_BASIC_PASSWORD> || "password";
 
 }
 

@@ -1,6 +1,6 @@
 # SYNOPSIS
 
-Sparky is flexible and minimalist continuous integration server written in Raku.
+Sparky is a flexible and minimalist continuous integration server and distribute tasks runner written in Raku.
 
 ![Nice web UI](https://raw.githubusercontent.com/melezhik/sparky/master/images/sparky-web-ui5.png)
 
@@ -13,6 +13,7 @@ Sparky features:
 * Everything is kept in SCM repository - easy to port, maintain and track changes
 * Builds gets run in one of 3 flavors - 1) on localhost 2) on remote machines via ssh 3) on docker instances
 * Nice web UI to run build and read reports
+* Runs in a peer-to-peer network fashion with distributed tasks support
 
 # Build status
 
@@ -106,6 +107,16 @@ To install Sparky CI web app as a systemd unit:
 $ nano utils/install-sparky-web-systemd.raku # change working directory, user and root directory
 $ sparrowdo --sparrowfile=utils/install-sparky-web-systemd.raku --no_sudo --localhost
 ```
+
+## HTTP Basic authentication
+
+Sparky web server _comes with_ http basic authentication.
+
+By default "user" and "password" used for credentials, to override
+default values, set following  parameters in  `~/sparky.yaml` configuration file:
+
+    SPARKY_HTTP_BASIC_USER: user
+    SPARKY_HTTP_BASIC_PASSWORD: paSsworD
 
 ## Setting web app tcp parameters
 
@@ -1224,15 +1235,6 @@ tls:
 ```
 
 `SPARKY_USE_TLS` enables SSL mode and `tls` section has paths to ssl certificate ( key and certificate parts ).
-
-# HTTP Basic authentication support
-
-Sparky web server supports https basic authentication. 
-
-To enable this add a couple of parameters to `~/sparky.yaml` configuration file:
-
-    SPARKY_HTTP_BASIC_USER: user
-    SPARKY_HTTP_BASIC_PASSWORD: paSsworD
 
 # Command line client
 

@@ -20,7 +20,7 @@
     "Data::Dump:ver<0.0.12+>",
     "Text::Markdown"
   ],
-  "description" : "Sparky is a flexible and minimalist continuous integration server written in Raku",
+  "description" : "Sparky is a flexible and minimalist continuous integration server and distribute tasks runner written in Raku",
   "license" : "Artistic-2.0",
   "name" : "Sparky",
   "perl" : "6.*",
@@ -38,6 +38,6 @@
   },
   "tags" : [ ],
   "test-depends" : [ ],
-  "version" : "0.1.6"
+  "version" : "0.1.7"
 }
 

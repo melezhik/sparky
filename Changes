@@ -2,9 +2,11 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.1.7 2022-08-05T22:40:00Z
+
+  - New feature - http basic authentication support (enabled by default)
   - Bug fix - fix broken rebuild button
   - Security fix - rebuilding for project without sparky.yaml is forbidden
-  - New feature - http basic authentication support
   - New feature - use DBIish::Pool with mysql/postgresql drivers to
     deal with https://github.com/raku-community-modules/DBIish/issues/222
   - New feature - `SPARKY_MAX_JOBS` - threshold of concurrent jobs maximum 
@@ -14,7 +16,7 @@ Revision history for Sparky
   - Improvement - add timeout for `git ls-remote` to prevent hanging for protected URLs
   - Improvement - flappering scm jobs protection (removal from scheduler)
   - Improvement - dead (finished spawned jobs) removed from scheduler
-  - Improvment - speed/load optimization - get job statuses from file cache instead of database
+  - Improvement - speed/load optimization - get job statuses from file cache instead of database
 
 0.1.6 2022-03-13T05:20:00Z
 
