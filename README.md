@@ -918,7 +918,7 @@ In this example child job copy file back to a parent job using `put-file` method
 Where `$file-path` is a physical file path within file system and `$file-name` - just a name
 how file will be accessible by other jobs. So when a file gets copied, a parent job will access it as:
 
-`get-file($file-name)` method which return a content (\*) of file.
+`get-file($file-name)` method which return a content (\*) of a file.
 
 (\*) - content will be returned as `application/octet-stream` data
 
