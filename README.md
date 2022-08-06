@@ -843,6 +843,85 @@ my $j = Sparky::JobApi.new( :$project, :$job-id );
 $j.get-stash();
 ```
 
+## Job files
+
+Job files are similar to job stash, but used for transfer files between jobs, not
+structured Raku hashes.
+
+Here is an example how one can share file between child and parent job:
+
+
+```raku
+
+use Sparky::JobApi;
+
+class Pipeline
+
+  does Sparky::JobApi::Role
+
+  {
+
+    method stage-main {
+
+      say "hello from main ...";
+
+      my $j = self.new-job;
+  
+      $j.queue: %(
+        tags => %(
+          stage => "child"
+        )
+      );
+
+      my $st = self.wait-job($j);
+      
+      die unless $st<OK>;
+
+      say $j.get-file("README.md");
+  
+    }
+
+    method stage-child {
+
+      say "hello from child";
+
+      my $j = Sparky::JobApi.new: mine => True;
+
+      task-run "http/GET 1.png", "curl", %(
+        args => [
+          %( 
+            'output' => "{$*CWD}/README.md"
+          ),
+        [
+          'silent',
+          '-f',
+          'location'
+        ],
+        #'https://raw.githubusercontent.com/melezhik/images/master/1.png'
+        'https://raw.githubusercontent.com/melezhik/images/master/README.md'
+        ]
+      );
+
+      $j.put-file("{$*CWD}/README.md","README");
+
+    }
+
+  }
+
+Pipeline.new.run;
+```
+
+In this example child job copy file back to a parent job using `put-file` method:
+
+`put-file($file-path,$file-name)`
+
+Where `$file-path` is a physical file path within file system and `$file-name` - just a name
+how file will be accessible by other jobs. So when a file gets copied, a parent job will access it as:
+
+`get-file($file-name)` method which return a content (\*) of file.
+
+(\*) - content will be returned as `application/octet-stream` data
+
 ## Class API
 
 For OOP lovers there is a Sparky::JobApi::Role that implements some Sparky::JobApi-ish methods,
