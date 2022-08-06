@@ -845,7 +845,7 @@ $j.get-stash();
 
 ## Job files
 
-Job files are similar to job stash, but used for transfer files between jobs, not
+Job files are similar to job stash, but used to transfer files between jobs, not
 structured Raku hashes.
 
 Here is an example how one can share file between child and parent job:
