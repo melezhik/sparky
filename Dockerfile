@@ -6,8 +6,10 @@ RUN echo '%wheel ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 RUN addgroup raku wheel
 USER raku
 RUN sudo echo
-RUN zef install --/test https://github.com/melezhik/Sparrow6.git
-RUN zef install --/test https://github.com/melezhik/sparrowdo.git
+RUN echo OK && zef install --/test https://github.com/melezhik/Sparrow6.git
+RUN echo OK && zef install --/test https://github.com/melezhik/sparrowdo.git
+RUN echo OK && zef install --/test https://github.com/melezhik/Tomtit.git
+RUN echo OK && zef install --/test https://github.com/melezhik/Tomty.git
 RUN zef install --/test JSON::Unmarshal 
 RUN zef install --/test IO::Socket::Async::SSL
 RUN zef install --/test JSON::Fast
