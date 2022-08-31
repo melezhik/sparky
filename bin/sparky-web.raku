@@ -194,7 +194,7 @@ sub create-cro-app ($pool) {
   get -> 'file', $project, $key, $filepath  {
 
       if get-job-file($project,$key,$filepath).IO ~~ :f {
-        content 'application/octet-stream', get-job-file($project,$key,$filepath).IO.slurp;
+        content 'application/octet-stream', slurp(get-job-file($project,$key,$filepath),:bin);
       } else {
         not-found()
       } 
