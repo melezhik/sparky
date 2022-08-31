@@ -888,7 +888,7 @@ class Pipeline
       
       die unless $st<OK>;
 
-      say $j.get-file("README");
+      say $j.get-file("README",:text);
   
     }
 
