@@ -931,7 +931,18 @@ how file will be accessible by other jobs. So when a file gets copied, a parent 
 
 `get-file($file-name)` method which return a content (\*) of a file.
 
-(\*) - content will be returned as `application/octet-stream` data
+(\*) - content will be returned as a binary string by default:
+
+```raku
+my $data = $job->get-file("data.tar.gz");
+```
+
+To force text mode, use `:text` modifier:
+
+```raku
+my $text = $job->get-file: "README.md", :text;
+```
+
 
 ## Class API
 
