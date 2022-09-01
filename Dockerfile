@@ -28,8 +28,9 @@ RUN zef install --/test Terminal::ANSIColor
 RUN zef install --/test Base64
 RUN zef install --/test Digest::SHA1::Native
 RUN zef install --/test Crypt::Random
-RUN zef install --/test https://github.com/melezhik/sparky.git --verbose
-RUN echo OK && zef install --/test https://github.com/melezhik/sparky-job-api.git
+RUN zef install --/test IO::Socket::SSL
+RUN echo OK2 && zef install --/test --force-install https://github.com/melezhik/sparky.git --verbose
+RUN echo OK3 && zef install --/test --force-install https://github.com/melezhik/sparky-job-api.git
 RUN git clone https://github.com/melezhik/sparky.git Sparky
 WORKDIR Sparky
 RUN raku db-init.raku
