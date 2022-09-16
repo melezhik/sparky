@@ -18,6 +18,7 @@ Sparky features:
 # Build status
 
 ![github actions](https://github.com/melezhik/sparky/actions/workflows/main.yml/badge.svg)
+![SparkyCI](https://ci.sparrowhub.io/project/gh-melezhik-sparky/badge)
 
 # Sparky workflow in 4 lines:
 
