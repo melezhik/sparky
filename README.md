@@ -1293,8 +1293,9 @@ $ export SPARKY_SKIP_CRON=1 && sparkyd
 
 ## SPARKI_MAX_JOBS
 
-Threshold of concurrent jobs maximum number. Use it to protect Sparky server 
-from overload.
+Threshold of concurrent jobs maximum number. Use it to protect Sparky server from overload.
+
+(WARNING! This variable is not currently supported)
 
 ## SPARKY_ROOT
 
@@ -1309,6 +1310,10 @@ Set sparky web application http root. Useful when proxy application through Ngin
 ## SPARKY_TIMEOUT
 
 Sets timeout for sparky workers, see [Running daemon](#running-daemon) section.
+
+## SPARKY_JOB_TIMEOUT
+
+How many seconds wait till a job is considered as timeouted (used in Sparky Job API calls).
 
 # Running under other databases engines (MySQL, PostgreSQL)
 
