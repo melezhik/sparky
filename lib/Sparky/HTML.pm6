@@ -11,7 +11,7 @@ sub css is export {
   if %conf<ui> && %conf<ui><theme> {
     $theme = %conf<ui><theme>
   } else {
-    $theme = "sandstone";
+    $theme = "slate";
   }
 
   qq:to /HERE/
