@@ -210,7 +210,7 @@ sub MAIN (
   }
 
 
-  if  %sparrowdo-config<tags> {
+  if %sparrowdo-config<tags> {
     %sparrowdo-config<tags> ~= ",SPARKY_PROJECT={$project}";
     %sparrowdo-config<tags> ~= ",SPARKY_JOB_ID={$trigger.IO.basename}" if $trigger;
     %sparrowdo-config<tags> ~= ",SPARKY_WORKER=docker" if %sparrowdo-config<docker>;
@@ -236,6 +236,8 @@ sub MAIN (
   if %sparrowdo-config<debug> {
     $sparrowdo-run ~= " --debug";
   }
+
+  $sparrowdo-run ~= " --color"; # enable color output
 
   %sparrowdo-config<bootstrap> = True if %sparrowdo-config<bootstrap>;
 
