@@ -2,6 +2,9 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.1.7 2022-09-16T11:50:00Z
+
+  - Fix job files API (variuos issues)
   - UI - Set default theme to `slate`
   - Enable colorful output, now it looks much more nicer!
 
