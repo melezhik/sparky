@@ -200,7 +200,7 @@ sub create-cro-app ($pool) {
       } 
   }
 
-  get -> Cro::HTTP::Auth $session {
+  get {
   
     my @projects = Array.new;
 
@@ -279,7 +279,7 @@ sub create-cro-app ($pool) {
   
   }
   
-  get -> Cro::HTTP::Auth $session, 'builds' {
+  get -> 'builds' {
 
     my $dbh = $pool ?? $pool.get-connection() !! get-dbh();
 
@@ -308,7 +308,7 @@ sub create-cro-app ($pool) {
  
   }
   
-  get -> Cro::HTTP::Auth $session, 'queue' {
+  get -> 'queue' {
     template 'templates/queue.crotmp', {
       css => css(), 
       navbar => navbar(), 
@@ -505,7 +505,7 @@ sub create-cro-app ($pool) {
 
   }
 
-  get -> Cro::HTTP::Auth $session, 'project', $project {
+  get -> 'project', $project {
     if "$root/$project/sparrowfile".IO ~~ :f {
       my $project-conf-str; 
       my %project-conf;
