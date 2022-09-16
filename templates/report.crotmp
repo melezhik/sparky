@@ -33,7 +33,16 @@ function reBuild(){
         <a class="button is-small" onclick="reBuild()">Rebuild</a>
       </div>
       <div class="panel-block">
-        <pre><.data></pre>
+        <pre id="log"><.data></pre>
       </div>
     </nav>
 
+    <script src="/js/ansi_up.js" type="text/javascript"></script>
+    <script type="text/javascript">
+
+      var txt  = document.getElementById('log').innerText;
+      var ansi_up = new AnsiUp;
+      var html = ansi_up.ansi_to_html(txt);
+      document.getElementById('log').innerHTML = html;
+
+   </script>
