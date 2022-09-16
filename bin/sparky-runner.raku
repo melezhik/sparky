@@ -255,9 +255,9 @@ sub MAIN (
 
   if $make-report {
     my $report-file = "$reports-dir/build-$build_id.txt";
-    shell("cd $run-dir && $sparrowdo-run 1>$report-file" ~ ' 2>&1');
+    shell("export SP6_FORMAT_COLOR=1 && cd $run-dir && $sparrowdo-run 1>$report-file" ~ ' 2>&1');
   } else{
-    shell("cd $run-dir && $sparrowdo-run" ~ ' 2>&1');
+    shell("export SP6_FORMAT_COLOR=1 && cd $run-dir && $sparrowdo-run" ~ ' 2>&1');
   }
 
 

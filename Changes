@@ -3,6 +3,7 @@ Revision history for Sparky
 {{$NEXT}}
 
   - UI - Set default theme to `slate`
+  - Enable colorful output, now it looks much more nicer!
 
 0.1.7 2022-08-05T22:40:00Z
 

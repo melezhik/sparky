@@ -553,6 +553,11 @@ sub create-cro-app ($pool) {
 
   }
 
+  get -> 'js', *@path {
+    cache-control :public, :max-age(300);
+    static 'js', @path;
+  }
+
 }
 
 }
