@@ -2,11 +2,13 @@ Revision history for Sparky
 
 {{$NEXT}}
 
-0.1.7 2022-09-16T11:50:00Z
+0.1.8 2022-09-20T14:20:00Z
 
   - Fix job files API (variuos issues)
   - UI - Set default theme to `slate`
   - Enable colorful output, now it looks much more nicer!
+  - Update Dockerfile (use latest version of Rakudo)
+  - Enable zef deps report in .sparkyci.yaml
 
 0.1.7 2022-08-05T22:40:00Z
 
