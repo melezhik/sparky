@@ -1,0 +1,2 @@
+main:
+  with-zef-deps: true
