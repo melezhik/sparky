@@ -2,9 +2,12 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+  - sparkyd - don't fail when unexisting
+    branch is supplied with scm triggering
+
 0.1.8 2022-09-20T14:20:00Z
 
-  - Fix job files API (variuos issues)
+  - Fix job files API (various issues)
   - UI - Set default theme to `slate`
   - Enable colorful output, now it looks much more nicer!
   - Update Dockerfile (use latest version of Rakudo)

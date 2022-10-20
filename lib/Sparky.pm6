@@ -315,7 +315,7 @@ sub schedule-build ( $dir, %opts? ) is export {
       $current-commit = "{$0}";
     }
     
-    my $current-commit-short = $current-commit.chop(32);
+    my $current-commit-short = ($current-commit ~~ /\S/) ?? $current-commit.chop(32) !! "HEAD";
 
     if $current-commit ~~ /\S/ {
 
