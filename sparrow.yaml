@@ -1,0 +1,11 @@
+tasks: 
+  - 
+    code: |
+        set -e
+        raku -v
+        cd source
+        zef install --deps-only .
+        zef test . --verbose
+    default: true
+    language: Bash
+    name: zef-test
