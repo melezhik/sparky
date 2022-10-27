@@ -8,7 +8,7 @@ tasks:
         raku -v
         cd source
         zef install --deps-only .
-        zef test . --verbose
+        zef test . 
     depends:
       -
         name: deps
