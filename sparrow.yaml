@@ -1,11 +1,20 @@
 tasks: 
   - 
+    name: zef-test
+    default: true
+    language: Bash
     code: |
         set -e
         raku -v
         cd source
         zef install --deps-only .
         zef test . --verbose
-    default: true
+    depends:
+      -
+        name: deps
+  -
+    name: deps
     language: Bash
-    name: zef-test
+    code: |
+      set -e
+      sudo apk add zstd
