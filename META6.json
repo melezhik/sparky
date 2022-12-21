@@ -10,7 +10,7 @@
     "DBIish::Pool",
     "JSON::Tiny",
     "HTTP::Tiny",
-    "Sparrowdo:ver<0.1.15+>",
+    "Sparrowdo:ver<0.1.23+>",
     "Time::Crontab",
     "File::Directory::Tree",
     "cro",

@@ -35,12 +35,12 @@ RUN zef install --/test Base64
 RUN zef install --/test Digest::SHA1::Native
 RUN zef install --/test Crypt::Random
 RUN zef install --/test IO::Socket::SSL
-RUN echo OK7 && zef install --/test https://github.com/melezhik/Sparrow6.git
+RUN echo OK1 && zef install --/test https://github.com/melezhik/Sparrow6.git
 RUN echo OK2 && zef install --/test https://github.com/melezhik/sparrowdo.git
-RUN echo OK && zef install --/test https://github.com/melezhik/Tomtit.git
-RUN echo OK && zef install --/test https://github.com/melezhik/Tomty.git
-RUN echo OK4 && zef install --/test --force-install https://github.com/melezhik/sparky-job-api.git
-RUN echo OK5 && zef install --/test --force-install https://github.com/melezhik/sparky.git --verbose
+RUN echo OK3 && zef install --/test https://github.com/melezhik/Tomtit.git
+RUN echo OK4 && zef install --/test https://github.com/melezhik/Tomty.git
+RUN echo OK5 && zef install --/test --force-install https://github.com/melezhik/sparky-job-api.git
+RUN echo OK6 && zef install --/test --force-install https://github.com/melezhik/sparky.git
 RUN ls -l && git clone https://github.com/melezhik/sparky.git /home/raku/Sparky
 WORKDIR /home/raku/Sparky
 RUN ls -l && raku db-init.raku
