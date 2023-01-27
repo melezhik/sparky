@@ -4,6 +4,8 @@ Revision history for Sparky
 
   - sparkyd - don't fail when unexisting
     branch is supplied with scm triggering
+  - sparkyd - traverse triggers files in order of creation,
+    to support queues with priorities
 
 0.1.8 2022-09-20T14:20:00Z
 
