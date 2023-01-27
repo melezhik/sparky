@@ -223,7 +223,7 @@ sub schedule-build ( $dir, %opts? ) is export {
   my $run-by-trigger = False;
 
   if "{$dir}/.triggers/".IO ~~ :d {
-    for dir("{$dir}/.triggers/".sort({.IO.changed})) -> $file {
+    for dir("{$dir}/.triggers/".sort({.IO.changed})).reverse -> $file {
       $run-by-trigger = True;
       $trigger-file = $file.IO.absolute;
       last;
