@@ -1,20 +1,44 @@
-tasks: 
+image:
+  - melezhik/sparrow:debian
+
+secrets:
+  - FEZ_TOKEN
+tasks:
   - 
-    name: zef-test
+    name: test
     default: true
-    language: Bash
-    code: |
-        set -e
-        raku -v
-        cd source
-        zef install --deps-only --/test .
-        zef test . 
-    depends:
+    followup:
       -
-        name: deps
-  -
-    name: deps
+        name: release
     language: Bash
     code: |
       set -e
-      sudo apk add zstd zstd-dev
+      env|grep SCM
+      sudo apt-get install -y libarchive13 libcurl4-openssl-dev > /dev/null
+      cd source
+      #zef install --/test \
+      #  https://github.com/bduggan/p6-digest-sha1-native/archive/refs/tags/0.05.tar.gz
+      zef install "Pakku:ver<ava-1>" --/test  
+      pakku add noprecomp notest to home .
+      #zef install --/test .
+  -
+    name: release
+    if:
+      language: Raku
+      code: |
+        unless %*ENV<SCM_COMMIT_MESSAGE> ~~ /'release!'/ {
+          update_state %( status => 'skip' )
+        }
+    language: Bash
+    code: |
+      set -e
+      zef install --/test https://github.com/tony-o/raku-fez.git
+
+      cat << HERE > ~/.fez-config.json
+       {"groups":[],"un":"melezhik","key":"$FEZ_TOKEN"}
+      HERE
+
+      cd source/
+
+      tom --clean
+      fez upload --unattended
