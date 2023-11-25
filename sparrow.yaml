@@ -18,7 +18,8 @@ tasks:
       cd source
       #zef install --/test \
       #  https://github.com/bduggan/p6-digest-sha1-native/archive/refs/tags/0.05.tar.gz
-      zef install "Pakku:ver<ava-1>" --/test  
+      zef install "Pakku:ver<celastrina.5>" --/test
+      PAKKU_VERBOSE=debug
       pakku add noprecomp notest to home .
       #zef install --/test .
   -
