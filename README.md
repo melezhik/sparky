@@ -303,11 +303,10 @@ These is useful when trigger build manually.
 
 # Flappers protection mechanism 
 
-Flapper protection mechanism kicks out SCM urls that are timeouted during git connection,
-from scheduling, this mechanism protects sparkyd worker from stalling.
+Flapper protection mechanism kicks out SCM urls that are timeouted (certain amount of time) during git connection, from scheduling, this mechanism protects sparkyd worker from stalling.
 
-To disable flappers protection mechanism, use or `SPARKY_FLAPPERS_OFF` environment variable
-or set in `sparky.yaml` configuration file:
+To disable flappers protection mechanism, set `SPARKY_FLAPPERS_OFF` environment variable
+or adjust `~/sparky.yaml` configuration file:
 
 ```yaml
 worker:
