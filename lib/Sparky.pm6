@@ -54,6 +54,13 @@ sub sparky-api-token is export {
 
 }
 
+sub sparky-with-flapper is export {
+
+  ! ( get-sparky-conf()<worker><flappers_off> || False ) &&
+  ! %*ENV<SPARKY_FLAPPERS_OFF> 
+
+}
+
 sub get-sparky-conf is export {
 
   return %conf if %conf;
@@ -104,7 +111,7 @@ multi sub get-dbh ( $dir ) is export {
 
     $dbh  = DBIish.connect("SQLite", database => "$dir/../db.sqlite3".IO.absolute  );
 
-    say "load sqlite dbh for: " ~ ("$dir/../db.sqlite3".IO.absolute);
+    say "{DateTime.now} --- load sqlite dbh for: " ~ ("$dir/../db.sqlite3".IO.absolute);
 
   }
 
@@ -294,17 +301,17 @@ sub schedule-build ( $dir, %opts? ) is export {
 
     mkdir $scm-dir unless $scm-dir.IO ~~ :d;
 
-    say "scm: fetch commits from {$scm-url} {$scm-branch} ...";
+    say "{DateTime.now} --- scm: fetch commits from {$scm-url} {$scm-branch} ...";
 
     shell("timeout 10 git ls-remote {$scm-url} {$scm-branch} 1>{$scm-dir}/data; echo \$? > {$scm-dir}/exit-code");
 
     my $ex-code = "{$scm-dir}/exit-code".IO.slurp.chomp;
 
     if $ex-code ne "0" {
-      say "scm: {$scm-url} {$scm-branch} - bad exit code - {$ex-code}";
+      say "{DateTime.now} --- scm: {$scm-url} {$scm-branch} - bad exit code - {$ex-code}";
       return $ex-code;
     } else {
-      say "scm: {$scm-url} {$scm-branch} - good exit code - {$ex-code}";
+      say "{DateTime.now} --- scm: {$scm-url} {$scm-branch} - good exit code - {$ex-code}";
     }
 
     my $commit-data = "{$scm-dir}/data".IO.slurp.chomp;

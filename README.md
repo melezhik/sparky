@@ -301,6 +301,18 @@ To set default values for SCM_URL and SCM_BRANCH, use sparrowdo `tags`:
 
 These is useful when trigger build manually.
 
+# Flappers protection mechanism 
+
+Flapper protection mechanism kicks out SCM urls that are timeouted during git connection,
+from scheduling, this mechanism protects sparkyd worker from stalling.
+
+To disable flappers protection mechanism, use or `SPARKY_FLAPPERS_OFF` environment variable
+or set in `sparky.yaml` configuration file:
+
+```yaml
+worker:
+  flappers_off: true
+```
 
 # Disable project
 
@@ -1297,6 +1309,10 @@ $ export SPARKY_SKIP_CRON=1 && sparkyd
 Threshold of concurrent jobs maximum number. Use it to protect Sparky server from overload.
 
 (WARNING! This variable is not currently supported)
+
+## SPARKY_FLAPPERS_OFF
+
+Disable flappers mechanism, see "Flappers mechanism" section.
 
 ## SPARKY_ROOT
 
