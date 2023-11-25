@@ -2,6 +2,12 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.1.11 2023-25-11T23:00:00Z
+
+  - Describe flappers protection mechanism
+  - Allow to disable flappers protection mechanism 
+    using various methods
+
 0.1.10 2023-02-28T23:10:00Z
 
   - Fix sort order of triggered job
