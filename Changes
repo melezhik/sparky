@@ -2,6 +2,11 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.1.12 2023-26-12T21:20:00Z
+
+  - Fix regression bug that stops sparky-runner.raku
+    from running
+
 0.1.11 2023-25-11T23:00:00Z
 
   - Describe flappers protection mechanism
