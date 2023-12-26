@@ -33,6 +33,8 @@ sub MAIN (
 
   my %config = read-config($dir);
 
+  say "load sparky.yaml config from $dir ..";
+  say ">>>", Dump(%config);
   mkdir $dir;
 
   my $build-cache-dir = "$dir/../../work/$project/.triggers".IO.absolute;
@@ -51,7 +53,7 @@ sub MAIN (
 
   my %trigger =  Hash.new;
 
-  my $job-id = $trigger.IO.basename;
+  my $job-id = $trigger ?? $trigger.IO.basename !! "cli_job";
 
   if $trigger {
     say "loading trigger $trigger into Raku ...";
