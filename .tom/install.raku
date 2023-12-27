@@ -1,1 +1,1 @@
-bash "zef install . --force-install";
+bash "zef install . --force-install --/test";

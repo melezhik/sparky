@@ -70,6 +70,27 @@ sub create-cro-app ($pool) {
 
   }
 
+  post -> Cro::HTTP::Auth $session, 'build-with-params', 'project', $project {
+
+    my $id = "{('a' .. 'z').pick(20).join('')}.{$*PID}";
+
+    request-body  -> (:$tags?, :$description?) {
+
+      mkdir "$root/$project/.triggers";
+
+      my %trigger = %(
+        description => $description || "triggered by user",
+        sparrowdo => %(
+          tags => $tags || "",
+        ),
+      );
+      spurt "$root/$project/.triggers/$id", %trigger.perl;
+
+    }
+
+    content 'text/plain', "$id";
+
+  }
 
   post -> Cro::HTTP::Auth $session, 'build', 'project', $project, $key {
 
@@ -535,6 +556,46 @@ sub create-cro-app ($pool) {
         allow-manual-run => %project-conf<allow_manual_run> || False,
         disabled => %project-conf<disabled> || False,
         project-conf-str => $project-conf-str || "configuration not found", 
+        scenario-code => "$root/$project/sparrowfile".IO ~~ :e ?? "$root/$project/sparrowfile".IO.slurp !! "scenario not found", 
+        error => $error
+      }
+    } else {
+      not-found();
+    }
+  }
+
+  get -> 'build', 'project', $project {
+    if "$root/$project/sparrowfile".IO ~~ :f {
+      my $project-conf-str; 
+      my %project-conf;
+      my $error;
+
+      if "$root/$project/sparky.yaml".IO ~~ :f {
+
+        $project-conf-str = "$root/$project/sparky.yaml".IO.slurp; 
+
+        try { %project-conf = load-yaml($project-conf-str) };
+
+        if $! { 
+
+          $error = $!;
+
+          say "error parsing $root/$project/sparky.yaml";
+          say $error;
+        }
+
+      }
+
+      template 'templates/build.crotmp', {
+        http-root => sparky-http-root(),
+        css =>css(), 
+        navbar => navbar(), 
+        project => $project, 
+        allow-manual-run => %project-conf<allow_manual_run> || False,
+        disabled => %project-conf<disabled> || False,
+        project-conf-str => $project-conf-str || "configuration not found",
+        project-conf => %project-conf || {},
+        vars => %project-conf<vars> || [],
         scenario-code => "$root/$project/sparrowfile".IO ~~ :e ?? "$root/$project/sparrowfile".IO.slurp !! "scenario not found", 
         error => $error
       }
