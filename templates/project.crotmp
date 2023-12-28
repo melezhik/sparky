@@ -4,18 +4,6 @@
       <title>~SPARKY CI WEB~ | project: <.project> </title>
     </head>
 
-  <script>
-  
-  function run() {
-  
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "<.http-root>/build/project/<.project>", true );
-    xhr.send("");
-  
-  }
-  
-  </script>
-
 <&HTML-AND-JAVASCRIPT(.navbar)>  
     
     <div class="panel is-primary">
@@ -26,7 +14,7 @@
       </div>
       <?{ .allow-manual-run == True && .disabled != True}>
       <div class="panel-block">
-        <a class="button is-small" onclick="run()" >Run now</a>
+        <a class="button is-small" href="<.http-root>/build/project/<.project>" >Build now</a>
       </div>
       </?>
       <div class="is-fullwidth">

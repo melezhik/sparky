@@ -11,7 +11,8 @@ function reBuild(){
   var xhr = new XMLHttpRequest();
   xhr.open("POST", "<.http-root>/build/project/<.project>/<.job_id>", true );
   xhr.send("");
-  
+
+  document.getElementById('notification').innerHTML = 'Build <.project>@<.build_id>: queued';
 }
 
 </script>
@@ -19,7 +20,7 @@ function reBuild(){
 <&HTML-AND-JAVASCRIPT(.navbar)>
 
     <nav class="panel is-warning">
-      <p class="panel-heading"> 
+      <p class="panel-heading" id="notification"> 
         Report: <.project>@<.build_id>
         <?.description>
         [<.description>]
@@ -39,7 +40,6 @@ function reBuild(){
 
     <script src="/js/ansi_up.js" type="text/javascript"></script>
     <script type="text/javascript">
-
       var txt  = document.getElementById('log').innerText;
       var ansi_up = new AnsiUp;
       var html = ansi_up.ansi_to_html(txt);
