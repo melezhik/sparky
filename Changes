@@ -2,6 +2,13 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.1.13 2023-28-12T17:20:00Z
+
+  - Introduce new logo
+  - New feature - Add build runtime 
+    and default parameters
+  - Small graphic design / UI changes
+
 0.1.12 2023-26-12T21:20:00Z
 
   - Fix regression bug that stops sparky-runner.raku
