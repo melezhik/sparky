@@ -249,6 +249,56 @@ And activate manual run:
 allow_manual_run: true
 ```
 
+# Setup build parameters
+
+Define `vars` section to optionally provide build parameters, that will be visible during maunual build run, for a example:
+
+```yaml
+vars:
+  - 
+      name: Name
+      default: Alexey
+      type: input
+  -
+      name: CV
+      default: I am a programmer
+      type: textarea
+
+  -
+      name: Language
+      values: [ Raku, Rust, Golang ]
+      type: select
+```
+
+This configuration when gets run provides a scenario with following build parameters accessible through `tags()`
+function:
+
+```raku
+
+say "Name param passed: ", tags()<Name>;
+say "CV param passed: ", tags()<CV>;
+say "Language param passed: ", tags()<language>;
+```
+
+To provide defaults for build paramaters one could use `sparrowdo.tags` section:
+
+```yaml
+sparrowdo:
+  no_sudo: true
+  no_index_update: true
+  bootstrap: false
+  format: default
+  tags: >
+    Language=Rakudo,
+    Name=Alex,
+    Occupation=devops
+```
+
+Defaults are useful when a build is triggered bypassing UI, for example, through the API, ensuring that sane
+default values are always provided.
+
+Parameters default values provided throuhg UI run always override default values in `sparrowdo.tags` section.
+
 # Trigger build by SCM changes
 
 ** warning ** - the feature is not properly tested, feel free to post issues or suggestions
