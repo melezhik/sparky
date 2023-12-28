@@ -249,7 +249,7 @@ And activate manual run:
 allow_manual_run: true
 ```
 
-# Setup build parameters
+# Build runtime and default parameters
 
 Define `vars` section to optionally provide build parameters, that will be visible during maunual build run, for a example:
 
@@ -270,8 +270,13 @@ vars:
       type: select
 ```
 
-This configuration when gets run provides a scenario with following build parameters accessible through `tags()`
-function:
+This configuration when a build gets run: 
+
+* provides a user with nice UI of controls representing build parameters
+
+![build parameters](https://raw.githubusercontent.com/melezhik/sparky/master/images/sparky-web-ui-build-with-params.jpeg)
+ 
+* provides a build scenario with build parameters accessible through `tags()` function
 
 ```raku
 
@@ -280,7 +285,7 @@ say "CV param passed: ", tags()<CV>;
 say "Language param passed: ", tags()<language>;
 ```
 
-To provide defaults for build paramaters one could use `sparrowdo.tags` section:
+To provide default values for build paramaters one have to use `sparrowdo.tags` section:
 
 ```yaml
 sparrowdo:
@@ -295,9 +300,9 @@ sparrowdo:
 ```
 
 Defaults are useful when a build is triggered bypassing UI, for example, through the API, ensuring that sane
-default values are always provided.
+default values are always applied.
 
-Parameters default values provided throuhg UI run always override default values in `sparrowdo.tags` section.
+Parameters default values provided throuhg UI always override default values in `sparrowdo.tags` section.
 
 # Trigger build by SCM changes
 
