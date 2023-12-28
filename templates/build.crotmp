@@ -68,7 +68,7 @@
           },    
           body: new URLSearchParams({
             "tags": tags_s,
-            "description" : "triggered by user with parameters"
+            "description" : "triggered by user"
           })
         }
       )
