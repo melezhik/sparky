@@ -2,7 +2,7 @@
 
 Sparky is a flexible and minimalist continuous integration server and distribute tasks runner written in Raku.
 
-![Sparky Logo](https://raw.githubusercontent.com/melezhik/sparky/master/logos/sparky.png)
+![Sparky Logo](https://raw.githubusercontent.com/melezhik/sparky/master/logos/sparky.small.png)
 
 Sparky features:
 
