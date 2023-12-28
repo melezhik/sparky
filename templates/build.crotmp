@@ -1,0 +1,89 @@
+<&HTML-AND-JAVASCRIPT(.css)>
+    <head>
+      <title>~SPARKY CI WEB~ | Build project: <.project> </title>
+    </head>
+    <&HTML-AND-JAVASCRIPT(.navbar)>  
+    <div class="panel is-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          Build project: <.project>
+       </h3>
+      </div>
+      <div class="is-fullwidth">
+        <?.error>
+          <pre><strong>Configuration (error)</strong>:<br><br><code class='language-yaml'><.project-conf-str></code></pre>
+        </?>
+        <!.error>
+        <pre><strong>Configuration</strong>:<br><br><code class='language-yaml'><.project-conf-str></code></pre>
+        </!>
+      </div>
+      <hr>
+      <div class="panel-block">
+        <form method="post">
+          <div class="field">
+            <@vars: $i>
+            <div class="control">
+              <label class="label"><$i.<name>></label>
+                <?{ $i.type eq 'input' }> 
+                  <input class="input is-success" type="text" name="<$i.<name>>" value="<$i.<default>>" placeholder="<$i.<default>>">
+                </?> 
+                <?{ $i.type eq 'textarea' }>
+                  <textarea class="textarea is-success" type="textarea" name="<$i.<name>>" placeholder="<$i.<default>>">
+                    <$i.<default>>
+                  </textarea>
+                </?> 
+                <?{ $i.type eq 'select' }>
+                <div class="select">
+                <select name="<$i.<name>>">
+                <@$i.values: $s>
+                  <option><$s></option>
+                </@>
+                </select>
+                </div>
+                </?>
+            </div>
+            </@>
+            <hr>
+            <div class="field is-grouped">
+              <div class="control">
+              <button class="button is-link">Submit</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+<script>
+
+    function handleSubmit(event) {
+      event.preventDefault();
+      const data = new FormData(event.target);
+      const form_json = Object.fromEntries(data.entries());
+      // alert(form_json)
+      var url = "<.http-root>/build-with-tags/project/<.project>";
+      const tags = []
+      for (const t in form_json) {
+        const v = form_json[t]
+        console.log(`${t}: ${v}`);
+        tags.push(`${t}=${v}`)
+      }
+      const tags_s = tags.join(",");
+      // https://developer.mozilla.org/en-US/docs/Web/API/fetch
+      fetch(
+        url, 
+        {
+          method: 'POST',
+          headers:{
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },    
+          body: new URLSearchParams({
+            "tags": tags_s,
+            "description" : "triggered by user with parameters"
+          })
+          }
+      );
+    }
+
+    const form = document.querySelector('form');
+    form.addEventListener('submit', handleSubmit);
+
+</script>

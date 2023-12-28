@@ -74,14 +74,20 @@ sub create-cro-app ($pool) {
 
     my $id = "{('a' .. 'z').pick(20).join('')}.{$*PID}";
 
-    request-body  -> (:$tags?, :$description?) {
+    request-body  ->  %json {
 
       mkdir "$root/$project/.triggers";
 
+      my @tags;
+
+      for %json<tags>.keys.sort -> $t {
+        @tags.push( "{$t}={%json<tags>{$t}}" );
+      }
+
       my %trigger = %(
-        description => $description || "triggered by user",
+        description => %json<description> || "triggered by user with parameters",
         sparrowdo => %(
-          tags => $tags || "",
+          tags => @tags.join(","),
         ),
       );
       spurt "$root/$project/.triggers/$id", %trigger.perl;
