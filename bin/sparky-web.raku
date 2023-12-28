@@ -70,34 +70,6 @@ sub create-cro-app ($pool) {
 
   }
 
-  post -> Cro::HTTP::Auth $session, 'build-with-params', 'project', $project {
-
-    my $id = "{('a' .. 'z').pick(20).join('')}.{$*PID}";
-
-    request-body  ->  %json {
-
-      mkdir "$root/$project/.triggers";
-
-      my @tags;
-
-      for %json<tags>.keys.sort -> $t {
-        @tags.push( "{$t}={%json<tags>{$t}}" );
-      }
-
-      my %trigger = %(
-        description => %json<description> || "triggered by user with parameters",
-        sparrowdo => %(
-          tags => @tags.join(","),
-        ),
-      );
-      spurt "$root/$project/.triggers/$id", %trigger.perl;
-
-    }
-
-    content 'text/plain', "$id";
-
-  }
-
   post -> Cro::HTTP::Auth $session, 'build', 'project', $project, $key {
 
     if "$root/$project/sparky.yaml".IO ~~ :e {
