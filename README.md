@@ -255,7 +255,7 @@ Define `vars` section to optionally provide build parameters, that will be visib
 
 ```yaml
 vars:
-  - 
+  -
       name: Name
       default: Alexey
       type: input
@@ -267,14 +267,19 @@ vars:
   -
       name: Language
       values: [ Raku, Rust, Golang ]
-      default: Raku
       type: select
+      default: Rust
+
+  -
+      name: Color
+      values: [ Red, Blue, Green ]
+      type: select
+      default: Blue
 
   -
       name: Debug
       type: checkbox
       default: true
-
 ```
 
 This configuration when a build gets run: 
