@@ -2,6 +2,11 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.1.14 2023-29-12T17:00:00Z
+
+  - Build paramaters, UI
+    checkboxes support
+
 0.1.13 2023-28-12T17:20:00Z
 
   - Introduce new logo
