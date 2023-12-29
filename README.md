@@ -267,6 +267,7 @@ vars:
   -
       name: Language
       values: [ Raku, Rust, Golang ]
+      default: Raku
       type: select
 ```
 
@@ -303,6 +304,17 @@ Defaults are useful when a build is triggered bypassing UI, for example, through
 default values are always applied.
 
 Parameters default values provided throuhg UI always override default values in `sparrowdo.tags` section.
+
+## HTML UI controls for build parameters:
+
+Currently following UI controls are supported:
+
+* text input
+
+* text area
+
+* select list
+
 
 # Trigger build by SCM changes
 

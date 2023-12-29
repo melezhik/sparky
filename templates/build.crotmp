@@ -27,7 +27,12 @@
                 <div class="select">
                 <select name="<$i.<name>>">
                 <@$i.values: $s>
-                  <option><$s></option>
+                  <?{ $i.default eq $s }>
+                    <option selected="selected"><$s></option>
+                  </?>
+                  <!>
+                    <option><$s></option>
+                  </!>
                 </@>
                 </select>
                 </div>
