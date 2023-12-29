@@ -23,6 +23,14 @@
                     <$i.<default>>
                   </textarea>
                 </?> 
+                <?{ $i.type eq 'checkbox' }>
+                  <?$i.default>
+                  <input class="checkbox is-success" checked type="checkbox" name="<$i.<name>>" value="True">
+                  </?>
+                  <!>
+                  <input class="checkbox is-success" type="checkbox" name="<$i.<name>>" value="True">
+                  </!>
+                </?>
                 <?{ $i.type eq 'select' }>
                 <div class="select">
                 <select name="<$i.<name>>">

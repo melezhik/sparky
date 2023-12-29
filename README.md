@@ -269,6 +269,12 @@ vars:
       values: [ Raku, Rust, Golang ]
       default: Raku
       type: select
+
+  -
+      name: Debug
+      type: checkbox
+      default: true
+
 ```
 
 This configuration when a build gets run: 
@@ -283,7 +289,8 @@ This configuration when a build gets run:
 
 say "Name param passed: ", tags()<Name>;
 say "CV param passed: ", tags()<CV>;
-say "Language param passed: ", tags()<language>;
+say "Language param passed: ", tags()<Language>;
+say "Debug param passed: ", tags()<Debug>;
 ```
 
 To provide default values for build paramaters one have to use `sparrowdo.tags` section:
@@ -315,6 +322,7 @@ Currently following UI controls are supported:
 
 * select list
 
+* checkbox 
 
 # Trigger build by SCM changes
 
