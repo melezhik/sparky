@@ -9,7 +9,7 @@ use Sparky::HTML;
 use YAMLish;
 use Text::Markdown;
 use Sparky::Job;
-use JSON::Tiny;
+use JSON::Fast;
 use DBIish::Pool;
 
 my $root = %*ENV<SPARKY_ROOT> || %*ENV<HOME> ~ '/.sparky/projects';

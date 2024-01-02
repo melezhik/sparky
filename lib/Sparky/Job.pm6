@@ -1,6 +1,7 @@
-unit module Sparky::Job;
-use JSON::Tiny;
+#!raku
 
+unit module Sparky::Job;
+use JSON::Fast;
 
 sub job-queue-fs (%config,%trigger,$sparrowfile,$sparrowdo-config) is export {
 

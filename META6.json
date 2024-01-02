@@ -8,7 +8,7 @@
     "YAMLish",
     "DBIish",
     "DBIish::Pool",
-    "JSON::Tiny",
+    "JSON::Fast",
     "HTTP::Tiny",
     "Sparrowdo:ver<0.1.23+>",
     "Time::Crontab",
