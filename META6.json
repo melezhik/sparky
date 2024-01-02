@@ -25,9 +25,9 @@
   "name" : "Sparky",
   "perl" : "6.*",
   "provides" : {
-    "Sparky" : "lib/Sparky.pm6",
-    "Sparky::HTML" : "lib/Sparky/HTML.pm6",
-    "Sparky::Job" : "lib/Sparky/Job.pm6"
+    "Sparky" : "lib/Sparky.rakumod",
+    "Sparky::HTML" : "lib/Sparky/HTML.rakumod",
+    "Sparky::Job" : "lib/Sparky/Job.rakumod"
   },
   "resources" : [ ],
   "source-type" : "git",
