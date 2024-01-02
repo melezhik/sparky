@@ -2,6 +2,9 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+  - #60 - Replace JSON::Tiny 
+    by JSON::Fast
+
 0.1.14 2023-29-12T17:00:00Z
 
   - Build paramaters, UI
