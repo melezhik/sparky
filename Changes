@@ -4,6 +4,7 @@ Revision history for Sparky
 
   - #60 - Replace JSON::Tiny 
     by JSON::Fast
+  - #61 - Renaming *.pl6 to *.raku
 
 0.1.14 2023-29-12T17:00:00Z
 
