@@ -2,6 +2,10 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.1.15 2024-01-03T17:50:00Z
+
+  - Depends on the latest version
+    of Sparrow6
   - #60 - Replace JSON::Tiny 
     by JSON::Fast
   - #61 - Renaming *.pl6 to *.raku

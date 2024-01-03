@@ -10,6 +10,7 @@
     "DBIish::Pool",
     "JSON::Fast",
     "HTTP::Tiny",
+    "Sparrow6:ver<0.0.43+>",
     "Sparrowdo:ver<0.1.23+>",
     "Time::Crontab",
     "File::Directory::Tree",
@@ -38,5 +39,5 @@
   },
   "tags" : [ ],
   "test-depends" : [ ],
-  "version" : "0.1.14"
+  "version" : "0.1.15"
 }
