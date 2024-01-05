@@ -178,6 +178,9 @@ sub MAIN (
     $sparrowdo-run ~= " --localhost";
   }
 
+  if %sparrowdo-config<image> {
+    $sparrowdo-run ~= " --image=" ~ %sparrowdo-config<image>;
+  }
 
   if %sparrowdo-config<repo> {
     $sparrowdo-run ~= " --repo=" ~ %sparrowdo-config<repo>;
