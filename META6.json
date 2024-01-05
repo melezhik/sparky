@@ -11,7 +11,7 @@
     "JSON::Fast",
     "HTTP::Tiny",
     "Sparrow6:ver<0.0.43+>",
-    "Sparrowdo:ver<0.1.23+>",
+    "Sparrowdo:ver<0.1.26+>",
     "Time::Crontab",
     "File::Directory::Tree",
     "cro",
@@ -39,5 +39,5 @@
   },
   "tags" : [ ],
   "test-depends" : [ ],
-  "version" : "0.1.15"
+  "version" : "0.1.16"
 }
