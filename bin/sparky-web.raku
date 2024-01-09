@@ -98,8 +98,7 @@ sub create-cro-app ($pool) {
                 }
 
                 if $done {
-                  emit "================";
-                  emit ">>> FINISHED <<<";
+                  emit "---";
                   done 
                 }
             }
