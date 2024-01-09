@@ -30,7 +30,6 @@ class MyBasicAuth does Cro::HTTP::Auth::Basic[MyUser, "username"] {
 
 sub create-cro-app ($pool) {
 
-  my $chat = Supplier.new;
   my $application = route { 
 
   before MyBasicAuth.new;
@@ -40,18 +39,16 @@ sub create-cro-app ($pool) {
         supply {
             my $last_e = 0;
             whenever $incoming -> $message {
-                #$chat.emit(await $message.body-text);
                 my $done = False;
                 while True  {
                   my @data = "$reports-dir/$project/build-$build_id.txt".IO.lines;
                   for @data[$last_e .. *] -> $l {
                     say("ws: send data to client: $l");
-                    #my $msg = Cro::WebSocket::Message.new(
-                    #  :!fragmented,
-                    #  :body($l)
-                    #);
-                    #$chat.emit($l);
-                    emit($l);
+                    my $msg = "{$l}";
+                    if sparky-api-token() {
+                      $msg.=subst(sparky-api-token(),"*******",:g);
+                    }
+                    emit($msg);
                   }
                   $last_e = @data.elems;
                   #$done = True;
@@ -99,8 +96,12 @@ sub create-cro-app ($pool) {
                     #not-found();
                   }
                 }
-                done if $done;
 
+                if $done {
+                  emit "================";
+                  emit ">>> FINISHED <<<";
+                  done 
+                }
             }
         }
     }
@@ -487,59 +488,6 @@ sub create-cro-app ($pool) {
     }
   
   }
-
-  get -> 'report2', $project, $build_id  {
-
-    if "$reports-dir/$project/build-$build_id.txt".IO ~~ :f {
-
-      my $dbh = $pool ?? $pool.get-connection() !! get-dbh();
-
-      my $sth = $dbh.prepare("SELECT state, description, dt, job_id FROM builds where id = {$build_id}");
-
-      $sth.execute();
-
-      my @r = $sth.allrows(:array-of-hash);
-
-      my $state = @r[0]<state>;
-
-      my $dt = @r[0]<dt>;
-
-      my $description = @r[0]<description>;
-
-      my $key = @r[0]<job_id>;
-
-      $sth.finish;
-
-      $dbh.dispose;
-
-      my $data = "$reports-dir/$project/build-$build_id.txt".IO.slurp;
-
-      if sparky-api-token() {
-
-        $data.=subst(sparky-api-token(),"*******",:g);
-      
-      }
-
-      template 'templates/report2.crotmp', {
-        css => css(), 
-        navbar => navbar(), 
-        http-root => sparky-http-root(),
-        sparky-host => "10.7.98.245", # fix me
-        sparky-tcp-port => sparky-tcp-port(),
-        project => $project,
-        build_id => $build_id,
-        job_id => "{$key}", 
-        dt => $dt, 
-        description => $description, 
-        data => $data
-      }
-
-    } else {
-      not-found();
-    }
-  
-  }
-
 
   get -> 'status', $project, $key {
 
