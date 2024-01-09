@@ -1,0 +1,76 @@
+<&HTML-AND-JAVASCRIPT(.css)>
+
+    <head>
+      <title>~SPARKY CI WEB~ | build: <.project>@<.build_id></title>
+    </head>
+
+<script src="/js/ansi_up.js" type="text/javascript"></script>
+
+<&HTML-AND-JAVASCRIPT(.navbar)>
+
+    <nav class="panel is-warning">
+      <p class="panel-heading" id="notification"> 
+        Report: <.project>@<.build_id>
+        <?.description>
+        [<.description>]
+        </?> 
+        <!.description>
+        [no description]
+        </!> 
+        at <.dt>
+      </p>
+      <div class="panel-block">
+        <a class="button is-small" onclick="reBuild()">Rebuild</a>
+      </div>
+      <div class="panel-block">
+        <pre id="log"></pre>
+      </div>
+    </nav>
+
+
+<script>
+
+function reBuild(){
+
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "<.http-root>/build/project/<.project>/<.job_id>", true );
+  xhr.send("");
+
+  document.getElementById('notification').innerHTML = 'Build <.project>@<.build_id>: queued';
+}
+
+
+var log = document.getElementById('log');
+var ansi_up = new AnsiUp;
+
+function connect() {
+  var ws = new WebSocket("ws://<.sparky-host>:<.sparky-tcp-port>/livereport/<.project>/<.build_id>/<.job_id>");
+  ws.onopen = function() {
+    console.log('ws - socket is open');
+    // subscribe to some channels
+    ws.send("Меня зовут Джон");
+  };
+
+  ws.onmessage = function(e) {
+    console.log('ws - ', e.data);
+    var html = ansi_up.ansi_to_html(`${e.data}`);
+    log.innerHTML += html;
+    log.innerHTML += "\n";
+  };
+
+  ws.onclose = function(e) {
+    console.log('ws - socket is closed', e.reason);
+    //setTimeout(function() {
+    //  connect();
+    //}, 1000);
+  };
+
+  ws.onerror = function(err) {
+    console.error('ws - socket encountered error: ', err.message, 'Closing socket');
+    ws.close();
+  };
+}
+
+connect();
+
+</script>

@@ -2,6 +2,8 @@ use Cro::HTTP::Server;
 use Cro::HTTP::Router;
 use Cro::WebApp::Template;
 use Cro::HTTP::Auth::Basic;
+use Cro::HTTP::Router::WebSocket;
+use Cro::WebSocket::Message;
 
 use DBIish;
 use Sparky;
@@ -28,9 +30,81 @@ class MyBasicAuth does Cro::HTTP::Auth::Basic[MyUser, "username"] {
 
 sub create-cro-app ($pool) {
 
+  my $chat = Supplier.new;
   my $application = route { 
 
   before MyBasicAuth.new;
+
+  get -> 'livereport', $project, $build_id, $key {
+    web-socket -> $incoming {
+        supply {
+            my $last_e = 0;
+            whenever $incoming -> $message {
+                #$chat.emit(await $message.body-text);
+                my $done = False;
+                while True  {
+                  my @data = "$reports-dir/$project/build-$build_id.txt".IO.lines;
+                  for @data[$last_e .. *] -> $l {
+                    say("ws: send data to client: $l");
+                    #my $msg = Cro::WebSocket::Message.new(
+                    #  :!fragmented,
+                    #  :body($l)
+                    #);
+                    #$chat.emit($l);
+                    emit($l);
+                  }
+                  $last_e = @data.elems;
+                  #$done = True;
+                  #last();
+                  #if trigger-exists($root,$project,$key) {
+                    #$done = True;
+                  #  say "ws: job in queue";
+                    #last(); 
+                  #} elsif job-state-exists($root,$project,$key) && 
+                  #  ( 
+                  #    job-state($root,$project,$key) == -1 or 
+                  #    job-state($root,$project,$key) == 1 
+                  #  ) { 
+                  # get state from file cache if cache exists
+                  #  say "ws: done - job has finished (cache state): {job-state($root,$project,$key)}";
+                  #  $done = True;
+                  #  last();
+                    #content 'text/plain', "{job-state($root,$project,$key)}"
+                  #} else {
+      
+                    my $dbh = $pool ?? $pool.get-connection() !! get-dbh();
+  
+                    my $sth = $dbh.prepare("SELECT state, description, dt FROM builds where project = '{$project}' and job_id = '{$key}'");
+
+                    $sth.execute();
+
+                    my @r = $sth.allrows(:array-of-hash);
+
+                    my $state = @r[0]<state>;
+
+                    $sth.finish;
+
+                    $dbh.dispose;
+
+                  if $state.defined {
+                    #content 'text/plain', "$state"
+                    if $state == -1 or $state == 1 {
+                      say "ws: done - job has finsihed - state: [$state]";
+                      $done = True;
+                      last();
+                    }
+                  } else {
+                    $done = True;
+                    last();
+                    #not-found();
+                  }
+                }
+                done if $done;
+
+            }
+        }
+    }
+  }
 
   post -> Cro::HTTP::Auth $session, 'build', 'project', $project {
 
@@ -394,10 +468,64 @@ sub create-cro-app ($pool) {
       
       }
 
-      template 'templates/report.crotmp', {
+      template 'templates/report2.crotmp', {
         css => css(), 
         navbar => navbar(), 
         http-root => sparky-http-root(),
+        sparky-host => "10.7.98.245", # fix me
+        sparky-tcp-port => sparky-tcp-port(),
+        project => $project,
+        build_id => $build_id,
+        job_id => "{$key}", 
+        dt => $dt, 
+        description => $description, 
+        data => $data
+      }
+
+    } else {
+      not-found();
+    }
+  
+  }
+
+  get -> 'report2', $project, $build_id  {
+
+    if "$reports-dir/$project/build-$build_id.txt".IO ~~ :f {
+
+      my $dbh = $pool ?? $pool.get-connection() !! get-dbh();
+
+      my $sth = $dbh.prepare("SELECT state, description, dt, job_id FROM builds where id = {$build_id}");
+
+      $sth.execute();
+
+      my @r = $sth.allrows(:array-of-hash);
+
+      my $state = @r[0]<state>;
+
+      my $dt = @r[0]<dt>;
+
+      my $description = @r[0]<description>;
+
+      my $key = @r[0]<job_id>;
+
+      $sth.finish;
+
+      $dbh.dispose;
+
+      my $data = "$reports-dir/$project/build-$build_id.txt".IO.slurp;
+
+      if sparky-api-token() {
+
+        $data.=subst(sparky-api-token(),"*******",:g);
+      
+      }
+
+      template 'templates/report2.crotmp', {
+        css => css(), 
+        navbar => navbar(), 
+        http-root => sparky-http-root(),
+        sparky-host => "10.7.98.245", # fix me
+        sparky-tcp-port => sparky-tcp-port(),
         project => $project,
         build_id => $build_id,
         job_id => "{$key}", 
