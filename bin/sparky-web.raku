@@ -525,7 +525,7 @@ sub create-cro-app ($pool) {
           my $done = False;
           while True {
             if trigger-exists($root,$project,$key) {
-              emit "[{DateTime.now}] - build in queue";
+              emit "[{DateTime.now(formatter => { sprintf "%02d:%02d:%02d", .hour, .minute, .second })}] - build in queue";
               sleep(1);
             } else {
                 my $dbh = $pool ?? $pool.get-connection() !! get-dbh();
@@ -537,14 +537,14 @@ sub create-cro-app ($pool) {
                 $dbh.dispose;
                 if $build_id {
                   say "ws - build has started, build_id: {$build_id}";
-                  emit "[{DateTime.now}] - \&nbsp; <a href=\"{sparky-http-root()}/report/{$project}/{$build_id}\">build_id: {$build_id} has started</a>";
+                  emit "[{DateTime.now(formatter => { sprintf "%02d:%02d:%02d", .hour, .minute, .second })}] - \&nbsp; <a href=\"{sparky-http-root()}/report/{$project}/{$build_id}\">build_id: {$build_id} has started</a>";
                   $done = True;
                   last();
                 }
             }
           }
           if $done {
-            # emit "[{DateTime.now}] ---";
+            # emit "[{DateTime.now(formatter => { sprintf "%02d:%02d:%02d", .hour, .minute, .second })}] ---";
             done 
           }          
         }
