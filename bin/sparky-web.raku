@@ -150,7 +150,9 @@ sub create-cro-app ($pool) {
 
       mkdir "$root/$project/.triggers";
 
-      copy "$root/../work/$project/.triggers/$key", "$root/$project/.triggers/$key";
+      my $postfix = "{('a' .. 'z').pick(1).join('')}";
+
+      copy "$root/../work/$project/.triggers/$key", "$root/$project/.triggers/{$key}.{$postfix}";
 
       content 'text/plain', "$key";
 
