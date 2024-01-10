@@ -44,7 +44,7 @@
 
       ws2.onmessage = function(e) {
         console.log('ws - status - ', e.data);
-        info.innerHTML = e.data;
+        info.innerHTML = `<small>${e.data}</small>`;
         // log.innerHTML += "<br>";
       };
 
@@ -69,20 +69,22 @@
     .then(function(response) {
       console.log(response.status); // Will show you the status
       if (!response.ok) {
-        document.getElementById('notification').innerHTML = `Build error: ${response.status} ${response.statusText}`;
+        document.getElementById('notification').innerHTML = `<small>Build error: ${response.status} ${response.statusText}</small>`;
       } else {
         return response.text();
       }
     })
     .then(function(job_id) {
         // document.getElementById('notification').innerHTML += "<br>";
-        document.getElementById('notification').innerHTML = `Build queued: ${job_id}`;
+        document.getElementById('notification').innerHTML = `<small>Build queued: ${job_id}</small>`;
         connect2(job_id);
     })
   }
 
 var log = document.getElementById('log');
 var ansi_up = new AnsiUp;
+
+info.innerHTML = '<small>report loading ...</small>';
 
 function connect() {
   var ws = new WebSocket("ws://<.sparky-host>:<.sparky-tcp-port>/livereport/<.project>/<.build_id>/<.job_id>");
@@ -101,6 +103,7 @@ function connect() {
 
   ws.onclose = function(e) {
     console.log('ws - socket is closed', e.reason);
+    info.innerHTML = '<small>report loaded</small>';
     //setTimeout(function() {
     //  connect();
     //}, 1000);
