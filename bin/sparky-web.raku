@@ -82,16 +82,15 @@ sub create-cro-app ($pool) {
                     $dbh.dispose;
 
                   if $state.defined {
-                    #content 'text/plain', "$state"
                     if $state == -1 or $state == 1 {
                       say "ws: done - job has finsihed - state: [$state]";
                       $done = True;
                       last();
                     }
                   } else {
+                    say "ws: done - job not found";
                     $done = True;
                     last();
-                    #not-found();
                   }
                 }
 
@@ -518,6 +517,41 @@ sub create-cro-app ($pool) {
     }
   }
   
+  get -> 'livestatus', $project, $key {
+
+    web-socket -> $incoming {
+      supply {
+        whenever $incoming -> $message {
+          my $done = False;
+          while True {
+            if trigger-exists($root,$project,$key) {
+              emit "[{DateTime.now}] - build in queue";
+              sleep(1);
+            } else {
+                my $dbh = $pool ?? $pool.get-connection() !! get-dbh();
+                my $sth = $dbh.prepare("SELECT state, id FROM builds where project = '{$project}' and job_id = '{$key}'");
+                $sth.execute();
+                my @r = $sth.allrows(:array-of-hash);
+                my $build_id = @r[0]<id>;
+                $sth.finish;
+                $dbh.dispose;
+                if $build_id {
+                  say "ws - build has started, build_id: {$build_id}";
+                  emit "[{DateTime.now}] - <a href=\"{sparky-http-root()}/report/{$project}/{$build_id}\">build_id: {$build_id} has started</a>";
+                  $done = True;
+                  last();
+                }
+            }
+          }
+          if $done {
+            # emit "[{DateTime.now}] ---";
+            done 
+          }          
+        }
+      }
+    }
+  }
+
   get -> 'report', 'raw', $project, $key {
 
     if trigger-exists($root,$project,$key) {
@@ -641,6 +675,8 @@ sub create-cro-app ($pool) {
 
       template 'templates/build.crotmp', {
         http-root => sparky-http-root(),
+        sparky-host => "10.7.98.245", # fix me
+        sparky-tcp-port => sparky-tcp-port(),
         css =>css(), 
         navbar => navbar(), 
         project => $project, 

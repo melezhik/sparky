@@ -5,12 +5,14 @@
     <&HTML-AND-JAVASCRIPT(.navbar)>
     <div class="panel is-primary">
       <div class="panel-heading">
-       <h3 class="panel-title" id="notification">
+       <h3 class="panel-title">
           Build: <.project>
        </h3>
       </div>
       <div class="panel-block">
         <form method="post">
+        <div class="field" id="notification">
+        </div>
           <div class="field">
             <@vars: $i>
             <div class="control">
@@ -58,19 +60,49 @@
     </div>
 <script>
 
+    var log = document.getElementById('notification');
+
+    function connect(job_id) {
+      var ws = new WebSocket(`ws://<.sparky-host>:<.sparky-tcp-port>/livestatus/<.project>/${job_id}`);
+      ws.onopen = function() {
+        console.log('ws - socket is open');
+        // subscribe to some channels
+        ws.send("Меня зовут Джон");
+      };
+
+      ws.onmessage = function(e) {
+        console.log('ws - ', e.data);
+        log.innerHTML = e.data;
+        // log.innerHTML += "<br>";
+      };
+
+      ws.onclose = function(e) {
+        console.log('ws - socket is closed', e.reason);
+        //setTimeout(function() {
+        //  connect();
+        //}, 1000);
+      };
+
+      ws.onerror = function(err) {
+        console.error('ws - socket encountered error: ', err.message, 'Closing socket');
+        ws.close();
+      };
+    }
+
+
     function handleSubmit(event) {
       event.preventDefault();
       const data = new FormData(event.target);
       const form_json = Object.fromEntries(data.entries());
       // alert(form_json)
       var url = "<.http-root>/build-with-tags/project/<.project>";
-      const tags = []
+      const tags = [];
       for (const t in form_json) {
         const v = form_json[t]
         console.log(`${t}: ${v}`);
         tags.push(`${t}=${v}`)
       }
-      const tags_s = tags.join(",");
+      var tags_s = tags.join(",");
       // https://developer.mozilla.org/en-US/docs/Web/API/fetch
       fetch(
         url, 
@@ -88,10 +120,16 @@
       .then(function(response) {
         console.log(response.status); // Will show you the status
         if (!response.ok) {
-          document.getElementById('notification').innerHTML = `Build <.project> error: ${response.status} ${response.statusText}`;
+          // document.getElementById('notification').innerHTML += "<br>";
+          document.getElementById('notification').innerHTML = `Build error: ${response.status} ${response.statusText}`;
         } else {
-          document.getElementById('notification').innerHTML = 'Build <.project>: queued';
+          return response.text();
         }
+      })
+      .then(function(job_id) {
+          // document.getElementById('notification').innerHTML += "<br>";
+          document.getElementById('notification').innerHTML = `Build queued: ${job_id}`;
+          connect(job_id);
       })
     }
 
