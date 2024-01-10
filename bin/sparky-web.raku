@@ -147,11 +147,11 @@ sub create-cro-app ($pool) {
 
       mkdir "$root/$project/.triggers";
 
-      my $postfix = "{('a' .. 'z').pick(1).join('')}";
+      my $postfix = "{('a' .. 'z').pick(10).join('')}.{$*PID}";
 
       copy "$root/../work/$project/.triggers/$key", "$root/$project/.triggers/{$key}.{$postfix}";
 
-      content 'text/plain', "$key";
+      content 'text/plain', "{$key}.{$postfix}";
 
     } else {
 
@@ -537,7 +537,7 @@ sub create-cro-app ($pool) {
                 $dbh.dispose;
                 if $build_id {
                   say "ws - build has started, build_id: {$build_id}";
-                  emit "[{DateTime.now}] - <a href=\"{sparky-http-root()}/report/{$project}/{$build_id}\">build_id: {$build_id} has started</a>";
+                  emit "[{DateTime.now}] - \&nbsp; <a href=\"{sparky-http-root()}/report/{$project}/{$build_id}\">build_id: {$build_id} has started</a>";
                   $done = True;
                   last();
                 }

@@ -9,7 +9,7 @@
 <&HTML-AND-JAVASCRIPT(.navbar)>
 
     <nav class="panel is-warning">
-      <p class="panel-heading" id="notification"> 
+      <p class="panel-heading"> 
         Report: <.project>@<.build_id>
         <?.description>
         [<.description>]
@@ -22,6 +22,8 @@
       <div class="panel-block">
         <a class="button is-small" onclick="reBuild()">Rebuild</a>
       </div>
+      <div class="panel-block" id="notification">
+      </div>
       <div class="panel-block">
         <pre id="log"></pre>
       </div>
@@ -30,15 +32,54 @@
 
 <script>
 
-function reBuild(){
+    var info = document.getElementById('notification');
 
-  var xhr = new XMLHttpRequest();
-  xhr.open("POST", "<.http-root>/build/project/<.project>/<.job_id>", true );
-  xhr.send("");
+    function connect2(job_id) {
+      var ws2 = new WebSocket(`ws://<.sparky-host>:<.sparky-tcp-port>/livestatus/<.project>/${job_id}`);
+      ws2.onopen = function() {
+        console.log('ws - status - socket is open');
+        // subscribe to some channels
+        ws2.send("Меня зовут Джон");
+      };
 
-  document.getElementById('notification').innerHTML = 'Build <.project>@<.build_id>: queued';
-}
+      ws2.onmessage = function(e) {
+        console.log('ws - status - ', e.data);
+        info.innerHTML = e.data;
+        // log.innerHTML += "<br>";
+      };
 
+      ws2.onclose = function(e) {
+        console.log('ws - info - socket is closed', e.reason);
+        //setTimeout(function() {
+        //  connect();
+        //}, 1000);
+      };
+
+      ws2.onerror = function(err) {
+        console.error('ws - info - socket encountered error: ', err.message, 'Closing socket');
+        ws2.close();
+      };
+    }
+
+
+  function reBuild() {
+
+    url = "<.http-root>/build/project/<.project>/<.job_id>"
+    fetch(url, { method: 'POST' })
+    .then(function(response) {
+      console.log(response.status); // Will show you the status
+      if (!response.ok) {
+        document.getElementById('notification').innerHTML = `Build error: ${response.status} ${response.statusText}`;
+      } else {
+        return response.text();
+      }
+    })
+    .then(function(job_id) {
+        // document.getElementById('notification').innerHTML += "<br>";
+        document.getElementById('notification').innerHTML = `Build queued: ${job_id}`;
+        connect2(job_id);
+    })
+  }
 
 var log = document.getElementById('log');
 var ansi_up = new AnsiUp;
