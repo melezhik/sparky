@@ -51,8 +51,6 @@ sub create-cro-app ($pool) {
                     emit($msg);
                   }
                   $last_e = @data.elems;
-                  #$done = True;
-                  #last();
                   #if trigger-exists($root,$project,$key) {
                     #$done = True;
                   #  say "ws: job in queue";
