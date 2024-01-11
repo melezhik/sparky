@@ -58,12 +58,14 @@
         </form>
       </div>
     </div>
+
 <script>
 
     var log = document.getElementById('notification');
+    var ip = location.host;
 
     function connect(job_id) {
-      var ws = new WebSocket(`ws://<.sparky-host>:<.sparky-tcp-port>/livestatus/<.project>/${job_id}`);
+      var ws = new WebSocket(`ws://${ip}/livestatus/<.project>/${job_id}`);
       ws.onopen = function() {
         console.log('ws - socket is open');
         // subscribe to some channels

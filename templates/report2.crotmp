@@ -33,9 +33,10 @@
 <script>
 
     var info = document.getElementById('notification');
+    var ip = location.host;
 
     function connect2(job_id) {
-      var ws2 = new WebSocket(`ws://<.sparky-host>:<.sparky-tcp-port>/livestatus/<.project>/${job_id}`);
+      var ws2 = new WebSocket(`ws://${ip}/livestatus/<.project>/${job_id}`);
       ws2.onopen = function() {
         console.log('ws - status - socket is open');
         // subscribe to some channels
@@ -87,7 +88,7 @@ var ansi_up = new AnsiUp;
 info.innerHTML = '<small>report loading ...</small>';
 
 function connect() {
-  var ws = new WebSocket("ws://<.sparky-host>:<.sparky-tcp-port>/livereport/<.project>/<.build_id>/<.job_id>");
+  var ws = new WebSocket(`ws://${ip}/livereport/<.project>/<.build_id>/<.job_id>`);
   ws.onopen = function() {
     console.log('ws - socket is open');
     // subscribe to some channels

@@ -471,7 +471,6 @@ sub create-cro-app ($pool) {
         css => css(), 
         navbar => navbar(), 
         http-root => sparky-http-root(),
-        sparky-host => "10.7.98.245", # fix me
         sparky-tcp-port => sparky-tcp-port(),
         project => $project,
         build_id => $build_id,
@@ -675,7 +674,6 @@ sub create-cro-app ($pool) {
 
       template 'templates/build.crotmp', {
         http-root => sparky-http-root(),
-        sparky-host => "10.7.98.245", # fix me
         sparky-tcp-port => sparky-tcp-port(),
         css =>css(), 
         navbar => navbar(), 
