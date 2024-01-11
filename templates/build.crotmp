@@ -74,7 +74,7 @@
 
       ws.onmessage = function(e) {
         console.log('ws - ', e.data);
-        log.innerHTML = `<span class="tag is-success">${e.data}</span>`;
+        log.innerHTML = `<span class="tag is-info">${e.data}</span>`;
         // log.innerHTML += "<br>";
       };
 
@@ -130,7 +130,7 @@
       })
       .then(function(job_id) {
           // document.getElementById('notification').innerHTML += "<br>";
-          document.getElementById('notification').innerHTML = `<span class="tag is-success">Build queued: ${job_id}</span>`;
+          document.getElementById('notification').innerHTML = `<span class="tag is-info">Build queued: ${job_id}</span>`;
           connect(job_id);
       })
     }

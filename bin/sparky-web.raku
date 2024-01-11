@@ -706,6 +706,11 @@ sub create-cro-app ($pool) {
     static 'js', @path;
   }
 
+  get -> 'css', *@path {
+    cache-control :public, :max-age(10);
+    static 'css', @path;
+  }
+
 }
 
 }
