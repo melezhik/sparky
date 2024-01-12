@@ -45,7 +45,7 @@
 
       ws2.onmessage = function(e) {
         console.log('ws - status - ', e.data);
-        info.innerHTML = `<span class="tag is-info">${e.data}</span>`;
+        info.innerHTML = `<span class="tag is-black">${e.data}</span>`;
         // log.innerHTML += "<br>";
       };
 
@@ -77,7 +77,7 @@
     })
     .then(function(job_id) {
         // document.getElementById('notification').innerHTML += "<br>";
-        document.getElementById('notification').innerHTML = `<span class="tag is-info">Build queued: ${job_id}</span>`;
+        document.getElementById('notification').innerHTML = `<span class="tag is-black">Build queued: ${job_id}</span>`;
         connect2(job_id);
     })
   }
@@ -85,7 +85,7 @@
 var log = document.getElementById('log');
 var ansi_up = new AnsiUp;
 
-info.innerHTML = '<span class="tag is-info">report loading ...</span>';
+info.innerHTML = '<span class="tag is-black">report loading ...</span>';
 
 function connect() {
   var ws = new WebSocket(`ws://${ip}/livereport/<.project>/<.build_id>/<.job_id>`);
@@ -104,7 +104,7 @@ function connect() {
 
   ws.onclose = function(e) {
     console.log('ws - socket is closed', e.reason);
-    info.innerHTML = '<span class="tag is-info">report loaded</span>';
+    info.innerHTML = '<span class="tag is-black">report loaded</span>';
     //setTimeout(function() {
     //  connect();
     //}, 1000);
