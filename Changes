@@ -7,7 +7,8 @@ Revision history for Sparky
   - Huge refactoring of UI,
     web sockets support,
     now builds reports and new
-    builds launches are dynamic 
+    builds launches pages
+    are dynamic 
 
 0.1.16 2024-01-05T21:00:00Z
 
