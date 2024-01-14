@@ -2,7 +2,14 @@ Revision history for Sparky
 
 {{$NEXT}}
 
-0.1.16 2024-05-03T21:00:00Z
+0.2.0 2024-01-14T19:40:00Z
+
+  - Huge refactoring of UI,
+    web sockets support,
+    now builds reports and new
+    builds launches are dynamic 
+
+0.1.16 2024-01-05T21:00:00Z
 
   - Support of new sparrowdo
     --image option to run
