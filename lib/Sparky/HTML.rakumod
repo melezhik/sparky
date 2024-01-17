@@ -65,14 +65,20 @@ sub navbar is export {
               <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=cerulean">cerulean</a>
               <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=cosmo">cosmo</a>
               <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=cyborg">cyborg</a>
+              <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=darkly">darkly</a>
               <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=flatly">flatly</a>
+              <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=journal">journal</a>
+              <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=litera">litera</a>
+              <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=lumen">lumen</a>
               <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=lux">lux</a>
               <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=materia">materia</a>
               <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=minty">minty</a>
               <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=nuclear">nuclear</a>
               <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=pulse">pulse</a>
               <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=sandstone">sandstone</a>
+              <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=simplex">simplex</a>
               <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=slate">slate</a>
+              <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=solar">solar</a>
               <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=spacelab">spacelab</a>
               <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=superhero">superhero</a>
               <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=united">united</a>
