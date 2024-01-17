@@ -396,7 +396,7 @@ sub create-cro-app ($pool) {
           my $done = False;
           while True {
             my @q = find-triggers($root);
-            my $st = qx[uptime].chomp;
+            my $st = qx[uptime].chomp.subst(/.* "load"/,"load");
             my $core = qx[nproc --all].chomp;
             emit "sparky info: $st | $core cpu cores | {@q.elems} builds in queue";
             sleep(5);
