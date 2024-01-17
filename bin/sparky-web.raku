@@ -398,7 +398,7 @@ sub create-cro-app ($pool) {
     }
   }
 
-  get -> 'livequeue' {
+  get -> 'livequeue', :$theme is cookie = default-theme() {
 
     web-socket -> $incoming {
       supply {
@@ -408,7 +408,7 @@ sub create-cro-app ($pool) {
             my @q = find-triggers($root);
             my $st = qx[uptime].chomp.subst(/.* "load"/,"load");
             my $core = qx[nproc --all].chomp;
-            emit "sparky info: $st | $core cpu cores | {@q.elems} builds in queue";
+            emit "$st | $core cpu cores | {@q.elems} builds in queue | theme: {$theme}";
             sleep(5);
           }
           if $done {
