@@ -104,7 +104,7 @@ function connect() {
 
   ws.onclose = function(e) {
     console.log('ws - socket is closed', e.reason);
-    info.innerHTML = '<span class="tag is-black">report loaded</span>';
+    info.innerHTML = '<span class="tag is-black" style="border: dotted 1px black">report loaded</span>';
     //setTimeout(function() {
     //  connect();
     //}, 1000);

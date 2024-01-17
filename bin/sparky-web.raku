@@ -388,6 +388,27 @@ sub create-cro-app ($pool) {
     }
   }
 
+  get -> 'livequeue' {
+
+    web-socket -> $incoming {
+      supply {
+        whenever $incoming -> $message {
+          my $done = False;
+          while True {
+            my @q = find-triggers($root);
+            my $st = qx[uptime].chomp;
+            my $core = qx[nproc --all].chomp;
+            emit "sparky info: $st | $core cpu cores | {@q.elems} builds in queue";
+            sleep(5);
+          }
+          if $done {
+            done
+          }     
+        }
+      }
+    }
+  }
+
   get -> 'badge', $project {
 
     my $dbh = $pool ?? $pool.get-connection() !! get-dbh();

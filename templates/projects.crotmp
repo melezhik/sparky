@@ -18,6 +18,7 @@
     <&HTML-AND-JAVASCRIPT(.navbar)>
     <nav class="panel is-primary">
       <p class="panel-heading">Projects</p>
+      <div class="field" id="notification"></div>
       <table class="table panel-block is-fullwidth">
         <tr>
           <td>Project</td>
@@ -60,3 +61,38 @@
       </table>
     </nav>
 
+<script>
+
+    var info = document.getElementById('notification');
+    var ip = location.host;
+
+    function connect2(job_id) {
+      var ws2 = new WebSocket(`ws://${ip}/livequeue`);
+      ws2.onopen = function() {
+        console.log('ws - status - socket is open');
+        // subscribe to some channels
+        ws2.send("Меня зовут Джон");
+      };
+
+      ws2.onmessage = function(e) {
+        // console.log('ws - status - ', e.data);
+        info.innerHTML = `<span class="tag is-black">${e.data}</span>`;
+        // log.innerHTML += "<br>";
+      };
+
+      ws2.onclose = function(e) {
+        console.log('ws - info - socket is closed', e.reason);
+        //setTimeout(function() {
+        //  connect();
+        //}, 1000);
+      };
+
+      ws2.onerror = function(err) {
+        console.error('ws - info - socket encountered error: ', err.message, 'Closing socket');
+        ws2.close();
+      };
+    }
+
+    connect2();
+
+</script>
