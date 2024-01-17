@@ -272,7 +272,17 @@ sub create-cro-app ($pool) {
       } 
   }
 
-  get {
+  get -> 'set-theme', :$theme {
+
+    my $date = DateTime.now.later(years => 100);
+
+    set-cookie 'theme', $theme, http-only => True, expires => $date;
+
+    redirect :see-other, "{sparky-http-root()}/";
+
+  }
+
+  get -> "", :$theme is cookie = default-theme() {
   
     my @projects = Array.new;
 
@@ -343,7 +353,7 @@ sub create-cro-app ($pool) {
     template 'templates/projects.crotmp', {
 
       http-root => sparky-http-root(),
-      css => css(), 
+      css => css($theme), 
       navbar => navbar(), 
       projects => @projects.sort(*.<last_build_id>).reverse,
 
@@ -351,7 +361,7 @@ sub create-cro-app ($pool) {
   
   }
   
-  get -> 'builds' {
+  get -> 'builds', :$theme is cookie = default-theme() {
 
     my $dbh = $pool ?? $pool.get-connection() !! get-dbh();
 
@@ -371,7 +381,7 @@ sub create-cro-app ($pool) {
   
     template 'templates/builds.crotmp', {
 
-      css => css(), 
+      css => css($theme), 
       navbar => navbar(),
       http-root => sparky-http-root(),
       builds => @rows,
@@ -380,9 +390,9 @@ sub create-cro-app ($pool) {
  
   }
   
-  get -> 'queue' {
+  get -> 'queue', :$theme is cookie = default-theme() {
     template 'templates/queue.crotmp', {
-      css => css(), 
+      css => css($theme), 
       navbar => navbar(), 
       builds => find-triggers($root)
     }
@@ -456,7 +466,7 @@ sub create-cro-app ($pool) {
 
   }
 
-  get -> 'report', $project, $build_id  {
+  get -> 'report', $project, $build_id, :$theme is cookie = default-theme() {
 
     if "$reports-dir/$project/build-$build_id.txt".IO ~~ :f {
 
@@ -489,7 +499,7 @@ sub create-cro-app ($pool) {
       }
 
       template 'templates/report2.crotmp', {
-        css => css(), 
+        css => css($theme), 
         navbar => navbar(), 
         http-root => sparky-http-root(),
         sparky-tcp-port => sparky-tcp-port(),
@@ -633,7 +643,7 @@ sub create-cro-app ($pool) {
 
   }
 
-  get -> 'project', $project {
+  get -> 'project', $project, :$theme is cookie = default-theme() {
     if "$root/$project/sparrowfile".IO ~~ :f {
       my $project-conf-str; 
       my %project-conf;
@@ -657,7 +667,7 @@ sub create-cro-app ($pool) {
 
       template 'templates/project.crotmp', {
         http-root => sparky-http-root(),
-        css =>css(), 
+        css =>css($theme), 
         navbar => navbar(), 
         project => $project, 
         allow-manual-run => %project-conf<allow_manual_run> || False,
@@ -671,7 +681,7 @@ sub create-cro-app ($pool) {
     }
   }
 
-  get -> 'build', 'project', $project {
+  get -> 'build', 'project', $project, :$theme is cookie = default-theme() {
     if "$root/$project/sparrowfile".IO ~~ :f {
       my $project-conf-str; 
       my %project-conf;
@@ -696,7 +706,7 @@ sub create-cro-app ($pool) {
       template 'templates/build.crotmp', {
         http-root => sparky-http-root(),
         sparky-tcp-port => sparky-tcp-port(),
-        css =>css(), 
+        css =>css($theme), 
         navbar => navbar(), 
         project => $project, 
         allow-manual-run => %project-conf<allow_manual_run> || False,
@@ -712,10 +722,10 @@ sub create-cro-app ($pool) {
     }
   }
   
-  get -> 'about' {
+  get -> 'about', :$theme is cookie = default-theme() {
   
     template 'templates/about.crotmp', {
-      css => css(), 
+      css => css($theme), 
       navbar => navbar(), 
       data => parse-markdown("README.md".IO.slurp).to_html,
     }

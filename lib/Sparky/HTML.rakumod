@@ -2,17 +2,9 @@ unit module Sparky::HTML;
 
 use Sparky;
 
-sub css is export {
+sub css (Mu $theme) is export {
 
   my %conf = get-sparky-conf();
-
-  my $theme ;
-
-  if %conf<ui> && %conf<ui><theme> {
-    $theme = %conf<ui><theme>
-  } else {
-    $theme = "slate";
-  }
 
   qq:to /HERE/
   <meta charset="utf-8">
@@ -29,9 +21,10 @@ sub css is export {
 sub navbar is export {
 
   qq:to /HERE/
-    <nav class="navbar" role="navigation" aria-label="main navigation">
+    <nav class="navbar is-transparent" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
-        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+       <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+          <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
@@ -64,9 +57,42 @@ sub navbar is export {
               </a>
             </div>
           </div>
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">
+              Theme
+            </a>
+            <div class="navbar-dropdown">
+              <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=cerulean">cerulean</a>
+              <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=cosmo">cosmo</a>
+              <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=cyborg">cyborg</a>
+              <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=flatly">flatly</a>
+              <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=lux">lux</a>
+              <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=materia">materia</a>
+              <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=minty">minty</a>
+              <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=nuclear">nuclear</a>
+              <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=pulse">pulse</a>
+              <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=sandstone">sandstone</a>
+              <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=slate">slate</a>
+              <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=spacelab">spacelab</a>
+              <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=superhero">superhero</a>
+              <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=united">united</a>
+              <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=yeti">yeti</a>
+            </div>
+          </div>
         </div>
       </div>
     </nav>
   HERE
 
+}
+
+sub default-theme is export {
+  my $t;
+  my %conf = get-sparky-conf();
+  if %conf<ui> && %conf<ui><theme> {
+    $t = %conf<ui><theme>
+  } else {
+    $t = "cosmo";
+  }
+  return $t;
 }
