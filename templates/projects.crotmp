@@ -18,7 +18,7 @@
     <&HTML-AND-JAVASCRIPT(.navbar)>
     <nav class="panel is-primary">
       <p class="panel-heading">Projects</p>
-      <div class="field" id="notification"></div>
+      <div class="panel-block" id="notification"></div>
       <table class="table panel-block is-fullwidth">
         <tr>
           <td>Project</td>
@@ -76,7 +76,7 @@
 
       ws2.onmessage = function(e) {
         // console.log('ws - status - ', e.data);
-        info.innerHTML = `<span class="tag is-black">${e.data}</span>`;
+        info.innerHTML = `<small>${e.data}</small>`;
         // log.innerHTML += "<br>";
       };
 

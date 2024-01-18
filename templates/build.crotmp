@@ -9,10 +9,9 @@
           Build: <.project>
        </h3>
       </div>
+      <div class="panel-block" id="notification"></div>
       <div class="panel-block">
         <form method="post">
-        <div class="field" id="notification">
-        </div>
           <div class="field">
             <@vars: $i>
             <div class="control">
@@ -74,7 +73,7 @@
 
       ws.onmessage = function(e) {
         console.log('ws - ', e.data);
-        log.innerHTML = `<span class="tag is-black">${e.data}</span>`;
+        log.innerHTML = `<small>${e.data}</small>`;
         // log.innerHTML += "<br>";
       };
 
@@ -123,14 +122,14 @@
         console.log(response.status); // Will show you the status
         if (!response.ok) {
           // document.getElementById('notification').innerHTML += "<br>";
-          document.getElementById('notification').innerHTML = `<span class="tag is-danger">Build error: ${response.status} ${response.statusText}</span>`;
+          document.getElementById('notification').innerHTML = `<small>Build error: ${response.status} ${response.statusText}</small>`;
         } else {
           return response.text();
         }
       })
       .then(function(job_id) {
           // document.getElementById('notification').innerHTML += "<br>";
-          document.getElementById('notification').innerHTML = `<span class="tag is-black">Build queued: ${job_id}</span>`;
+          document.getElementById('notification').innerHTML = `<small>Build queued: ${job_id}</small>`;
           connect(job_id);
       })
     }
