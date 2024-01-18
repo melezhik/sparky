@@ -1,17 +1,4 @@
 <&HTML-AND-JAVASCRIPT(.css)>
-
-<script>
-
-  function run( project ){
-
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "<.http-root>/build/project/" + project , true );
-    xhr.send("");
-
-  }
-
-</script>
-
     <head>
       <title>~SPARKY CI WEB~</title>
     </head>
@@ -50,7 +37,7 @@
             <span class="tag is-success">succeed</span>
           </?>
           <?{$i.state == -2}>
-            <a class="button is-small" onclick="run('<$i.project>')" >Run Now</a>
+            <a class="button is-small" href="<.http-root>/build/project/<$i.project>">Build Now</a>
           </?>
           </td>
           <td>
