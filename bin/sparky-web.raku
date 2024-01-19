@@ -409,7 +409,7 @@ sub create-cro-app ($pool) {
             my $st = qx[uptime].chomp.subst(/.* "load"/,"load");
             my $core = qx[nproc --all].chomp;
             emit "$st | $core cpu cores | {@q.elems} builds in queue | theme: {$theme}";
-            sleep(5);
+            sleep(10);
           }
           if $done {
             done
