@@ -143,7 +143,7 @@ sub create-cro-app ($pool) {
 
   post -> Cro::HTTP::Auth $session, 'build', 'project', $project, $key {
 
-    if "$root/$project/sparky.yaml".IO ~~ :e {
+    if "$root/$project/sparky.yaml".IO ~~ :e or sparky-allow-rebuild-spawn() {
 
       mkdir "$root/$project/.triggers";
 

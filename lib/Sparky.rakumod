@@ -61,6 +61,12 @@ sub sparky-with-flapper is export {
 
 }
 
+sub sparky-allow-rebuild-spawn is export {
+
+  get-sparky-conf()<SPARKY_ALLOW_REBUILD_SPAWN> || False;
+
+}
+
 sub get-sparky-conf is export {
 
   return %conf if %conf;
