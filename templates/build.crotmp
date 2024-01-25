@@ -20,9 +20,7 @@
                   <input class="input is-success" type="text" name="<$i.<name>>" value="<$i.<default>>" placeholder="<$i.<default>>">
                 </?> 
                 <?{ $i.type eq 'textarea' }>
-                  <textarea class="textarea is-success" type="textarea" name="<$i.<name>>" placeholder="<$i.<default>>">
-                    <$i.<default>>
-                  </textarea>
+                  <textarea class="textarea is-success" cols=20 type="textarea" name="<$i.<name>>" placeholder="<$i.<default>>"><$i.<default>></textarea>
                 </?> 
                 <?{ $i.type eq 'checkbox' }>
                   <?$i.default>
