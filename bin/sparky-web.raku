@@ -735,41 +735,80 @@ sub create-cro-app ($pool) {
       }
       for (%project-conf<vars><> || []) -> $v {
        if $v<default> {
-          for $v<default> ~~ m:global/"%" (\S+) "%"/ -> $c {
+        for $v<default> ~~ m:global/"%" (\S+) "%"/ -> $c {
           my $var_id = $c[0].Str;
-            # apply vars from host vars first
-            my $host-var = get-template-var(%host-vars<vars>,$var_id);
-            if defined($host-var) {
-              if $v<default>:exists {
-                $v<default>.=subst("%{$var_id}%",$host-var,:g);
-                say "project/$project: insert default %{$var_id}% from host vars";
-              }
-              if $v<value>:exists {
-                $v<value>.=subst("%{$var_id}%",$host-var,:g);
-                say "project/$project: insert value %{$var_id}% from host vars";
-              }
-              if $v<values>:exists {
-                $v<values>.=subst("%{$var_id}%",$host-var,:g);
-                say "project/$project: insert values %{$var_id}% from host vars";
-              }
+          # apply vars from host vars first
+          my $host-var = get-template-var(%host-vars<vars>,$var_id);
+          if defined($host-var) {
+            if $host-var.isa(Str) {
+              $v<default>.=subst("%{$var_id}%",$host-var,:g);
+            } else {
+              $v<default> = $host-var;
             }
-           my $shared-var = get-template-var(%shared-vars<vars>,$var_id);
-           if defined($shared-var) {
-              if $v<default>:exists {
-                $v<default>.=subst("%{$var_id}%",$shared-var,:g);
-                say "project/$project: insert default %{$var_id}% from shared vars";
-              }
-              if $v<value>:exists {
-                $v<value>.=subst("%{$var_id}%",$shared-var,:g);
-                say "project/$project: insert value %{$var_id}% from shared vars";
-              }
-              if $v<values>:exists {
-                $v<values>.=subst("%{$var_id}%",$shared-var,:g);
-                say "project/$project: insert values %{$var_id}% from shared vars";
-              }
-           }
-         }
+            say "project/$project: insert default %{$var_id}% from host vars";
+            next;
+          }
+          my $shared-var = get-template-var(%shared-vars<vars>,$var_id);
+          if defined($shared-var) {
+            if $shared-var.isa(Str) {
+              $v<default>.=subst("%{$var_id}%",$shared-var,:g);
+            } else {
+              $v<default> = $shared-var;
+            }
+            say "project/$project: insert default %{$var_id}% from shared vars";
+          }
         }
+       }
+       if $v<value> && $v<value>.isa(Str) {
+        for $v<value> ~~ m:global/"%" (\S+) "%"/ -> $c {
+          my $var_id = $c[0].Str;
+          # apply vars from host vars first
+          my $host-var = get-template-var(%host-vars<vars>,$var_id);
+          if defined($host-var) {
+            if $host-var.isa(Str) {
+              $v<value>.=subst("%{$var_id}%",$host-var,:g);
+            } else {
+              $v<value> = $host-var;
+            }
+            say "project/$project: insert value %{$var_id}% from host vars";
+            next;
+          }
+          my $shared-var = get-template-var(%shared-vars<vars>,$var_id);
+          if defined($shared-var) {
+           if $shared-var.isa(Str) {
+            $v<value>.=subst("%{$var_id}%",$shared-var,:g);
+           } else {
+            $v<value> = $shared-var;
+           }
+           say "project/$project: insert value %{$var_id}% from shared vars";
+          }
+        }
+       }
+       if $v<values> && $v<values>.isa(Str) {
+         for $v<values> ~~ m:global/"%" (\S+) "%"/ -> $c {
+          my $var_id = $c[0].Str;
+          # apply vars from host vars first
+          my $host-var = get-template-var(%host-vars<vars>,$var_id);
+          if defined($host-var) {
+            if $host-var.isa(Str) {
+              $v<values>.=subst("%{$var_id}%",$host-var,:g);
+            } else {
+              $v<values> = $host-var;
+            }
+            say "project/$project: insert values %{$var_id}% from host vars";
+            next;
+          }
+          my $shared-var = get-template-var(%shared-vars<vars>,$var_id);
+          if defined($shared-var) {
+            if $shared-var.isa(Str) {
+              $v<values>.=subst("%{$var_id}%",$shared-var,:g);
+            } else {
+              $v<values> = $shared-var;
+            }
+            say "project/$project: insert values %{$var_id}% from shared vars";
+          }
+        }
+       }
       }
 
       template 'templates/build.crotmp', {

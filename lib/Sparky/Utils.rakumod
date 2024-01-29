@@ -18,10 +18,13 @@ sub get-template-var ($data,$path) is export {
 
   for $path.split('.') -> $i {
     if $search{$i}:exists && $search{$i}.isa(Hash) {
+      say "get-template-var: $i - enter new path";
       $search = $search{$i}
     } elsif $search{$i}:exists {
+      say "get-template-var: $i - found OK";
       return $search{$i};
     } else {
+      say "get-template-var: $i - found FAIL";
       return
     }
   }
