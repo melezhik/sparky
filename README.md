@@ -375,6 +375,29 @@ defined at shared variables common template (`SPARKY_ROOT/templates/vars.yaml`)
 
 `*` One can override hostname by using `HOSTNAME` environment variable when starting sparky-web
 
+---
+
+If required, one could use nested varibales for template variables as well:
+
+`vars.yaml`
+
+```
+vars:
+  user:
+    name: Piter Pen
+```
+
+`sparky.yaml`
+
+```yaml
+vars:
+  -
+    name: Name
+    default: "%user.name%"
+    type: input
+```
+
+
 # Trigger build by SCM changes
 
 ** warning ** - the feature is not properly tested, feel free to post issues or suggestions
@@ -1076,6 +1099,8 @@ my $data = $job->get-file("data.tar.gz");
 ```
 
 `*` - content will be returned as a binary string by default
+
+---
 
 To force text mode, use `:text` modifier:
 

@@ -738,31 +738,33 @@ sub create-cro-app ($pool) {
           for $v<default> ~~ m:global/"%" (\S+) "%"/ -> $c {
           my $var_id = $c[0].Str;
             # apply vars from host vars first
-            if defined(%host-vars<vars>{$var_id}) {
+            my $host-var = get-template-var(%host-vars<vars>,$var_id);
+            if defined($host-var) {
               if $v<default>:exists {
-                $v<default>.=subst("%{$var_id}%",%host-vars<vars>{$var_id},:g);
+                $v<default>.=subst("%{$var_id}%",$host-var,:g);
                 say "project/$project: insert default %{$var_id}% from host vars";
               }
               if $v<value>:exists {
-                $v<value>.=subst("%{$var_id}%",%host-vars<vars>{$var_id},:g);
+                $v<value>.=subst("%{$var_id}%",$host-var,:g);
                 say "project/$project: insert value %{$var_id}% from host vars";
               }
               if $v<values>:exists {
-                $v<values>.=subst("%{$var_id}%",%host-vars<vars>{$var_id},:g);
+                $v<values>.=subst("%{$var_id}%",$host-var,:g);
                 say "project/$project: insert values %{$var_id}% from host vars";
               }
             }
-           if defined(%shared-vars<vars>{$var_id}) {
+           my $shared-var = get-template-var(%shared-vars<vars>,$var_id);
+           if defined($shared-var) {
               if $v<default>:exists {
-                $v<default>.=subst("%{$var_id}%",%shared-vars<vars>{$var_id},:g);
+                $v<default>.=subst("%{$var_id}%",$shared-var,:g);
                 say "project/$project: insert default %{$var_id}% from shared vars";
               }
               if $v<value>:exists {
-                $v<value>.=subst("%{$var_id}%",%shared-vars<vars>{$var_id},:g);
+                $v<value>.=subst("%{$var_id}%",$shared-var,:g);
                 say "project/$project: insert value %{$var_id}% from shared vars";
               }
               if $v<values>:exists {
-                $v<values>.=subst("%{$var_id}%",%shared-vars<vars>{$var_id},:g);
+                $v<values>.=subst("%{$var_id}%",$shared-var,:g);
                 say "project/$project: insert values %{$var_id}% from shared vars";
               }
            }
