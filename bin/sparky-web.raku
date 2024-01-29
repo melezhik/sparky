@@ -8,6 +8,7 @@ use Cro::WebSocket::Message;
 use DBIish;
 use Sparky;
 use Sparky::HTML;
+use Sparky::Utils;
 use YAMLish;
 use Text::Markdown;
 use Sparky::Job;
@@ -656,10 +657,8 @@ sub create-cro-app ($pool) {
         try { %project-conf = load-yaml($project-conf-str) };
 
         if $! { 
-
           $error = $!;
-
-          say "error parsing $root/$project/sparky.yaml";
+          say "project/$project: error parsing $root/$project/sparky.yaml";
           say $error;
         }
 
@@ -682,6 +681,11 @@ sub create-cro-app ($pool) {
   }
 
   get -> 'build', 'project', $project, :$theme is cookie = default-theme() {
+
+    my %project-conf = %();
+    my %shared-vars = %();
+    my %host-vars = %();
+
     if "$root/$project/sparrowfile".IO ~~ :f {
       my $project-conf-str; 
       my %project-conf;
@@ -689,18 +693,81 @@ sub create-cro-app ($pool) {
 
       if "$root/$project/sparky.yaml".IO ~~ :f {
 
+        say "project/$project: load sparky.yaml";
         $project-conf-str = "$root/$project/sparky.yaml".IO.slurp; 
 
         try { %project-conf = load-yaml($project-conf-str) };
 
-        if $! { 
-
+        if $! {
           $error = $!;
-
-          say "error parsing $root/$project/sparky.yaml";
+          say "project/$project: error parsing $root/$project/sparky.yaml";
           say $error;
         }
 
+      }
+
+      if "$root/../templates/vars.yaml".IO ~~ :f {
+
+        say "templates: load shared vars from vars.yaml";
+
+        try { %shared-vars = load-yaml("$root/../templates/vars.yaml".IO.slurp) };
+
+        if $! {
+          $error ~= $!;
+          say "project/$project: error parsing $root/../templates/var.yaml";
+          say $error;
+        }
+
+      }
+
+      if "$root/../templates/hosts/{hostname()}/vars.yaml".IO ~~ :f {
+
+        say "templates: load host vars from {hostname()}/vars.yaml";
+
+        try { %host-vars = load-yaml("$root/../templates/hosts/{hostname()}/vars.yaml".IO.slurp) };
+
+        if $! {
+          $error ~= $!;
+          say "project/$project: error parsing $root/../templates/hosts/{hostname()}/vars.yaml";
+          say $error;
+        }
+
+      }
+      for (%project-conf<vars><> || []) -> $v {
+       if $v<default> {
+          for $v<default> ~~ m:global/"%" (\S+) "%"/ -> $c {
+          my $var_id = $c[0].Str;
+            # apply vars from host vars first
+            if defined(%host-vars<vars>{$var_id}) {
+              if $v<default>:exists {
+                $v<default>.=subst("%{$var_id}%",%host-vars<vars>{$var_id},:g);
+                say "project/$project: insert default %{$var_id}% from host vars";
+              }
+              if $v<value>:exists {
+                $v<value>.=subst("%{$var_id}%",%host-vars<vars>{$var_id},:g);
+                say "project/$project: insert value %{$var_id}% from host vars";
+              }
+              if $v<values>:exists {
+                $v<values>.=subst("%{$var_id}%",%host-vars<vars>{$var_id},:g);
+                say "project/$project: insert values %{$var_id}% from host vars";
+              }
+            }
+           if defined(%shared-vars<vars>{$var_id}) {
+              if $v<default>:exists {
+                $v<default>.=subst("%{$var_id}%",%shared-vars<vars>{$var_id},:g);
+                say "project/$project: insert default %{$var_id}% from shared vars";
+              }
+              if $v<value>:exists {
+                $v<value>.=subst("%{$var_id}%",%shared-vars<vars>{$var_id},:g);
+                say "project/$project: insert value %{$var_id}% from shared vars";
+              }
+              if $v<values>:exists {
+                $v<values>.=subst("%{$var_id}%",%shared-vars<vars>{$var_id},:g);
+                say "project/$project: insert values %{$var_id}% from shared vars";
+              }
+           }
+         }
+        }
       }
 
       template 'templates/build.crotmp', {

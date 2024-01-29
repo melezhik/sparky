@@ -251,7 +251,7 @@ allow_manual_run: true
 
 # Build runtime and default parameters
 
-Define `vars` section to optionally provide build parameters, that will be visible during maunual build run, for a example:
+Define `vars` section to optionally provide build parameters, that will be visible during manual build run, for a example:
 
 ```yaml
 vars:
@@ -298,7 +298,7 @@ say "Language param passed: ", tags()<Language>;
 say "Debug param passed: ", tags()<Debug>;
 ```
 
-To provide default values for build paramaters one have to use `sparrowdo.tags` section:
+To provide default values for build parameters one have to use `sparrowdo.tags` section:
 
 ```yaml
 sparrowdo:
@@ -315,7 +315,7 @@ sparrowdo:
 Defaults are useful when a build is triggered bypassing UI, for example, through the API, ensuring that sane
 default values are always applied.
 
-Parameters default values provided throuhg UI always override default values in `sparrowdo.tags` section.
+Parameters default values provided through UI always override default values in `sparrowdo.tags` section.
 
 ## HTML UI controls for build parameters:
 
@@ -328,6 +328,52 @@ Currently following UI controls are supported:
 * select list
 
 * checkbox 
+
+## Templating UI variables
+
+One can template variables used in UI controls, by creating a global template file,
+with some shared variables.
+
+The file should be located at `SPARKY_ROOT/templates/vars.yaml`:
+
+
+```yaml
+vars:
+  name: Alexey
+  surname: Melezhik
+```
+
+Shared variables are inserted into `project's sparky.yaml` file
+by using `%name%` syntax:
+
+```yaml
+vars:
+  -
+      name: Name
+      default: %name%
+      type: input
+  -
+      name: LastName
+      default: %surname%
+      type: input
+```
+
+This approach allows to minimize code duplication when developing Sparky job's interfaces.
+
+To specify host (*) specific files, use templates files located at 
+`SPARKY_ROOT/templates/hosts/$hostname/` directory, for example:
+
+`SPARKY_ROOT/templates/hosts/foo.bar`
+
+```yaml
+vars:
+  role: db_server
+```
+
+Host specific variables always override variable with the same names 
+defined at shared variables common template (`SPARKY_ROOT/templates/vars.yaml`)
+
+`*` One can override hostname by using `HOSTNAME` environment variable when starting sparky-web
 
 # Trigger build by SCM changes
 
@@ -1016,18 +1062,20 @@ Pipeline.new.run;
 
 In this example child job copy file back to a parent job using `put-file` method:
 
-`put-file($file-path,$file-name)`
+* `put-file($file-path,$file-name)`
 
 Where `$file-path` is a physical file path within file system and `$file-name` - just a name
-how file will be accessible by other jobs. So when a file gets copied, a parent job will access it as:
+how file will be accessible by other jobs. 
 
-`get-file($file-name)` method which return a content (\*) of a file.
+So when a file gets copied, a parent job will access it as:
 
-(\*) - content will be returned as a binary string by default:
+* `get-file($file-name)` method which return a content (*) of a file.
 
 ```raku
 my $data = $job->get-file("data.tar.gz");
 ```
+
+`*` - content will be returned as a binary string by default
 
 To force text mode, use `:text` modifier:
 
