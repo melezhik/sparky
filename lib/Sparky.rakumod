@@ -75,6 +75,8 @@ sub get-sparky-conf is export {
 
   # say ">>> ", $conf-file.IO.slurp;
 
+  say ">>> parse sparky yaml config from: $conf-file";
+
   %conf = $conf-file.IO ~~ :f ?? load-yaml($conf-file.IO.slurp) !! Hash.new;
 
   return %conf;
@@ -221,7 +223,16 @@ sub schedule-build ( $dir, %opts? ) is export {
 
   if "$dir/sparky.yaml".IO ~~ :f {
 
-    %config = load-yaml(slurp "$dir/sparky.yaml");
+    say "{DateTime.now} --- sparkyd: parse sparky job yaml config from: $dir/sparky.yaml";
+
+    try { %config = load-yaml(slurp "$dir/sparky.yaml") };
+
+    if $! {
+      my $error = $!;
+      say "{DateTime.now} --- sparkyd: error parsing $dir/sparky.yaml";
+      say $error;
+      return "{DateTime.now} --- sparkyd: remove build from schedulling"
+    }
 
   }
 
