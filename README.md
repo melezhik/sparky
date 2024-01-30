@@ -323,6 +323,8 @@ Currently following UI controls are supported:
 
 * text input
 
+* password
+
 * text area
 
 * select list
