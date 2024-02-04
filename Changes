@@ -2,13 +2,14 @@ Revision history for Sparky
 
 {{$NEXT}}
 
-0.2.0 2024-01-14T19:40:00Z
+0.2.0 2024-02-04T23:50:00Z
 
   - Huge refactoring of UI,
-    web sockets support,
-    now builds reports and new
-    builds launches pages
-    are dynamic 
+    web sockets support
+  - Sparkyd no longer crashes
+    on broken yamls
+  - Add password UI control
+  - Template variables support
 
 0.1.16 2024-01-05T21:00:00Z
 

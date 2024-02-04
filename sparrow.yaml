@@ -33,7 +33,7 @@ tasks:
     language: Bash
     code: |
       set -e
-      zef install --/test https://github.com/tony-o/raku-fez.git
+      zef install --/test fez
 
       cat << HERE > ~/.fez-config.json
        {"groups":[],"un":"melezhik","key":"$FEZ_TOKEN"}

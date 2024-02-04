@@ -63,9 +63,13 @@
 
     var log = document.getElementById('notification');
     var ip = location.host;
-
+    if (location.protocol == 'https:') {
+      var proto = "wss"
+    } else {
+      var proto = "ws"
+    }
     function connect(job_id) {
-      var ws = new WebSocket(`ws://${ip}/livestatus/<.project>/${job_id}`);
+      var ws = new WebSocket(`${proto}://${ip}/livestatus/<.project>/${job_id}`);
       ws.onopen = function() {
         console.log('ws - socket is open');
         // subscribe to some channels

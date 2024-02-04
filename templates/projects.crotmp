@@ -54,7 +54,12 @@
     var ip = location.host;
 
     function connect2(job_id) {
-      var ws2 = new WebSocket(`ws://${ip}/livequeue`);
+      if (location.protocol == 'https:') {
+        var proto = "wss"
+      } else {
+        var proto = "ws"
+      }
+      var ws2 = new WebSocket(`${proto}://${ip}/livequeue`);
       ws2.onopen = function() {
         console.log('ws - status - socket is open');
         // subscribe to some channels
