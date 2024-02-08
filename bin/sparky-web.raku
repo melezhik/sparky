@@ -793,7 +793,7 @@ sub create-cro-app ($pool) {
             if $host-var.isa(Str) {
               $v<values>.=subst("%{$var_id}%",$host-var,:g);
             } else {
-              $v<values> = $host-var;
+              $v<values> = $host-var.isa(List) ?? $host-var.sort !! $host-var;
             }
             say "project/$project: insert values %{$var_id}% from host vars";
             next;
@@ -803,7 +803,7 @@ sub create-cro-app ($pool) {
             if $shared-var.isa(Str) {
               $v<values>.=subst("%{$var_id}%",$shared-var,:g);
             } else {
-              $v<values> = $shared-var;
+              $v<values> = $shared-var.isa(List) ?? $shared-var.sort !! $shared-var;
             }
             say "project/$project: insert values %{$var_id}% from shared vars";
           }
