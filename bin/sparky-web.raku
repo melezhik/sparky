@@ -356,7 +356,7 @@ sub create-cro-app ($pool) {
       http-root => sparky-http-root(),
       css => css($theme), 
       navbar => navbar(), 
-      projects => @projects.sort(*.<last_build_id>).reverse,
+      projects => @projects.sort(*.<project>),
 
     }
   
