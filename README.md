@@ -399,6 +399,30 @@ vars:
     type: input
 ```
 
+## Templating tag variables
+
+The same way as with UI variables 
+one can template sparrowdo tag varibales in `sparky.yaml`:
+
+```
+sparrowdo:
+  tags: |
+    Name="%name%",
+    LastName="%lastname%"
+```
+
+Or with `vars.yaml`:
+
+```
+  user:
+    name: Alex
+    surname: Melezhik
+```
+
+```
+sparrowdo:
+  tags: "%user%"
+```
 
 # Trigger build by SCM changes
 
