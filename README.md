@@ -407,8 +407,8 @@ one can template sparrowdo tag varibales in `sparky.yaml`:
 ```
 sparrowdo:
   tags: |
-    Name="%name%",
-    LastName="%lastname%"
+    Name=%name%,
+    LastName=%lastname%
 ```
 
 Or with `vars.yaml`:
