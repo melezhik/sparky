@@ -4,6 +4,7 @@ use Sparky;
 use Data::Dump;
 use YAMLish;
 use File::Directory::Tree;
+use Sparky::Utils;
 
 state $DIR;
 state $MAKE-REPORT;
@@ -83,7 +84,7 @@ sub MAIN (
     # not to overload database with requests
     # we would rather return states
     # by reading them from static files
-    # not from as database entries
+    # not from database entries
 
     "{$build-state-dir}/{$job-id}".IO.spurt(0);
 
@@ -132,6 +133,37 @@ sub MAIN (
   my $sparrowdo-run = "sparrowdo --prefix=$project";
 
   my %sparrowdo-config = %config<sparrowdo> || Hash.new;
+
+  my %shared-vars;
+  my %host-vars;
+
+  if "$dir/../../templates/vars.yaml".IO ~~ :f {
+
+    say "templates: load shared vars from vars.yaml";
+
+    try { %shared-vars = load-yaml("$dir/../../templates/vars.yaml".IO.slurp) };
+
+    if $! {
+      $error ~= $!;
+      say "project/$project: error parsing $dir/../../templates/var.yaml";
+      say $error;
+    }
+
+  }
+
+  if "$dir/../../templates/hosts/{hostname()}/vars.yaml".IO ~~ :f {
+
+    say "templates: load host vars from {hostname()}/vars.yaml";
+
+    try { %host-vars = load-yaml("$dir/../../templates/hosts/{hostname()}/vars.yaml".IO.slurp) };
+
+    if $! {
+      $error ~= $!;
+      say "project/$project: error parsing $dir/../../templates/hosts/{hostname()}/vars.yaml";
+      say $error;
+    }
+
+  }
 
   if %trigger<sparrowdo> {
     for %trigger<sparrowdo>.keys -> $k {
@@ -216,6 +248,38 @@ sub MAIN (
 
 
   if %sparrowdo-config<tags> {
+    for %sparrowdo-config<tags> ~~ m:global/"%" (\S+) "%"/ -> $c {
+      my $var_id = $c[0].Str;
+      # apply vars from host vars first
+      my $host-var = get-template-var(%host-vars<vars>,$var_id);
+      if defined($host-var) {
+        if $host-var.isa(Str) {
+          %sparrowdo-config<tags>.=subst("%{$var_id}%",$host-var,:g);
+        } elsif $host-var.isa(Hash)  {
+          my @tags;
+          $host-var.keys.sort -> $v {
+              @tags.push: "$v={$host-var{$v}}"
+          }
+          %sparrowdo-config<tags> = @tags.join(",");
+        }
+        say "project/$project: sparrowdo.tags - insert tags %{$var_id}% from host vars";
+        next;
+      }      
+      my $shared-var = get-template-var(%shared-vars<vars>,$var_id);
+      if defined($shared-var) {
+        if $shared-var.isa(Str) {
+          %sparrowdo-config<tags>.=subst("%{$var_id}%",$shared-var,:g);
+        } elsif $shared-var.isa(Hash)  {
+          my @tags;
+          $shared-var.keys.sort -> $v {
+              @tags.push: "$v={$host-var{$v}}"
+          }
+          %sparrowdo-config<tags> = @tags.join(",");
+        }
+        say "project/$project: sparrowdo.tags - insert tags %{$var_id}% from host vars";
+        next;
+      }      
+    }  
     %sparrowdo-config<tags> ~= ",SPARKY_PROJECT={$project}";
     %sparrowdo-config<tags> ~= ",SPARKY_JOB_ID={$trigger.IO.basename}" if $trigger;
     %sparrowdo-config<tags> ~= ",SPARKY_WORKER=docker" if %sparrowdo-config<docker>;
