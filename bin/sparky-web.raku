@@ -816,10 +816,12 @@ sub create-cro-app ($pool) {
           my $host-var = get-template-var(%host-vars<vars>,$var_id);
           if defined($host-var) {
             if $host-var.isa(Str) {
-              $v<tags>.=subst("%{$var_id}%",$host-var,:g);
+              my %s = $v;
+              %s<tags>.=subst("%{$var_id}%",$host-var,:g);
+              %project-conf<sparrowdo> = %s;
             } elsif $host-var.isa(Hash)  {
               my @tags;
-              $host-var.keys.sort -> $v {
+              for $host-var.keys.sort -> $v {
                   @tags.push: "$v={$host-var{$v}}"
               }
               $v<tags> = @tags.join(",")
@@ -830,10 +832,12 @@ sub create-cro-app ($pool) {
           my $shared-var = get-template-var(%shared-vars<vars>,$var_id);
           if defined($shared-var) {
             if $shared-var.isa(Str) {
-              $v<tags>.=subst("%{$var_id}%",$shared-var,:g);
+              my %s = $v;
+              %s<tags>.=subst("%{$var_id}%",$shared-var,:g);
+              %project-conf<sparrowdo> = %s;
             } elsif $shared-var.isa(Hash)  {
               my @tags;
-              $shared-var.keys.sort -> $v {
+              for $shared-var.keys.sort -> $v {
                   @tags.push: "$v={$shared-var{$v}}"
               }
               $v<tags> = @tags.join(",")
