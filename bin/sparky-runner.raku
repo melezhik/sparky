@@ -136,6 +136,7 @@ sub MAIN (
 
   my %shared-vars;
   my %host-vars;
+  my $error;
 
   if "$dir/../../templates/vars.yaml".IO ~~ :f {
 
@@ -257,7 +258,7 @@ sub MAIN (
           %sparrowdo-config<tags>.=subst("%{$var_id}%",$host-var,:g);
         } elsif $host-var.isa(Hash)  {
           my @tags;
-          $host-var.keys.sort -> $v {
+          for $host-var.keys.sort -> $v {
               @tags.push: "$v={$host-var{$v}}"
           }
           %sparrowdo-config<tags> = @tags.join(",");
@@ -271,7 +272,7 @@ sub MAIN (
           %sparrowdo-config<tags>.=subst("%{$var_id}%",$shared-var,:g);
         } elsif $shared-var.isa(Hash)  {
           my @tags;
-          $shared-var.keys.sort -> $v {
+          for $shared-var.keys.sort -> $v {
               @tags.push: "$v={$host-var{$v}}"
           }
           %sparrowdo-config<tags> = @tags.join(",");

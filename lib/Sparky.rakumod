@@ -405,6 +405,7 @@ sub find-triggers ($root) is export {
 
     if "{$dir}/.triggers/".IO ~~ :d {
       for dir("{$dir}/.triggers/") -> $file {
+        say ">> load trigger from file $file ...";
         my %trigger = EVALFILE($file);
         %trigger<project> = $project;
         %trigger<file> = $file;
