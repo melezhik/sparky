@@ -733,7 +733,7 @@ sub create-cro-app ($pool) {
         }
 
       }
-      for (%project-conf<vars><> || []) -> $v {
+      for |(%project-conf<vars><> || []), |(%project-conf<sparrowdo> ?? %project-conf<sparrowdo> !! []) -> $v {
        if $v<default> {
         for $v<default> ~~ m:global/"%" (\S+) "%"/ -> $c {
           my $var_id = $c[0].Str;
@@ -745,7 +745,7 @@ sub create-cro-app ($pool) {
             } else {
               $v<default> = $host-var;
             }
-            say "project/$project: insert default %{$var_id}% from host vars";
+            say "project/$project: default - insert default %{$var_id}% from host vars";
             next;
           }
           my $shared-var = get-template-var(%shared-vars<vars>,$var_id);
@@ -755,7 +755,7 @@ sub create-cro-app ($pool) {
             } else {
               $v<default> = $shared-var;
             }
-            say "project/$project: insert default %{$var_id}% from shared vars";
+            say "project/$project: default - insert default %{$var_id}% from shared vars";
           }
         }
        }
@@ -770,7 +770,7 @@ sub create-cro-app ($pool) {
             } else {
               $v<value> = $host-var;
             }
-            say "project/$project: insert value %{$var_id}% from host vars";
+            say "project/$project: value - insert value %{$var_id}% from host vars";
             next;
           }
           my $shared-var = get-template-var(%shared-vars<vars>,$var_id);
@@ -780,7 +780,7 @@ sub create-cro-app ($pool) {
            } else {
             $v<value> = $shared-var;
            }
-           say "project/$project: insert value %{$var_id}% from shared vars";
+           say "project/$project: value - insert value %{$var_id}% from shared vars";
           }
         }
        }
@@ -795,7 +795,7 @@ sub create-cro-app ($pool) {
             } else {
               $v<values> = $host-var.isa(List) ?? $host-var.sort !! $host-var;
             }
-            say "project/$project: insert values %{$var_id}% from host vars";
+            say "project/$project: values - insert values %{$var_id}% from host vars";
             next;
           }
           my $shared-var = get-template-var(%shared-vars<vars>,$var_id);
@@ -805,7 +805,40 @@ sub create-cro-app ($pool) {
             } else {
               $v<values> = $shared-var.isa(List) ?? $shared-var.sort !! $shared-var;
             }
-            say "project/$project: insert values %{$var_id}% from shared vars";
+            say "project/$project: values - insert values %{$var_id}% from shared vars";
+          }
+        }
+       }
+       if $v<tags> {
+        for $v<tags> ~~ m:global/"%" (\S+) "%"/ -> $c {
+          my $var_id = $c[0].Str;
+          # apply vars from host vars first
+          my $host-var = get-template-var(%host-vars<vars>,$var_id);
+          if defined($host-var) {
+            if $host-var.isa(Str) {
+              $v<tags>.=subst("%{$var_id}%",$host-var,:g);
+            } elsif $host-var.isa(Hash)  {
+              my @tags;
+              $host-var.keys.sort -> $v {
+                  @tags.push: "$v={$host-var{$v}}"
+              }
+              $v<tags> = @tags.join(",")
+            }
+            say "project/$project: sparrowdo.tags - insert tags %{$var_id}% from host vars";
+            next;
+          }
+          my $shared-var = get-template-var(%shared-vars<vars>,$var_id);
+          if defined($shared-var) {
+            if $shared-var.isa(Str) {
+              $v<tags>.=subst("%{$var_id}%",$shared-var,:g);
+            } elsif $shared-var.isa(Hash)  {
+              my @tags;
+              $shared-var.keys.sort -> $v {
+                  @tags.push: "$v={$shared-var{$v}}"
+              }
+              $v<tags> = @tags.join(",")
+            }
+            say "project/$project: sparrowdo.tags - insert tags %{$var_id}% from shared vars";
           }
         }
        }
