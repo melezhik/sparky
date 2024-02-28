@@ -819,7 +819,7 @@ sub create-cro-app ($pool) {
               $v<tags>.=subst("%{$var_id}%",$host-var,:g);
             } elsif $host-var.isa(Hash)  {
               my @tags;
-              $host-var.keys.sort -> $v {
+              for $host-var.keys.sort -> $v {
                   @tags.push: "$v={$host-var{$v}}"
               }
               $v<tags> = @tags.join(",")
@@ -833,7 +833,7 @@ sub create-cro-app ($pool) {
               $v<tags>.=subst("%{$var_id}%",$shared-var,:g);
             } elsif $shared-var.isa(Hash)  {
               my @tags;
-              $shared-var.keys.sort -> $v {
+              for $shared-var.keys.sort -> $v {
                   @tags.push: "$v={$shared-var{$v}}"
               }
               $v<tags> = @tags.join(",")
