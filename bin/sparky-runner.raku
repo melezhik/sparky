@@ -249,12 +249,12 @@ sub MAIN (
 
 
   if %sparrowdo-config<tags> {
-    for %sparrowdo-config<tags> ~~ m:global/"%" (\S+) "%"/ -> $c {
+    for %sparrowdo-config<tags> ~~ m:global/"%" (\S+?) "%"/ -> $c {
       my $var_id = $c[0].Str;
       # apply vars from host vars first
       my $host-var = get-template-var(%host-vars<vars>,$var_id);
       if defined($host-var) {
-        if $host-var.isa(Str) {
+        if $host-var.isa(Str) or $host-var.isa(Rat) or $host-var.isa(Int) {
           %sparrowdo-config<tags>.=subst("%{$var_id}%",$host-var,:g);
         } elsif $host-var.isa(Hash)  {
           my @tags;
@@ -268,7 +268,7 @@ sub MAIN (
       }      
       my $shared-var = get-template-var(%shared-vars<vars>,$var_id);
       if defined($shared-var) {
-        if $shared-var.isa(Str) {
+        if $shared-var.isa(Str) or $shared-var.isa(Rat) or $shared-var.isa(Int) {
           %sparrowdo-config<tags>.=subst("%{$var_id}%",$shared-var,:g);
         } elsif $shared-var.isa(Hash)  {
           my @tags;

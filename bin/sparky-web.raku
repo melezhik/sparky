@@ -735,12 +735,12 @@ sub create-cro-app ($pool) {
       }
       for (%project-conf<vars><> || []) -> $v {
        if $v<default> {
-        for $v<default> ~~ m:global/"%" (\S+) "%"/ -> $c {
+        for $v<default> ~~ m:global/"%" (\S+?) "%"/ -> $c {
           my $var_id = $c[0].Str;
           # apply vars from host vars first
           my $host-var = get-template-var(%host-vars<vars>,$var_id);
           if defined($host-var) {
-            if $host-var.isa(Str) {
+            if $host-var.isa(Str) or $host-var.isa(Rat) or $host-var.isa(Int) {
               $v<default>.=subst("%{$var_id}%",$host-var,:g);
             } else {
               $v<default> = $host-var;
@@ -750,7 +750,7 @@ sub create-cro-app ($pool) {
           }
           my $shared-var = get-template-var(%shared-vars<vars>,$var_id);
           if defined($shared-var) {
-            if $shared-var.isa(Str) {
+            if $shared-var.isa(Str) or $shared-var.isa(Rat) or $shared-var.isa(Int) {
               $v<default>.=subst("%{$var_id}%",$shared-var,:g);
             } else {
               $v<default> = $shared-var;
@@ -760,12 +760,12 @@ sub create-cro-app ($pool) {
         }
        }
        if $v<value> && $v<value>.isa(Str) {
-        for $v<value> ~~ m:global/"%" (\S+) "%"/ -> $c {
+        for $v<value> ~~ m:global/"%" (\S+?) "%"/ -> $c {
           my $var_id = $c[0].Str;
           # apply vars from host vars first
           my $host-var = get-template-var(%host-vars<vars>,$var_id);
           if defined($host-var) {
-            if $host-var.isa(Str) {
+            if $host-var.isa(Str) or $host-var.isa(Rat) or $host-var.isa(Int)  {
               $v<value>.=subst("%{$var_id}%",$host-var,:g);
             } else {
               $v<value> = $host-var;
@@ -775,7 +775,7 @@ sub create-cro-app ($pool) {
           }
           my $shared-var = get-template-var(%shared-vars<vars>,$var_id);
           if defined($shared-var) {
-           if $shared-var.isa(Str) {
+           if $shared-var.isa(Str) or $shared-var.isa(Rat) or $shared-var.isa(Int)  {
             $v<value>.=subst("%{$var_id}%",$shared-var,:g);
            } else {
             $v<value> = $shared-var;
@@ -784,13 +784,13 @@ sub create-cro-app ($pool) {
           }
         }
        }
-       if $v<values> && $v<values>.isa(Str) {
-         for $v<values> ~~ m:global/"%" (\S+) "%"/ -> $c {
+       if $v<values> && $v<values>.isa(Str)   {
+         for $v<values> ~~ m:global/"%" (\S+?) "%"/ -> $c {
           my $var_id = $c[0].Str;
           # apply vars from host vars first
           my $host-var = get-template-var(%host-vars<vars>,$var_id);
           if defined($host-var) {
-            if $host-var.isa(Str) {
+            if $host-var.isa(Str) or $host-var.isa(Rat) or $host-var.isa(Int) {
               $v<values>.=subst("%{$var_id}%",$host-var,:g);
             } else {
               $v<values> = $host-var.isa(List) ?? $host-var.sort !! $host-var;
@@ -800,7 +800,7 @@ sub create-cro-app ($pool) {
           }
           my $shared-var = get-template-var(%shared-vars<vars>,$var_id);
           if defined($shared-var) {
-            if $shared-var.isa(Str) {
+            if $shared-var.isa(Str) or $shared-var.isa(Rat) or $shared-var.isa(Int) {
               $v<values>.=subst("%{$var_id}%",$shared-var,:g);
             } else {
               $v<values> = $shared-var.isa(List) ?? $shared-var.sort !! $shared-var;
