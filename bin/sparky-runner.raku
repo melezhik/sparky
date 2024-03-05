@@ -194,14 +194,6 @@ sub MAIN (
     }
   }
 
-  if $trigger {
-    say "moving trigger to {$build-cache-dir}/{$trigger.IO.basename} ...";
-    my %t = EVALFILE($trigger);
-    %t<sparrowdo> = %sparrowdo-config;
-    unlink $trigger;
-    "{$build-cache-dir}/{$trigger.IO.basename}".IO.spurt(%t.perl);
-  }
-
   if %sparrowdo-config<docker> {
     $sparrowdo-run ~= " --docker=" ~ %sparrowdo-config<docker>;
   } elsif %sparrowdo-config<host> {
@@ -323,6 +315,14 @@ sub MAIN (
 
     $run-dir = %trigger<cwd>;
 
+  }
+
+  if $trigger {
+    say "moving trigger to {$build-cache-dir}/{$trigger.IO.basename} ...";
+    my %t = EVALFILE($trigger);
+    %t<sparrowdo> = %sparrowdo-config;
+    unlink $trigger;
+    "{$build-cache-dir}/{$trigger.IO.basename}".IO.spurt(%t.perl);
   }
 
   if $make-report {
