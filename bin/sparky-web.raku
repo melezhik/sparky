@@ -120,6 +120,23 @@ sub create-cro-app ($pool) {
 
   }
 
+  get -> Cro::HTTP::Auth $session, 'cancel', 'project', $project {
+
+    my $pid = build-is-running("$root/$project");
+
+    if $pid {
+      say "[cancel build] project=$project, pid=$pid";
+      shell "kill $pid";
+    } else {
+      say "[cancel build] project=$project, no build running";
+    }
+
+    redirect :see-other, "{sparky-http-root()}/builds";
+
+    #content 'text/plain', $pid;
+
+  }
+
   post -> Cro::HTTP::Auth $session, 'build-with-tags', 'project', $project {
 
     my $id = "{('a' .. 'z').pick(20).join('')}.{$*PID}";
@@ -161,6 +178,7 @@ sub create-cro-app ($pool) {
     }
 
   }
+
 
   post -> 'queue', :$token? is header  {
 

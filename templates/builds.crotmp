@@ -41,12 +41,16 @@
           </?>
           <?{$i.state == 0}>
             <span class="tag is-primary">running</span>
+            <a class="is-small" href="<.http-root>/cancel/project/<$i.project>">Cancel</a>
           </?>
           <?{$i.state == 1}>
             <span class="tag is-success">succeed</span>
           </?>
           <?{$i.state == -2}>
-            <a class="button is-small" onclick="run('<$i.project>')" >Run Now</a>
+            <a class="button is-small" href="<.http-root>/build/project/<$i.project>">Build Now</a>
+          </?>
+          <?{$i.state == -3}>
+            <span class="tag is-warning">canceled</span>
           </?>
           </td>
           <td>

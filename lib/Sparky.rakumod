@@ -158,7 +158,7 @@ multi sub get-dbh {
 
 }
 
-sub build-is-running ( $dir ) {
+our sub build-is-running ( $dir ) is export {
 
   my $project = $dir.IO.basename;
 
@@ -174,7 +174,7 @@ sub build-is-running ( $dir ) {
 
       say "{DateTime.now} --- [$project] build already running, pid: $pid SKIP ... ";
 
-      return True
+      return $pid
 
   } else {
 

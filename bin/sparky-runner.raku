@@ -325,14 +325,34 @@ sub MAIN (
     "{$build-cache-dir}/{$trigger.IO.basename}".IO.spurt(%t.perl);
   }
 
+
+  my $sparrowdo-proc;
+
   if $make-report {
     my $report-file = "$reports-dir/build-$build_id.txt";
-    shell("export SP6_FORMAT_COLOR=1 && cd $run-dir && $sparrowdo-run 1>$report-file" ~ ' 2>&1');
+    $sparrowdo-proc = shell("export SP6_FORMAT_COLOR=1 && cd $run-dir && $sparrowdo-run 1>$report-file" ~ ' 2>&1');
   } else{
-    shell("export SP6_FORMAT_COLOR=1 && cd $run-dir && $sparrowdo-run" ~ ' 2>&1');
+    $sparrowdo-proc = shell("export SP6_FORMAT_COLOR=1 && cd $run-dir && $sparrowdo-run" ~ ' 2>&1');
   }
 
+  signal(SIGTERM).tap( { 
+    #exit(0);
+    say "build canceled, kill child process: kill {$sparrowdo-proc.pid}";
 
+    shell "kill {$sparrowdo-proc.pid}";
+    if $make-report {
+      say "BUILD CANCELED $project" ~ '@' ~ $build_id;
+      $dbh.do("UPDATE builds SET state = -3 WHERE id = $build_id");
+      $SPARKY-BUILD-STATE="CANCELED";
+      "{$build-state-dir}/{$job-id}".IO.spurt(-3);
+    } else {
+      say "BUILD CANCELED <$project>";
+      $SPARKY-BUILD-STATE="CANCELED";
+      "{$build-state-dir}/{$job-id}".IO.spurt(-3);
+    }
+    die "buy buy"
+  });
+  
   if $make-report { $dbh.do("UPDATE builds SET state = 1 WHERE id = $build_id"); 
     say "BUILD SUCCEED $project" ~ '@' ~ $build_id; 
     $SPARKY-BUILD-STATE="OK"; 
@@ -342,6 +362,7 @@ sub MAIN (
     $SPARKY-BUILD-STATE="OK";
     "{$build-state-dir}/{$job-id}".IO.spurt(1);
   }
+
 
   CATCH {
 
