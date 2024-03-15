@@ -351,12 +351,19 @@ sub create-cro-app ($pool) {
 
     $dbh.dispose;
 
-    template 'templates/projects.crotmp', {
+    my @q = find-triggers($root);
+    my $st = qx[uptime].chomp.subst(/.* "load"/,"load");
+    my $core = qx[nproc --all].chomp;
 
+    template 'templates/projects.crotmp', {
+      state => $st,
+      core => $core,
+      queue => @q.elems,
       http-root => sparky-http-root(),
       css => css($theme), 
       navbar => navbar(), 
       projects => @projects.sort(*.<project>),
+      theme => "$theme",
 
     }
   
