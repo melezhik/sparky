@@ -2,6 +2,13 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.2.1 2024-03-08T21:20:00Z
+
+  - Fix various issues with template vars
+  - Fix CPU too much consumtion 
+    over web socket on the main page
+  - Bump Sparrow6 deps version
+
 0.2.0 2024-02-04T23:50:00Z
 
   - Huge refactoring of UI,
