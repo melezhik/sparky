@@ -54,7 +54,7 @@ sub create-cro-app ($pool) {
                     #emit($msg);
                   }
                   $i++; sleep(1);
-                  if @chunk.elems and (@chunk.elems >= 1000 or $i <= 10) {
+                  if @chunk.elems > 0 and (@chunk.elems >= 1000 or $i <= 10) {
                     say("ws: send data to client: {@chunk.elems} lines");
                     emit(@chunk.join("\n"));
                     @chunk = ();
