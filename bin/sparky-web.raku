@@ -42,6 +42,7 @@ sub create-cro-app ($pool) {
             whenever $incoming -> $message {
                 my $done = False;
                 my @chunk;
+                my $i = 0;
                 while True  {
                   my @data = "$reports-dir/$project/build-$build_id.txt".IO.lines;
                   for @data[$last_e .. *] -> $l {
@@ -52,7 +53,8 @@ sub create-cro-app ($pool) {
                     @chunk.push($msg);
                     #emit($msg);
                   }
-                  if @chunk.elems >= 1000 {
+                  $i++; sleep(1);
+                  if @chunk.elems and (@chunk.elems >= 1000 or $i <= 10) {
                     say("ws: send data to client: {@chunk.elems} lines");
                     emit(@chunk.join("\n"));
                     @chunk = ();
