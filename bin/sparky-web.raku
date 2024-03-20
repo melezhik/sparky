@@ -41,15 +41,21 @@ sub create-cro-app ($pool) {
             my $last_e = 0;
             whenever $incoming -> $message {
                 my $done = False;
+                my @chunk;
                 while True  {
                   my @data = "$reports-dir/$project/build-$build_id.txt".IO.lines;
                   for @data[$last_e .. *] -> $l {
-                    say("ws: send data to client: $l");
                     my $msg = "{$l}";
                     if sparky-api-token() {
                       $msg.=subst(sparky-api-token(),"*******",:g);
                     }
-                    emit($msg);
+                    @chunk.push($msg);
+                    #emit($msg);
+                  }
+                  if @chunk.elems >= 1000 {
+                    say("ws: send data to client: {@chunk.elems} lines");
+                    emit(@chunk.join("\n"));
+                    @chunk = ();
                   }
                   $last_e = @data.elems;
                   #if trigger-exists($root,$project,$key) {
@@ -93,6 +99,11 @@ sub create-cro-app ($pool) {
                     $done = True;
                     last();
                   }
+                }
+
+                if @chunk {
+                  emit(@chunk.join("\n"));
+                  @chunk = ();
                 }
 
                 if $done {
