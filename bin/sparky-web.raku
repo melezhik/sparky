@@ -103,7 +103,16 @@ sub create-cro-app ($pool) {
                   }
                 }
 
-                if @chunk {
+                my @data = "$reports-dir/$project/build-$build_id.txt".IO.lines;
+                for @data[$last_e .. *] -> $l {
+                  my $msg = "{$l}";
+                  if sparky-api-token() {
+                    $msg.=subst(sparky-api-token(),"*******",:g);
+                  }
+                  @chunk.push($msg);
+                }
+
+                if @chunk.elems > 0 {
                   emit(@chunk.join("\n"));
                   @chunk = ();
                 }
