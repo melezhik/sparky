@@ -2,6 +2,12 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.2.2 2024-03-21T14:30:00Z
+
+  - Fix issue with long reports
+    hanging browsers (now web socket data
+    is send with chunks )
+
 0.2.1 2024-03-08T21:20:00Z
 
   - Fix various issues with template vars
