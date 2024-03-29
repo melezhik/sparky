@@ -968,7 +968,7 @@ sub create-cro-app ($pool) {
 
         set-cookie 'token', user-create-account(%data2<login>,%data2), http-only => True, expires => $date;
 
-        redirect :see-other, "{sparky-http-root()}/?message=user logged in";
+        redirect :see-other, "{sparky-http-root()}/?message=user [{%data2<name>}] logged in";
 
       } else {
 
