@@ -5,8 +5,16 @@
     <&HTML-AND-JAVASCRIPT(.navbar)>
     <nav class="panel is-primary">
       <p class="panel-heading">Projects</p>
+      <?.message>
+        <span class="control">
+          <pre class="notification"><.message></pre>
+        </span>
+      </?>
       <div class="panel-block" id="notification">
         <.state> | <.core> cpu cores | <.queue> builds in queue | theme: <.theme>
+        <?.user>
+          | user: <.user>
+        </?>
       </div>
       <table class="table panel-block is-fullwidth">
         <tr>

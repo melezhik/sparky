@@ -15,6 +15,7 @@
     "Time::Crontab",
     "File::Directory::Tree",
     "cro",
+    "Cro::HTTP:ver<0.8.9+>",
     "Cro::HTTP::Server",
     "Cro::HTTP::Router",
     "Cro::WebApp::Template",
@@ -27,6 +28,7 @@
   "perl" : "6.*",
   "provides" : {
     "Sparky" : "lib/Sparky.rakumod",
+    "Sparky::Security" : "lib/Sparky/Security.rakumod",
     "Sparky::HTML" : "lib/Sparky/HTML.rakumod",
     "Sparky::Job" : "lib/Sparky/Job.rakumod",
     "Sparky::Utils" : "lib/Sparky/Utils.rakumod"

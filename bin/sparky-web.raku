@@ -1,5 +1,6 @@
 use Cro::HTTP::Server;
 use Cro::HTTP::Router;
+use Cro::HTTP::Client;
 use Cro::WebApp::Template;
 use Cro::HTTP::Auth::Basic;
 use Cro::HTTP::Router::WebSocket;
@@ -7,6 +8,7 @@ use Cro::WebSocket::Message;
 
 use DBIish;
 use Sparky;
+use Sparky::Security;
 use Sparky::HTML;
 use Sparky::Utils;
 use YAMLish;
@@ -305,7 +307,7 @@ sub create-cro-app ($pool) {
 
   }
 
-  get -> "", :$theme is cookie = default-theme() {
+  get -> "", :$message, :$user is cookie, :$token is cookie, :$theme is cookie = default-theme() {
   
     my @projects = Array.new;
 
@@ -381,12 +383,13 @@ sub create-cro-app ($pool) {
       state => $st,
       core => $core,
       queue => @q.elems,
+      user => $user,
       http-root => sparky-http-root(),
       css => css($theme), 
-      navbar => navbar(), 
+      navbar => navbar($user, $token), 
       projects => @projects.sort(*.<project>),
       theme => "$theme",
-
+      message => "$message",
     }
   
   }
@@ -867,6 +870,112 @@ sub create-cro-app ($pool) {
       data => parse-markdown("README.md".IO.slurp).to_html,
     }
 
+  }
+
+  #
+  # Authentication methods
+  #
+  
+  get -> 'login' {
+    say "auth: request user identity using {get-sparky-conf()<auth><provider_url>}/authorize ...";
+    redirect :see-other,
+      "{get-sparky-conf()<auth><provider_url>}/authorize?" ~
+      "client_id={get-sparky-conf()<auth><client_id>}&" ~
+      "redirect_uri={get-sparky-conf()<auth><redirect_url>}&" ~
+      "response_type=code&" ~
+      "scope={get-sparky-conf()<auth><scope>}&" ~
+      "state={get-sparky-conf()<auth><state>}&"
+  }
+
+  get -> 'logout', :$user is cookie, :$token is cookie {
+
+    set-cookie 'user', Nil;
+    set-cookie 'token', Nil;
+
+    if ( $user && $token && "{cache-root()}/users/{$user}/tokens/{$token}".IO ~~ :e ) {
+
+      unlink "{cache-root()}/users/{$user}/tokens/{$token}";
+      say "unlink user token - {cache-root()}/users/{$user}/tokens/{$token}";
+
+      if ( $user && $token && "{cache-root()}/users/{$user}/meta.json".IO ~~ :e ) {
+
+        unlink "{cache-root()}/users/{$user}/meta.json";
+        say "unlink user meta - {cache-root()}/users/{$user}/meta.json";
+
+      }
+
+    }
+    redirect :see-other, "{sparky-http-root()}/?message=user logged out";
+
+  } 
+
+  # see https://www.hibit.dev/posts/53/gitlab-oauth20-access-for-web-application
+
+  get -> 'oauth2', :$state, :$code {
+
+      say "auth: request oauth token using {get-sparky-conf()<auth><provider_url>}/token ...";
+      say "auth: state: $state code $code";
+      # die "";
+      my $resp = await Cro::HTTP::Client.post: "{get-sparky-conf()<auth><provider_url>}/token",
+        #headers => [
+        #  "Accept" => "application/json"
+        #],
+        query => { 
+          client_id => get-sparky-conf()<auth><client_id>,
+          client_secret => get-sparky-conf()<auth><client_secret>,
+          code => $code,
+          grant_type => "authorization_code",
+          redirect_uri => get-sparky-conf()<auth><redirect_url>,
+          #code_verifier => $state,
+        };
+
+
+      my $data = await $resp.body-text();
+
+      my %data = from-json($data);
+
+      #say "response recieved - {%data.perl} ... ";
+
+      if %data<access_token>:exists {
+
+        say "auth: token recieved - {%data<access_token>} ... ";
+
+        say "auth: request user data using {get-sparky-conf()<auth><user_api>} ...";
+
+        my $resp = await Cro::HTTP::Client.get: get-sparky-conf()<auth><user_api>,
+          headers => [
+            #"Accept" => "application/vnd.github.v3+json",
+            "Authorization" => "Bearer {%data<access_token>}"
+          ];
+
+        my $data2 = await $resp.body-text();
+
+        say "auth: use data recieved - {$resp.body-text()}";
+  
+        my %data2 = from-json($data2);
+
+        say "auth: {%data2.perl}";
+
+        %data2<access_token> = %data<access_token>;
+
+        %data2<login> = %data2<username>;
+
+        say "set user login to {%data2<username>}";
+
+        my $date = DateTime.now.later(years => 100);
+
+        set-cookie 'user', %data2<login>, http-only => True, expires => $date;
+
+        set-cookie 'token', user-create-account(%data2<login>,%data2), http-only => True, expires => $date;
+
+        redirect :see-other, "{sparky-http-root()}/?message=user logged in";
+
+      } else {
+
+        redirect :see-other, "{sparky-http-root()}/?message=issues with login";
+
+      }
+      
   }
 
   get -> 'js', *@path {

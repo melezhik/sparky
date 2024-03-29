@@ -1,6 +1,7 @@
 unit module Sparky::HTML;
 
 use Sparky;
+use Sparky::Security;
 
 sub css (Mu $theme) is export {
 
@@ -18,7 +19,7 @@ sub css (Mu $theme) is export {
 
 }
 
-sub navbar is export {
+sub navbar (Mu $user?, Mu $token?) is export {
 
   qq:to /HERE/
     <nav class="navbar is-transparent" role="navigation" aria-label="main navigation">
@@ -85,6 +86,9 @@ sub navbar is export {
               <a class="navbar-item" href="{sparky-http-root()}/set-theme?theme=yeti">yeti</a>
             </div>
           </div>
+          <a class="navbar-item" href="{sparky-http-root()}/{check-user($user,$token) ?? 'logout' !! 'login'}">
+            {check-user($user,$token) ?? 'Logout' !! 'Login'}
+          </a>
         </div>
       </div>
     </nav>

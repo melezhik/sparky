@@ -445,3 +445,9 @@ sub job-state ($root,$project,$job-id) is export {
   "{$root}/../work/$project/.states/$job-id".IO.slurp
 
 }
+
+sub cache-root is export {
+
+  "{%*ENV<HOME>}/.sparky/";
+
+}
