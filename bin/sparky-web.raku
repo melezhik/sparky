@@ -728,7 +728,7 @@ sub create-cro-app ($pool) {
 
   get -> 'build', 'project', $project, :$theme is cookie = default-theme(), :$user is cookie, :$token is cookie  {
 
-  redirect :see-other, "{sparky-http-root()}/?message=unauthorized" 
+  redirect :see-other, "{sparky-http-root()}/?message=unauthorized&level=error" 
     unless check-user($user, $token);
 
     my %project-conf = %();
@@ -922,7 +922,7 @@ sub create-cro-app ($pool) {
       }
 
     }
-    redirect :see-other, "{sparky-http-root()}/?message=user logged out";
+    redirect :see-other, "{sparky-http-root()}/?message=user logged out&level=info";
 
   } 
 
@@ -985,11 +985,11 @@ sub create-cro-app ($pool) {
 
         set-cookie 'token', user-create-account(%data2<login>,%data2), http-only => True, expires => $date;
 
-        redirect :see-other, "{sparky-http-root()}/?message=user [{%data2<name>}] logged in";
+        redirect :see-other, "{sparky-http-root()}/?message=user [{%data2<name>}] logged in&level=info";
 
       } else {
 
-        redirect :see-other, "{sparky-http-root()}/?message=issues with login";
+        redirect :see-other, "{sparky-http-root()}/?message=issues with login&level=info";
 
       }
       
