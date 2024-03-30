@@ -5,14 +5,14 @@
     <&HTML-AND-JAVASCRIPT(.navbar)>
     <nav class="panel is-primary">
       <p class="panel-heading">Projects</p>
-      <?.message>
+      <?{.level eq 'info' && .message}>
         <span class="control">
-          <?{$i.level eq "error"}>
-          <pre class="notification has-text-danger"><.message></pre>
-          </?>  
-          <?{$i.level eq "info"}>
           <pre class="notification has-text-success"><.message></pre>
-          </?>  
+        </span>
+      </?>
+      <?{.level eq 'error' && .message}>
+        <span class="control">
+          <pre class="notification has-text-danger"><.message></pre>
         </span>
       </?>
       <div class="panel-block" id="notification">

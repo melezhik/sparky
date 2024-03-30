@@ -321,7 +321,7 @@ sub create-cro-app ($pool) {
 
   }
 
-  get -> "", :$message, :$user is cookie, :$token is cookie, :$theme is cookie = default-theme() {
+  get -> "", :$message, :$level, :$user is cookie, :$token is cookie, :$theme is cookie = default-theme() {
   
     my @projects = Array.new;
 
@@ -404,6 +404,7 @@ sub create-cro-app ($pool) {
       projects => @projects.sort(*.<project>),
       theme => "$theme",
       message => "$message",
+      level => "$level",
     }
   
   }
