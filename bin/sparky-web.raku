@@ -25,8 +25,6 @@ sub create-cro-app ($pool) {
 
   my $application = route { 
 
-  before MyBasicAuth.new;
-
   get -> 'livereport', $project, $build_id, $key {
     web-socket -> $incoming {
         supply {
@@ -307,7 +305,7 @@ sub create-cro-app ($pool) {
 
     set-cookie 'theme', $theme, http-only => True, expires => $date;
 
-    redirect :see-other, "{sparky-http-root()}/?message=theme changed";
+    redirect :see-other, "{sparky-http-root()}/?message=theme changed&level=info";
 
   }
 
