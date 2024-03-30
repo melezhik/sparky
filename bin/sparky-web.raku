@@ -128,7 +128,9 @@ sub create-cro-app ($pool) {
     }
   }
 
-  post -> Cro::HTTP::Auth $session, 'build', 'project', $project {
+  post -> 'build', 'project', $project, :$user is cookie, :$token is cookie {
+
+    forbidden unless check-user($user, $token);
 
     my $id = "{('a' .. 'z').pick(20).join('')}.{$*PID}";
 
@@ -144,7 +146,9 @@ sub create-cro-app ($pool) {
 
   }
 
-  post -> Cro::HTTP::Auth $session, 'build-with-tags', 'project', $project {
+  post -> 'build-with-tags', 'project', $project, :$user is cookie, :$token is cookie {
+
+    forbidden unless check-user($user, $token);
 
     my $id = "{('a' .. 'z').pick(20).join('')}.{$*PID}";
 
@@ -166,7 +170,9 @@ sub create-cro-app ($pool) {
 
   }
 
-  post -> Cro::HTTP::Auth $session, 'build', 'project', $project, $key {
+  post -> 'build', 'project', $project, $key, :$user is cookie, :$token is cookie {
+
+    forbidden unless check-user($user, $token);
 
     if "$root/$project/sparky.yaml".IO ~~ :e or sparky-allow-rebuild-spawn() {
 
@@ -186,7 +192,11 @@ sub create-cro-app ($pool) {
 
   }
 
-  post -> 'queue', :$token? is header  {
+  #
+  # SparkyJobApi methods
+  #
+
+  post -> 'queue', :$token? is header {
 
     if sparky-api-token() and ( ! $token || (sparky-api-token() ne $token) ) {
 
@@ -297,13 +307,17 @@ sub create-cro-app ($pool) {
       } 
   }
 
+  #
+  # End of SparkyJobApi methods
+  #
+
   get -> 'set-theme', :$theme {
 
     my $date = DateTime.now.later(years => 100);
 
     set-cookie 'theme', $theme, http-only => True, expires => $date;
 
-    redirect :see-other, "{sparky-http-root()}/";
+    redirect :see-other, "{sparky-http-root()}/?message=theme changed";
 
   }
 
@@ -712,7 +726,10 @@ sub create-cro-app ($pool) {
     }
   }
 
-  get -> 'build', 'project', $project, :$theme is cookie = default-theme() {
+  get -> 'build', 'project', $project, :$theme is cookie = default-theme(), :$user is cookie, :$token is cookie  {
+
+  redirect :see-other, "{sparky-http-root()}/?message=unauthorized" 
+    unless check-user($user, $token);
 
     my %project-conf = %();
     my %shared-vars = %();
@@ -978,6 +995,14 @@ sub create-cro-app ($pool) {
       
   }
 
+  #
+  # End of Authentication methods
+  #
+
+  #
+  # Static files methods
+  #
+
   get -> 'js', *@path {
     cache-control :public, :max-age(300);
     static 'js', @path;
@@ -987,6 +1012,10 @@ sub create-cro-app ($pool) {
     cache-control :public, :max-age(10);
     static 'css', @path;
   }
+
+  #
+  # End of Static files methods
+  #
 
 }
 
