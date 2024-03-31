@@ -118,8 +118,7 @@
             'Content-Type': 'application/x-www-form-urlencoded'
           },    
           body: new URLSearchParams({
-            "tags": tags_s,
-            "description" : "triggered by user"
+            "tags": tags_s
           })
         }
       )
