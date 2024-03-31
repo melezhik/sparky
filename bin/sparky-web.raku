@@ -117,67 +117,82 @@ sub create-cro-app ($pool) {
   }
 
   post -> 'build', 'project', $project, :$user is cookie, :$token is cookie {
+    
+    if check-user($user, $token) {
+      my $id = "{('a' .. 'z').pick(20).join('')}.{$*PID}";
 
-    forbidden unless check-user($user, $token);
+      my %trigger = %(
+        description =>  "triggered by user $user",
+      );
 
-    my $id = "{('a' .. 'z').pick(20).join('')}.{$*PID}";
+      mkdir "$root/$project/.triggers";
 
-    my %trigger = %(
-      description =>  "triggered by user $user",
-    );
+      spurt "$root/$project/.triggers/$id", %trigger.perl;
 
-    mkdir "$root/$project/.triggers";
+      content 'text/plain', "$id";
 
-    spurt "$root/$project/.triggers/$id", %trigger.perl;
+    } else {
 
-    content 'text/plain', "$id";
+      forbidden 
+
+    }
 
   }
 
   post -> 'build-with-tags', 'project', $project, :$user is cookie, :$token is cookie {
 
-    forbidden unless check-user($user, $token);
+    if check-user($user, $token) {
 
-    my $id = "{('a' .. 'z').pick(20).join('')}.{$*PID}";
+      my $id = "{('a' .. 'z').pick(20).join('')}.{$*PID}";
 
-    request-body  -> (:$tags?, :$description?) {
+      request-body  -> (:$tags?, :$description?) {
 
-      mkdir "$root/$project/.triggers";
+        mkdir "$root/$project/.triggers";
 
-      my %trigger = %(
-        description => $description || "triggered by user",
-        sparrowdo => %(
-          tags => $tags || "",
-        ),
-      );
-      spurt "$root/$project/.triggers/$id", %trigger.perl;
+        my %trigger = %(
+          description => $description || "triggered by user $user",
+          sparrowdo => %(
+            tags => $tags || "",
+          ),
+        );
+        spurt "$root/$project/.triggers/$id", %trigger.perl;
+
+      }
+
+      content 'text/plain', "$id";
+
+    } else {
+
+      forbidden;
 
     }
-
-    content 'text/plain', "$id";
 
   }
 
   post -> 'build', 'project', $project, $key, :$user is cookie, :$token is cookie {
 
-    forbidden unless check-user($user, $token);
+    if check-user($user, $token) {
 
-    if "$root/$project/sparky.yaml".IO ~~ :e or sparky-allow-rebuild-spawn() {
+      if "$root/$project/sparky.yaml".IO ~~ :e or sparky-allow-rebuild-spawn() {
 
-      mkdir "$root/$project/.triggers";
+        mkdir "$root/$project/.triggers";
 
-      my $postfix = "{('a' .. 'z').pick(10).join('')}.{$*PID}";
+        my $postfix = "{('a' .. 'z').pick(10).join('')}.{$*PID}";
 
-      copy "$root/../work/$project/.triggers/$key", "$root/$project/.triggers/{$key}.{$postfix}";
+        copy "$root/../work/$project/.triggers/$key", "$root/$project/.triggers/{$key}.{$postfix}";
 
-      content 'text/plain', "{$key}.{$postfix}";
+        content 'text/plain', "{$key}.{$postfix}";
+
+      } else {
+
+        bad-request 'text/plain', 'rebuilding for project without sparky.yaml is forbidden';
+
+      }
 
     } else {
-
-      bad-request 'text/plain', 'rebuilding for project without sparky.yaml is forbidden';
-
+      forbidden;
     }
-
+    
   }
 
   #
@@ -717,155 +732,162 @@ sub create-cro-app ($pool) {
 
   get -> 'build', 'project', $project, :$theme is cookie = default-theme(), :$user is cookie, :$token is cookie  {
 
-  redirect :see-other, "{sparky-http-root()}/?message=unauthorized&level=error" 
-    unless check-user($user, $token);
+    if check-user($user, $token) {
 
-    my %project-conf = %();
-    my %shared-vars = %();
-    my %host-vars = %();
+      my %project-conf = %();
+      my %shared-vars = %();
+      my %host-vars = %();
 
-    if "$root/$project/sparrowfile".IO ~~ :f {
-      my $project-conf-str; 
-      my %project-conf;
-      my $error;
+      if "$root/$project/sparrowfile".IO ~~ :f {
+        my $project-conf-str; 
+        my %project-conf;
+        my $error;
 
-      if "$root/$project/sparky.yaml".IO ~~ :f {
+        if "$root/$project/sparky.yaml".IO ~~ :f {
 
-        say "project/$project: load sparky.yaml";
-        $project-conf-str = "$root/$project/sparky.yaml".IO.slurp; 
+          say "project/$project: load sparky.yaml";
+          $project-conf-str = "$root/$project/sparky.yaml".IO.slurp; 
 
-        try { %project-conf = load-yaml($project-conf-str) };
+          try { %project-conf = load-yaml($project-conf-str) };
 
-        if $! {
-          $error = $!;
-          say "project/$project: error parsing $root/$project/sparky.yaml";
-          say $error;
+          if $! {
+            $error = $!;
+            say "project/$project: error parsing $root/$project/sparky.yaml";
+            say $error;
+          }
+
         }
 
+        if "$root/../templates/vars.yaml".IO ~~ :f {
+
+          say "templates: load shared vars from vars.yaml";
+
+          try { %shared-vars = load-yaml("$root/../templates/vars.yaml".IO.slurp) };
+
+          if $! {
+            $error ~= $!;
+            say "project/$project: error parsing $root/../templates/var.yaml";
+            say $error;
+          }
+
+        }
+
+        if "$root/../templates/hosts/{hostname()}/vars.yaml".IO ~~ :f {
+
+          say "templates: load host vars from {hostname()}/vars.yaml";
+
+          try { %host-vars = load-yaml("$root/../templates/hosts/{hostname()}/vars.yaml".IO.slurp) };
+
+          if $! {
+            $error ~= $!;
+            say "project/$project: error parsing $root/../templates/hosts/{hostname()}/vars.yaml";
+            say $error;
+          }
+
+        }
+
+        for (%project-conf<vars><> || []) -> $v {
+        if $v<default> {
+          for $v<default> ~~ m:global/"%" (\S+?) "%"/ -> $c {
+            my $var_id = $c[0].Str;
+            # apply vars from host vars first
+            my $host-var = get-template-var(%host-vars<vars>,$var_id);
+            if defined($host-var) {
+              if $host-var.isa(Str) or $host-var.isa(Rat) or $host-var.isa(Int) {
+                $v<default>.=subst("%{$var_id}%",$host-var,:g);
+              } else {
+                $v<default> = $host-var;
+              }
+              say "project/$project: default - insert default %{$var_id}% from host vars";
+              next;
+            }
+            my $shared-var = get-template-var(%shared-vars<vars>,$var_id);
+            if defined($shared-var) {
+              if $shared-var.isa(Str) or $shared-var.isa(Rat) or $shared-var.isa(Int) {
+                $v<default>.=subst("%{$var_id}%",$shared-var,:g);
+              } else {
+                $v<default> = $shared-var;
+              }
+              say "project/$project: default - insert default %{$var_id}% from shared vars";
+            }
+          }
+        }
+        if $v<value> && $v<value>.isa(Str) {
+          for $v<value> ~~ m:global/"%" (\S+?) "%"/ -> $c {
+            my $var_id = $c[0].Str;
+            # apply vars from host vars first
+            my $host-var = get-template-var(%host-vars<vars>,$var_id);
+            if defined($host-var) {
+              if $host-var.isa(Str) or $host-var.isa(Rat) or $host-var.isa(Int)  {
+                $v<value>.=subst("%{$var_id}%",$host-var,:g);
+              } else {
+                $v<value> = $host-var;
+              }
+              say "project/$project: value - insert value %{$var_id}% from host vars";
+              next;
+            }
+            my $shared-var = get-template-var(%shared-vars<vars>,$var_id);
+            if defined($shared-var) {
+            if $shared-var.isa(Str) or $shared-var.isa(Rat) or $shared-var.isa(Int)  {
+              $v<value>.=subst("%{$var_id}%",$shared-var,:g);
+            } else {
+              $v<value> = $shared-var;
+            }
+            say "project/$project: value - insert value %{$var_id}% from shared vars";
+            }
+          }
+        }
+        if $v<values> && $v<values>.isa(Str)   {
+          for $v<values> ~~ m:global/"%" (\S+?) "%"/ -> $c {
+            my $var_id = $c[0].Str;
+            # apply vars from host vars first
+            my $host-var = get-template-var(%host-vars<vars>,$var_id);
+            if defined($host-var) {
+              if $host-var.isa(Str) or $host-var.isa(Rat) or $host-var.isa(Int) {
+                $v<values>.=subst("%{$var_id}%",$host-var,:g);
+              } else {
+                $v<values> = $host-var.isa(List) ?? $host-var.sort !! $host-var;
+              }
+              say "project/$project: values - insert values %{$var_id}% from host vars";
+              next;
+            }
+            my $shared-var = get-template-var(%shared-vars<vars>,$var_id);
+            if defined($shared-var) {
+              if $shared-var.isa(Str) or $shared-var.isa(Rat) or $shared-var.isa(Int) {
+                $v<values>.=subst("%{$var_id}%",$shared-var,:g);
+              } else {
+                $v<values> = $shared-var.isa(List) ?? $shared-var.sort !! $shared-var;
+              }
+              say "project/$project: values - insert values %{$var_id}% from shared vars";
+            }
+          }
+        }
+        }
+
+        template 'templates/build.crotmp', {
+          http-root => sparky-http-root(),
+          sparky-tcp-port => sparky-tcp-port(),
+          css =>css($theme), 
+          navbar => navbar($user, $token), 
+          project => $project, 
+          allow-manual-run => %project-conf<allow_manual_run> || False,
+          disabled => %project-conf<disabled> || False,
+          project-conf-str => $project-conf-str || "configuration not found",
+          project-conf => %project-conf || {},
+          vars => %project-conf<vars> || [],
+          scenario-code => "$root/$project/sparrowfile".IO ~~ :e ?? "$root/$project/sparrowfile".IO.slurp !! "scenario not found", 
+          error => $error
+        }
+      } else {
+        not-found();
       }
 
-      if "$root/../templates/vars.yaml".IO ~~ :f {
-
-        say "templates: load shared vars from vars.yaml";
-
-        try { %shared-vars = load-yaml("$root/../templates/vars.yaml".IO.slurp) };
-
-        if $! {
-          $error ~= $!;
-          say "project/$project: error parsing $root/../templates/var.yaml";
-          say $error;
-        }
-
-      }
-
-      if "$root/../templates/hosts/{hostname()}/vars.yaml".IO ~~ :f {
-
-        say "templates: load host vars from {hostname()}/vars.yaml";
-
-        try { %host-vars = load-yaml("$root/../templates/hosts/{hostname()}/vars.yaml".IO.slurp) };
-
-        if $! {
-          $error ~= $!;
-          say "project/$project: error parsing $root/../templates/hosts/{hostname()}/vars.yaml";
-          say $error;
-        }
-
-      }
-      for (%project-conf<vars><> || []) -> $v {
-       if $v<default> {
-        for $v<default> ~~ m:global/"%" (\S+?) "%"/ -> $c {
-          my $var_id = $c[0].Str;
-          # apply vars from host vars first
-          my $host-var = get-template-var(%host-vars<vars>,$var_id);
-          if defined($host-var) {
-            if $host-var.isa(Str) or $host-var.isa(Rat) or $host-var.isa(Int) {
-              $v<default>.=subst("%{$var_id}%",$host-var,:g);
-            } else {
-              $v<default> = $host-var;
-            }
-            say "project/$project: default - insert default %{$var_id}% from host vars";
-            next;
-          }
-          my $shared-var = get-template-var(%shared-vars<vars>,$var_id);
-          if defined($shared-var) {
-            if $shared-var.isa(Str) or $shared-var.isa(Rat) or $shared-var.isa(Int) {
-              $v<default>.=subst("%{$var_id}%",$shared-var,:g);
-            } else {
-              $v<default> = $shared-var;
-            }
-            say "project/$project: default - insert default %{$var_id}% from shared vars";
-          }
-        }
-       }
-       if $v<value> && $v<value>.isa(Str) {
-        for $v<value> ~~ m:global/"%" (\S+?) "%"/ -> $c {
-          my $var_id = $c[0].Str;
-          # apply vars from host vars first
-          my $host-var = get-template-var(%host-vars<vars>,$var_id);
-          if defined($host-var) {
-            if $host-var.isa(Str) or $host-var.isa(Rat) or $host-var.isa(Int)  {
-              $v<value>.=subst("%{$var_id}%",$host-var,:g);
-            } else {
-              $v<value> = $host-var;
-            }
-            say "project/$project: value - insert value %{$var_id}% from host vars";
-            next;
-          }
-          my $shared-var = get-template-var(%shared-vars<vars>,$var_id);
-          if defined($shared-var) {
-           if $shared-var.isa(Str) or $shared-var.isa(Rat) or $shared-var.isa(Int)  {
-            $v<value>.=subst("%{$var_id}%",$shared-var,:g);
-           } else {
-            $v<value> = $shared-var;
-           }
-           say "project/$project: value - insert value %{$var_id}% from shared vars";
-          }
-        }
-       }
-       if $v<values> && $v<values>.isa(Str)   {
-         for $v<values> ~~ m:global/"%" (\S+?) "%"/ -> $c {
-          my $var_id = $c[0].Str;
-          # apply vars from host vars first
-          my $host-var = get-template-var(%host-vars<vars>,$var_id);
-          if defined($host-var) {
-            if $host-var.isa(Str) or $host-var.isa(Rat) or $host-var.isa(Int) {
-              $v<values>.=subst("%{$var_id}%",$host-var,:g);
-            } else {
-              $v<values> = $host-var.isa(List) ?? $host-var.sort !! $host-var;
-            }
-            say "project/$project: values - insert values %{$var_id}% from host vars";
-            next;
-          }
-          my $shared-var = get-template-var(%shared-vars<vars>,$var_id);
-          if defined($shared-var) {
-            if $shared-var.isa(Str) or $shared-var.isa(Rat) or $shared-var.isa(Int) {
-              $v<values>.=subst("%{$var_id}%",$shared-var,:g);
-            } else {
-              $v<values> = $shared-var.isa(List) ?? $shared-var.sort !! $shared-var;
-            }
-            say "project/$project: values - insert values %{$var_id}% from shared vars";
-          }
-        }
-       }
-      }
-
-      template 'templates/build.crotmp', {
-        http-root => sparky-http-root(),
-        sparky-tcp-port => sparky-tcp-port(),
-        css =>css($theme), 
-        navbar => navbar($user, $token), 
-        project => $project, 
-        allow-manual-run => %project-conf<allow_manual_run> || False,
-        disabled => %project-conf<disabled> || False,
-        project-conf-str => $project-conf-str || "configuration not found",
-        project-conf => %project-conf || {},
-        vars => %project-conf<vars> || [],
-        scenario-code => "$root/$project/sparrowfile".IO ~~ :e ?? "$root/$project/sparrowfile".IO.slurp !! "scenario not found", 
-        error => $error
-      }
     } else {
-      not-found();
+
+      redirect :see-other, "{sparky-http-root()}/?message=unauthorized&level=error";
+
     }
+
   }
   
   get -> 'about', :$theme is cookie = default-theme() {
