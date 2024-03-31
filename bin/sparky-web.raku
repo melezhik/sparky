@@ -944,23 +944,25 @@ sub create-cro-app ($pool) {
       say "auth: request oauth token using {get-sparky-conf()<auth><provider_url>}/token ...";
       say "auth: state: $state code $code";
       # die "";
-      my $resp = await Cro::HTTP::Client.post: "{get-sparky-conf()<auth><provider_url>}/token",
-        #headers => [
-        #  "Accept" => "application/json"
-        #],
-        query => { 
-          client_id => get-sparky-conf()<auth><client_id>,
-          client_secret => get-sparky-conf()<auth><client_secret>,
-          code => $code,
-          grant_type => "authorization_code",
-          redirect_uri => get-sparky-conf()<auth><redirect_url>,
-          #code_verifier => $state,
-        };
 
+      my $id_tmp = "{('a' .. 'z').pick(20).join('')}.{$*PID}";
 
-      my $data = await $resp.body-text();
+      shell qq:to /CURL/;
+      set -x
+      curl -X POST {get-sparky-conf()<auth><provider_url>}/token \\
+      -d client_id={get-sparky-conf()<auth><client_id>} \\
+      -d client_secret={get-sparky-conf()<auth><client_secret>} \\
+      -d code=$code \\
+      -d grant_type=authorization_code \\
+      -d redirect_uri={get-sparky-conf()<auth><redirect_url>} \\
+      -f -L -s -o {cache-root()}/users/token_{$id_tmp}.json
+      CURL
+
+      my $data = "{cache-root()}/users/token_{$id_tmp}.json".IO.slurp;
 
       my %data = from-json($data);
+
+      unlink "{cache-root()}/users/token_{$id_tmp}.json";
 
       #say "response recieved - {%data.perl} ... ";
 
@@ -970,17 +972,21 @@ sub create-cro-app ($pool) {
 
         say "auth: request user data using {get-sparky-conf()<auth><user_api>} ...";
 
-        my $resp = await Cro::HTTP::Client.get: get-sparky-conf()<auth><user_api>,
-          headers => [
-            #"Accept" => "application/vnd.github.v3+json",
-            "Authorization" => "Bearer {%data<access_token>}"
-          ];
+        $id_tmp = "{('a' .. 'z').pick(20).join('')}.{$*PID}";
 
-        my $data2 = await $resp.body-text();
+        shell qq:to /CURL/;
+        curl -H "Authorization: Bearer {%data<access_token>}" \\
+        {get-sparky-conf()<auth><user_api>} \\
+        -f -L -s -o {cache-root()}/users/user_{$id_tmp}.json
+        CURL
 
-        say "auth: use data recieved - {$resp.body-text()}";
+        my $data2 = "{cache-root()}/users/user_{$id_tmp}.json".IO.slurp;
+
+        say "auth: use data recieved - {$data2}";
   
         my %data2 = from-json($data2);
+
+        unlink "{cache-root()}/users/user_{$id_tmp}.json";
 
         say "auth: {%data2.perl}";
 
