@@ -24,10 +24,6 @@ sub check-user (Mu $user, Mu $token) is export {
 
 }
 
-sub access-token (Mu $user) is export {
-  from-json("{cache-root()}/users/{$user}/meta.json".IO.slurp)<access_token>;
-}
-
 sub user-create-account (Mu $user, $data = {}) is export {
 
     mkdir "{cache-root()}/users";
@@ -40,11 +36,13 @@ sub user-create-account (Mu $user, $data = {}) is export {
         to-json($data)
     );
 
+    say "auth: save user data to {cache-root()}/users/{$user}/meta.json";
+
     my $tk = gen-token();
 
     "{cache-root()}/users/$user/tokens/{$tk}".IO.spurt("");
 
-    say "set user token to {$tk}";
+    say "auth: set user token to {$tk}";
 
     return $tk;
 
