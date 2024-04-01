@@ -990,8 +990,6 @@ sub create-cro-app ($pool) {
 
         say "auth: {%data2.perl}";
 
-        %data2<access_token> = %data<access_token>;
-
         %data2<login> = %data2<username>;
 
         say "set user login to {%data2<username>}";
