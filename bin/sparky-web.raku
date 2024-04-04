@@ -118,7 +118,7 @@ sub create-cro-app ($pool) {
 
   post -> 'build', 'project', $project, :$user is cookie, :$token is cookie {
     
-    if check-user($user, $token) {
+    if check-user($user, $token, $project) {
       my $id = "{('a' .. 'z').pick(20).join('')}.{$*PID}";
 
       my %trigger = %(
@@ -141,7 +141,7 @@ sub create-cro-app ($pool) {
 
   post -> 'build-with-tags', 'project', $project, :$user is cookie, :$token is cookie {
 
-    if check-user($user, $token) {
+    if check-user($user, $token, $project) {
 
       my $id = "{('a' .. 'z').pick(20).join('')}.{$*PID}";
 
@@ -171,7 +171,7 @@ sub create-cro-app ($pool) {
 
   post -> 'build', 'project', $project, $key, :$user is cookie, :$token is cookie {
 
-    if check-user($user, $token) {
+    if check-user($user, $token, $project) {
 
       if "$root/$project/sparky.yaml".IO ~~ :e or sparky-allow-rebuild-spawn() {
 
@@ -732,7 +732,7 @@ sub create-cro-app ($pool) {
 
   get -> 'build', 'project', $project, :$theme is cookie = default-theme(), :$user is cookie, :$token is cookie  {
 
-    if check-user($user, $token) {
+    if check-user($user, $token, $project) {
 
       my %project-conf = %();
       my %shared-vars = %();
