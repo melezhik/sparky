@@ -33,15 +33,15 @@ sub check-user (Mu $user, Mu $token, $project?) is export {
           say "check-user: allow user [$user] to build project [$project] on project allow basis";
           return True;
     } elsif $project && 
-      $list<projects><deny><users> && 
-      $list<projects><deny><users>.isa(List) &&
-      $list<projects><deny>.Set{$user} {
+      $list<global><deny><users> && 
+      $list<global><deny><users>.isa(List) &&
+      $list<global><deny>.Set{$user} {
           say "check-user: deny user [$user] build project [$project] on global deny basis";
           return False;
     } elsif $project && 
-      $list<projects><allow><users> && 
-      $list<projects><allow><users>.isa(List) &&
-      $list<projects><allow>.Set{$user} {
+      $list<global><allow><users> && 
+      $list<global><allow><users>.isa(List) &&
+      $list<global><allow>.Set{$user} {
           say "check-user: allow user [$user] build project [$project] on global allow basis";
           return False;
   } else {
