@@ -38,17 +38,20 @@ sub check-user (Mu $user, Mu $token, $project?) is export {
       $list<global><deny>.Set{$user} {
           say "check-user: deny user [$user] build project [$project] on global deny basis";
           return False;
-    } elsif $project && 
+    } elsif !$project && 
       $list<global><allow><users> && 
       $list<global><allow><users>.isa(List) &&
       $list<global><allow>.Set{$user} {
           say "check-user: allow user [$user] build project [$project] on global allow basis";
           return False;
+    } else {
+      say "check-user: allow user [$user] on default basis";
+      return True
+    }
   } else {
-    say "user $user, token - $token - validation failed";
-    return False
+      say "check-user: user $user, token - $token - validation failed";
+      return False
   }
-
 }
 
 sub user-create-account (Mu $user, $data = {}) is export {
