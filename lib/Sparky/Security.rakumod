@@ -49,7 +49,7 @@ sub check-user (Mu $user, Mu $token, $project?) is export {
           say "check-user: allow user [$user] build project [$project] on global allow basis";
           return False;
     } else {
-      say "check-user: allow user [$user] on default basis";
+      say "check-user: allow user [$user] build project [$project] on default basis";
       return True
     }
   } else {
