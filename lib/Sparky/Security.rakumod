@@ -16,6 +16,8 @@ sub check-user (Mu $user, Mu $token, $project?) is export {
 
   return False unless $token;
 
+  my $any-user = "*";
+
   if "{cache-root()}/users/{$user}/tokens/{$token}".IO ~ :f {
     #say "user $user, token - $token - validation passed";
     return True unless $project;
@@ -45,7 +47,10 @@ sub check-user (Mu $user, Mu $token, $project?) is export {
           return True;
     } elsif $list<global><allow><users> && 
       $list<global><allow><users>.isa(List) &&
-      $list<global><allow><users>.Set{$user} {
+      (
+        $list<global><allow><users>.Set{$user} or
+        $list<global><allow><users>.Set{$any-user}
+      ) {
           say "check-user: allow user [$user] build project [$project] on global allow basis";
           return True;
     } else {
