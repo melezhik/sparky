@@ -24,27 +24,29 @@ sub check-user (Mu $user, Mu $token, $project?) is export {
       say "check-user: no ACL found, allow user [$user] on default basis";
       return True 
     }
+    say "check-user: ACL loaded: {$list.perl}";
+    
     if $project && 
        $list<projects>{$project}<deny><users> && 
-       $list<projects>{$project}<deny><users>.isa(List) &&
+       $list<projects>{$project}<deny><users>.isa(Array) &&
        $list<projects>{$project}<deny><users>.Set{$user} {
           say "check-user: deny user [$user] build project [$project] on project deny basis";
           return False;
     } elsif $project && 
       $list<projects>{$project}<allow><users> &&
-      $list<projects>{$project}<allow><users>.isa(List) &&
+      $list<projects>{$project}<allow><users>.isa(Array) &&
       $list<projects>{$project}<allow><users>.Set{$user} {
           say "check-user: allow user [$user] to build project [$project] on project allow basis";
           return True;
     } elsif
       $list<global><deny><users> && 
-      $list<global><deny><users>.isa(List) &&
+      $list<global><deny><users>.isa(Array) &&
       $list<global><deny><users>.Set{$user} {
           say "check-user: deny user [$user] build project [$project] on global deny basis";
           return False;
     } elsif 
       $list<global><allow><users> && 
-      $list<global><allow><users>.isa(List) &&
+      $list<global><allow><users>.isa(Array) &&
       $list<global><allow><users>.Set{$user} {
           say "check-user: allow user [$user] build project [$project] on global allow basis";
           return False;
