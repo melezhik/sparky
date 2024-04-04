@@ -1,6 +1,8 @@
 unit module Sparky::Security;
 use Sparky;
+use Sparky::Utils;
 use JSON::Fast;
+use YAMLish;
 
 sub gen-token is export {
 
@@ -8,7 +10,7 @@ sub gen-token is export {
 
 }
 
-sub check-user (Mu $user, Mu $token) is export {
+sub check-user (Mu $user, Mu $token, $project?) is export {
 
   return False unless $user;
 
@@ -16,7 +18,32 @@ sub check-user (Mu $user, Mu $token) is export {
 
   if "{cache-root()}/users/{$user}/tokens/{$token}".IO ~ :f {
     #say "user $user, token - $token - validation passed";
-    return True
+    my $list =  load-acl-list();
+    return True unless $list; # in case no ACL, allow all authenticated users to do all
+    if $project && 
+       $list<projects>{$project}<deny><users> && 
+       $list<projects>{$project}<deny><users>.isa(List) &&
+       $list<projects>{$project}<deny>.Set{$user} {
+          say "check-user: deny user [$user] build project [$project] on project deny basis";
+          return False;
+    } elsif $project && 
+      $list<projects>{$project}<allow><users> &&
+      $list<projects>{$project}<allow><users>.isa(List) &&
+      $list<projects>{$project}<allow>.Set{$user} {
+          say "check-user: allow user [$user] to build project [$project] on project allow basis";
+          return True;
+    } elsif $project && 
+      $list<projects><deny><users> && 
+      $list<projects><deny><users>.isa(List) &&
+      $list<projects><deny>.Set{$user} {
+          say "check-user: deny user [$user] build project [$project] on global deny basis";
+          return False;
+    } elsif $project && 
+      $list<projects><allow><users> && 
+      $list<projects><allow><users>.isa(List) &&
+      $list<projects><allow>.Set{$user} {
+          say "check-user: allow user [$user] build project [$project] on global allow basis";
+          return False;
   } else {
     say "user $user, token - $token - validation failed";
     return False
@@ -45,5 +72,20 @@ sub user-create-account (Mu $user, $data = {}) is export {
     say "auth: set user token to {$tk}";
 
     return $tk;
+
+}
+
+
+sub load-acl-list {
+
+  if "{%*ENV<HOME>}/.sparky/acl/hosts/{hostname()}/list.yaml".IO ~~ :e {
+    say "acl: load acl from {%*ENV<HOME>}/.sparky/acl/hosts/{hostname()}/list.yaml";
+    return load-yaml("{%*ENV<HOME>}/.sparky/acl/hosts/{hostname()}/list.yaml".IO.slurp);
+  } elsif "{%*ENV<HOME>}/.sparky/acl/list.yaml".IO ~~ :e {
+    say "acl: load acl from {%*ENV<HOME>}/.sparky/acl/list.yaml";
+    return load-yaml("{%*ENV<HOME>}/.sparky/acl/list.yaml".IO.slurp);
+  } else {
+    return
+  }
 
 }
