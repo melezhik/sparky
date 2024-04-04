@@ -19,7 +19,11 @@ sub check-user (Mu $user, Mu $token, $project?) is export {
   if "{cache-root()}/users/{$user}/tokens/{$token}".IO ~ :f {
     #say "user $user, token - $token - validation passed";
     my $list =  load-acl-list();
-    return True unless $list; # in case no ACL, allow all authenticated users to do all
+    # in case no ACL, allow all authenticated users to do all
+    unless $list {
+      say "check-user: no ACL found, allow user [$user] on default basis";
+      return True 
+    }
     if $project && 
        $list<projects>{$project}<deny><users> && 
        $list<projects>{$project}<deny><users>.isa(List) &&
