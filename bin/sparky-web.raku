@@ -947,6 +947,8 @@ sub create-cro-app ($pool) {
 
       my $id_tmp = "{('a' .. 'z').pick(20).join('')}.{$*PID}";
 
+      mkdir "{cache-root()}/users/";
+
       shell qq:to /CURL/;
       set -x
       curl -X POST {get-sparky-conf()<auth><provider_url>}/token \\
