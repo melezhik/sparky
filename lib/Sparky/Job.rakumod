@@ -55,7 +55,12 @@ sub job-queue-fs (%config,%trigger,$sparrowfile,$sparrowdo-config) is export {
 
   # override sparrowdo tags by %config<tags>
 
-  %trigger<sparrowdo><tags> = %config<tags>.map({"{$_.key}={$_.value}"}).join(",") if %config<tags>;
+
+  if %config<tags> {
+    %trigger<sparrowdo><tags> = %config<tags>.map({
+      "{$_.key}={$_.value.subst(/','/,'___comma___',:g).subst(/'='/,'___eq___',:g)}"
+    }).join(","); 
+  }
 
   %trigger<sparrowdo><conf> = "config.pl6";
 
