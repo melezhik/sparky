@@ -218,6 +218,7 @@ sub create-cro-app ($pool) {
           CATCH {
             default {
               my $err = "Error {.^name}, : , {.Str}";
+              say ">> queue: error: $err";
               $res = to-json({ error => $err });
             }
           }
@@ -225,6 +226,7 @@ sub create-cro-app ($pool) {
 
       }
 
+      say ">> queue: res: $res";
       content 'application/json', $res;
 
     }

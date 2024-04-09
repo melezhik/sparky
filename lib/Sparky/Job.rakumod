@@ -59,6 +59,7 @@ sub job-queue-fs (%config,%trigger,$sparrowfile,$sparrowdo-config) is export {
     %trigger<sparrowdo><tags> = %config<tags>.map({
       my $k = $_.key;
       my $v = $_.value;
+      $v = "" unless defined($v);
       my $v-safe = $v.subst(',',"___comma___",:g).subst('=','___eq___',:g);
       "{$k}={$v-safe}"
     }).join(","); 
