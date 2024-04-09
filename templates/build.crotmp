@@ -113,7 +113,7 @@
       <?{ $i.type eq 'textarea' or $i.type eq 'input' or $i.type eq 'password'}>
       var v = e.value;
       var v_safe = v.replace(/,/g,"___comma___");
-      v_safe = v_safe.replace(/,/g,"___eq___");
+      v_safe = v_safe.replace(/=/g,"___eq___");
       tags.push(`${t}=${v_safe}`);
       console.log(`${t}: ${v}`);
       </?>
