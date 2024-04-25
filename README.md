@@ -129,6 +129,11 @@ auth:
   state: hellosparky # this is optional
 ```
 
+## ACL
+
+Sparky ACL allows to create access control lists to manage role based access to Sparky resources,
+see https://github.com/melezhik/sparky/blob/master/docs/acl.md
+
 ## Setting web app tcp parameters
 
 By default web app listens on host `0.0.0.0`, port `4000`, to configure web app tcp host and port 
@@ -389,7 +394,7 @@ defined at shared variables common template (`SPARKY_ROOT/templates/vars.yaml`)
 
 ---
 
-If required, one could use nested varibales for template variables as well:
+If required, one could use nested variables for template variables as well:
 
 `vars.yaml`
 
@@ -412,7 +417,7 @@ vars:
 ## Templating tag variables
 
 The same way as with UI variables 
-one can template sparrowdo tag varibales in `sparky.yaml`:
+one can template sparrowdo tag variables in `sparky.yaml`:
 
 ```
 sparrowdo:

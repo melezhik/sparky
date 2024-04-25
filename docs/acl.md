@@ -1,6 +1,6 @@
 # Sparky ACL
 
-Sparky ACL - access contorl lists, role based access to Sparky resources
+Sparky ACL allows to create access control lists to manage role based access to Sparky resources
 
 # Creation of ACL
 
@@ -29,7 +29,8 @@ and allow _all_ users run jobs hello-world and service-logs.
 
 # ACL flow
 
-ACL flow is stict, if an action is not allowed explicitely it's implecettely deined, for example in this case:
+ACL flow is strict, if an action is not allowed explicitly it's implicitly denied, 
+for example in this case:
 
 ```yaml
 global:
@@ -43,7 +44,7 @@ All users besides alexey.melezhik and john.brown are denied to run any project
 
 # User IDs
 
-User IDs are supplied by oauth provider during authenctiation phase,
+User IDs are supplied by oauth provider during authentication phase,
 usually those are user accounts in oauth external server.
 
 For example, in case of GitLab oauth provider user IDs are gitlab accounts
@@ -61,11 +62,11 @@ acl/hosts/host-bar/list.yaml
 acl/hosts/host-baz/list.yaml
 ```
 
-Host specfic ACL overrided default ACL and has the same DSL to describe access rules.
+Host specific ACL override default ACL and has the same DSL to describe access rules.
 
 # Explicit deny
 
-To explicitely deny a user from a job execution, use deny directive:
+To explicitly deny a user from a job execution, use deny directive:
 
 ```
 projects:
@@ -79,3 +80,10 @@ projects:
 ```
 
 This code code allows all users to execute hello-world sparky project, besides a user with login bad_guy
+
+## Access to everyone
+
+To allow any user to run run any resources just remove any list.yaml files from Sparky configuration
+
+
+
