@@ -4,7 +4,7 @@ Sparky ACL allows to create access control lists to manage role based access to 
 
 # Creation of ACL
 
-Create list.yml file located at `SPARKY_ROOT/acl/list.yaml` path, for example:
+Create list.yaml file located at `SPARKY_ROOT/acl/list.yaml` path, for example:
 
 ```yaml
 global:
