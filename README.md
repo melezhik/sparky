@@ -142,8 +142,7 @@ auth:
 
 ## ACL
 
-Sparky ACL allows to create access control lists to manage role based access to Sparky resources,
-see https://github.com/melezhik/sparky/blob/master/docs/acl.md
+Sparky ACL allows to create access control lists to manage role based access to Sparky resources, see (docs/acl.md)[https://github.com/melezhik/sparky/blob/master/docs/acl.md]
 
 
 # Creating first sparky project
