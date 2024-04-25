@@ -19,9 +19,9 @@ projects:
       users:
         - "*"
   service-logs:
-          allow:
-              users:
-                  - "*"
+    allow:
+      users:
+        - "*"
 ```
 
 In this example we allow users alexey.melezhik and john.brown to run run any jobs,
