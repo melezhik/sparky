@@ -109,15 +109,25 @@ $ nano utils/install-sparky-web-systemd.raku # change working directory, user an
 $ sparrowdo --sparrowfile=utils/install-sparky-web-systemd.raku --no_sudo --localhost
 ```
 
-## HTTP Basic authentication
+## OAUTH 2.0 authentication
 
-Sparky web server _comes with_ http basic authentication.
+Sparky web server _comes with_ [oauth](https://oauth.net/2/) authentication of out of the box
 
-By default "user" and "password" used for credentials, to override
-default values, set following  parameters in  `~/sparky.yaml` configuration file:
+To enable authentication add following settings to `~/sparky.yaml` configuration file, 
+example for Gitlab provider:
 
-    SPARKY_HTTP_BASIC_USER: user
-    SPARKY_HTTP_BASIC_PASSWORD: paSsworD
+```yaml
+auth:
+  provider: gitlab
+  provider_url: https://gitlab.host/oauth # URL for authentication
+  redirect_url: http://sparky.host:4000/oauth2 # should be something your_sparky_host/oauth2
+  user_api: https://gitlab.host/api/v4/user # API to fetch user data, example for gitlab
+  scope: "openid email read_user" # scopes enabled for oauth token
+  # generate client_id, client_secret when create sparky application in gitlab 
+  client_id: aaabbbcccdddeeefffggghhhiiijjjkkklllmmmnnnooopppqqqrrrssstttuuuvvvww
+  client_secret: 01020102aa01020102bb01020102cc01020102dddd00ee00ff0010101ff0101f
+  state: hellosparky # this is optional
+```
 
 ## Setting web app tcp parameters
 

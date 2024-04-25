@@ -12,6 +12,14 @@ sub gen-token is export {
 
 sub check-user (Mu $user, Mu $token, $project?) is export {
 
+  # anonymous access allowed when there is no
+  # auth section sparky config:
+  
+  return True unless get-sparky-conf()<auth>;
+
+  # anonymous access denyed when there is
+  # auth section sparky config:
+
   return False unless $user;
 
   return False unless $token;
