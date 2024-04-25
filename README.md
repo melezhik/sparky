@@ -109,6 +109,17 @@ $ nano utils/install-sparky-web-systemd.raku # change working directory, user an
 $ sparrowdo --sparrowfile=utils/install-sparky-web-systemd.raku --no_sudo --localhost
 ```
 
+## Setting web app tcp parameters
+
+By default web app listens on host `0.0.0.0`, port `4000`, to configure web app tcp host and port set `SPARKY_HOST` and  `SPARKY_TCP_PORT` variables in `~/sparky.yaml`
+
+```yaml
+SPARKY_HOST: 127.0.0.1
+SPARKY_TCP_PORT: 5000 
+```
+
+# Security
+
 ## OAUTH 2.0 authentication
 
 Sparky web server _comes with_ [oauth](https://oauth.net/2/) authentication of out of the box
@@ -134,15 +145,6 @@ auth:
 Sparky ACL allows to create access control lists to manage role based access to Sparky resources,
 see https://github.com/melezhik/sparky/blob/master/docs/acl.md
 
-## Setting web app tcp parameters
-
-By default web app listens on host `0.0.0.0`, port `4000`, to configure web app tcp host and port 
-set `SPARKY_HOST` and  `SPARKY_TCP_PORT` variables in `~/sparky.yaml`
-
-```yaml
-SPARKY_HOST: 127.0.0.1
-SPARKY_TCP_PORT: 5000 
-```
 
 # Creating first sparky project
 
