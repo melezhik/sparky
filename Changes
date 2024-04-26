@@ -2,8 +2,11 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.2.3 2024-04-26T16:30:00Z
+
   - Change authentication protocol
     to oauth 2.0
+  - Bump Sparrow6 version
     
 0.2.2 2024-03-21T14:30:00Z
 
