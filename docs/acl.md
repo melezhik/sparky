@@ -19,9 +19,9 @@ projects:
       users:
         - "*"
   service-logs:
-          allow:
-              users:
-                  - "*"
+    allow:
+      users:
+        - "*"
 ```
 
 In this example we allow users alexey.melezhik and john.brown to run run any jobs,
@@ -62,7 +62,7 @@ acl/hosts/host-bar/list.yaml
 acl/hosts/host-baz/list.yaml
 ```
 
-Host specific ACL override default ACL and has the same DSL to describe access rules.
+Host specific ACL overrides default ACL and has the same semantic.
 
 # Explicit deny
 
@@ -79,11 +79,8 @@ projects:
         - bad_guy
 ```
 
-This code code allows all users to execute hello-world sparky project, besides a user with login bad_guy
+This code allows all users to execute hello-world sparky project, besides a user with a login bad_guy
 
 ## Access to everyone
 
-To allow any user to run run any resources just remove any list.yaml files from Sparky configuration
-
-
-
+To allow any user to run any resources just remove any list.yaml files from Sparky configuration
