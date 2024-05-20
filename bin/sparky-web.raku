@@ -316,17 +316,7 @@ sub create-cro-app ($pool) {
   # End of SparkyJobApi methods
   #
 
-  get -> 'set-theme', :$theme {
-
-    my $date = DateTime.now.later(years => 100);
-
-    set-cookie 'theme', $theme, http-only => True, expires => $date;
-
-    redirect :see-other, "{sparky-http-root()}/?message=theme changed&level=info";
-
-  }
-
-  get -> "", :$message, :$level, :$user is cookie, :$token is cookie, :$theme is cookie = default-theme() {
+  get -> "", :$message, :$level, :$user is cookie, :$token is cookie {
   
     my @projects = Array.new;
 
@@ -404,17 +394,16 @@ sub create-cro-app ($pool) {
       queue => @q.elems,
       user => $user,
       http-root => sparky-http-root(),
-      css => css($theme), 
+      css => css(), 
       navbar => navbar($user, $token), 
       projects => @projects.sort(*.<project>),
-      theme => "$theme",
       message => "$message",
       level => "$level",
     }
   
   }
   
-  get -> 'builds', :$theme is cookie = default-theme(), :$user is cookie, :$token is cookie {
+  get -> 'builds', :$user is cookie, :$token is cookie {
 
     my $dbh = $pool ?? $pool.get-connection() !! get-dbh();
 
@@ -434,7 +423,7 @@ sub create-cro-app ($pool) {
   
     template 'templates/builds.crotmp', {
 
-      css => css($theme), 
+      css => css(), 
       navbar => navbar($user,$token),
       http-root => sparky-http-root(),
       builds => @rows,
@@ -443,15 +432,15 @@ sub create-cro-app ($pool) {
  
   }
   
-  get -> 'queue', :$theme is cookie = default-theme(), :$user is cookie, :$token is cookie {
+  get -> 'queue', :$user is cookie, :$token is cookie {
     template 'templates/queue.crotmp', {
-      css => css($theme), 
+      css => css(), 
       navbar => navbar($user,$token), 
       builds => find-triggers($root)
     }
   }
 
-  get -> 'livequeue', :$theme is cookie = default-theme() {
+  get -> 'livequeue' {
 
     web-socket -> $incoming {
       supply {
@@ -461,7 +450,7 @@ sub create-cro-app ($pool) {
             my @q = find-triggers($root);
             my $st = qx[uptime].chomp.subst(/.* "load"/,"load");
             my $core = qx[nproc --all].chomp;
-            emit "$st | $core cpu cores | {@q.elems} builds in queue | theme: {$theme}";
+            emit "$st | $core cpu cores | {@q.elems} builds in queue";
             sleep(10);
           }
           if $done {
@@ -519,7 +508,7 @@ sub create-cro-app ($pool) {
 
   }
 
-  get -> 'report', $project, $build_id, :$theme is cookie = default-theme(),:$user is cookie, :$token is cookie {
+  get -> 'report', $project, $build_id,:$user is cookie, :$token is cookie {
 
     if "$reports-dir/$project/build-$build_id.txt".IO ~~ :f {
 
@@ -552,7 +541,7 @@ sub create-cro-app ($pool) {
       }
 
       template 'templates/report2.crotmp', {
-        css => css($theme), 
+        css => css(), 
         navbar => navbar($user,$token), 
         http-root => sparky-http-root(),
         sparky-tcp-port => sparky-tcp-port(),
@@ -696,7 +685,7 @@ sub create-cro-app ($pool) {
 
   }
 
-  get -> 'project', $project, :$theme is cookie = default-theme(), :$user is cookie, :$token is cookie {
+  get -> 'project', $project, :$user is cookie, :$token is cookie {
     if "$root/$project/sparrowfile".IO ~~ :f {
       my $project-conf-str; 
       my %project-conf;
@@ -718,7 +707,7 @@ sub create-cro-app ($pool) {
 
       template 'templates/project.crotmp', {
         http-root => sparky-http-root(),
-        css =>css($theme), 
+        css =>css(), 
         navbar => navbar($user, $token), 
         project => $project, 
         allow-manual-run => %project-conf<allow_manual_run> || False,
@@ -732,7 +721,7 @@ sub create-cro-app ($pool) {
     }
   }
 
-  get -> 'build', 'project', $project, :$theme is cookie = default-theme(), :$user is cookie, :$token is cookie  {
+  get -> 'build', 'project', $project, :$user is cookie, :$token is cookie  {
 
     if check-user($user, $token, $project) {
 
@@ -869,7 +858,7 @@ sub create-cro-app ($pool) {
         template 'templates/build.crotmp', {
           http-root => sparky-http-root(),
           sparky-tcp-port => sparky-tcp-port(),
-          css =>css($theme), 
+          css =>css(), 
           navbar => navbar($user, $token), 
           project => $project, 
           allow-manual-run => %project-conf<allow_manual_run> || False,
@@ -892,10 +881,10 @@ sub create-cro-app ($pool) {
 
   }
   
-  get -> 'about', :$theme is cookie = default-theme() {
+  get -> 'about' {
   
     template 'templates/about.crotmp', {
-      css => css($theme), 
+      css => css(), 
       navbar => navbar(), 
       data => parse-markdown("README.md".IO.slurp).to_html,
     }

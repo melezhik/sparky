@@ -16,7 +16,7 @@
         </span>
       </?>
       <div class="panel-block" id="notification">
-        <.state> | <.core> cpu cores | <.queue> builds in queue | theme: <.theme>
+        <.state> | <.core> cpu cores | <.queue> builds in queue
         <?.user>
           | user: <.user>
         </?>
