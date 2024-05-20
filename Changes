@@ -2,6 +2,9 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+  - Switch to bulma 1.0,
+    remove themes 
+
 0.2.3 2024-04-26T16:30:00Z
 
   - Change authentication protocol

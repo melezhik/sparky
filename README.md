@@ -1584,23 +1584,9 @@ $ raku db-init.raku
 
 That is it, now sparky runs under MySQL!
 
-# Change UI theme
+# CSS
 
-Sparky uses [Bulma](https://bulma.io/) as a CSS framework, you can easily change the theme
-through sparky configuration file:
-
-```bash
-$ nano ~/sparky.yaml
-```
-
-And choose your theme:
-
-```yaml
-ui:
-  theme: cosmo
-```
-
-The list of available themes is on [https://jenil.github.io/bulmaswatch/](https://jenil.github.io/bulmaswatch/)
+Sparky uses [Bulma](https://bulma.io/) as CSS framework
 
 # HTTP API
 
