@@ -291,11 +291,12 @@ sub schedule-build ( $dir, %opts? ) is export {
         description => 'triggered by cron'
       )";
 
-    } else {
+    } elsif %config<scm>  {
+      say "{DateTime.now} --- [$project] build is skipped by cron, by will be tried on scm basis";
+    } else  {
       say "{DateTime.now} --- [$project] build is skipped by cron: $crontab ... ";
       return;
     }
-
   } elsif %config<scm> {
 
     my $scm-url = %config<scm><url>;
