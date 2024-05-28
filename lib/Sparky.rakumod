@@ -260,7 +260,7 @@ sub schedule-build ( $dir, %opts? ) is export {
 
   }
 
-  # check cron jobs
+  # schedulling cron jobs
 
   if %config<crontab> and ! %*ENV<SPARKY_SKIP_CRON> and ! %opts<skip-cron> {
 
@@ -290,14 +290,17 @@ sub schedule-build ( $dir, %opts? ) is export {
       spurt "$dir/.triggers/$id", "%(
         description => 'triggered by cron'
       )";
-
     } elsif %config<scm>  {
       say "{DateTime.now} --- [$project] build is skipped by cron, by will be tried on scm basis";
     } else  {
       say "{DateTime.now} --- [$project] build is skipped by cron: $crontab ... ";
       return;
     }
-  } elsif %config<scm> {
+  } 
+
+  # schedulling scm jobs
+
+  if %config<scm> {
 
     my $scm-url = %config<scm><url>;
 
@@ -370,8 +373,12 @@ sub schedule-build ( $dir, %opts? ) is export {
 
     return;
 
-  } elsif !%config<crontab>  {
-      say "{DateTime.now} --- [$project] crontab entry not found, consider manual start or set up cron later, SKIP ... ";
+  } 
+
+  # handle other jobs (none crontab and scm)
+
+  if !%config<crontab> && !%config<scm> {
+      say "{DateTime.now} --- [$project] neither crontab  nor scm setup found, consider manual start, SKIP ... ";
       return;
   }
 
