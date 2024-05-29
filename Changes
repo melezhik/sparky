@@ -2,8 +2,6 @@ Revision history for Sparky
 
 {{$NEXT}}
 
-0.2.4 2024-05-30T00:10:00Z
-
   - Switch to bulma 1.0,
     remove custom themes
   - Add default authentication
