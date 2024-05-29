@@ -896,14 +896,27 @@ sub create-cro-app ($pool) {
   #
   
   get -> 'login' {
-    say "auth: request user identity using {get-sparky-conf()<auth><provider_url>}/authorize ...";
-    redirect :see-other,
-      "{get-sparky-conf()<auth><provider_url>}/authorize?" ~
-      "client_id={get-sparky-conf()<auth><client_id>}&" ~
-      "redirect_uri={get-sparky-conf()<auth><redirect_url>}&" ~
-      "response_type=code&" ~
-      "scope={get-sparky-conf()<auth><scope>}&" ~
-      "state={get-sparky-conf()<auth><state>}&"
+    if sparky-auth()<default> {
+      say "auth: default is enabled, redirect to internal endpoint ...";
+      redirect :see-other, "/default_login";
+    } else {
+      say "auth: request user identity using {get-sparky-conf()<auth><provider_url>}/authorize ...";
+      redirect :see-other,
+        "{get-sparky-conf()<auth><provider_url>}/authorize?" ~
+        "client_id={get-sparky-conf()<auth><client_id>}&" ~
+        "redirect_uri={get-sparky-conf()<auth><redirect_url>}&" ~
+        "response_type=code&" ~
+        "scope={get-sparky-conf()<auth><scope>}&" ~
+        "state={get-sparky-conf()<auth><state>}&"
+    }
+  }
+
+  get -> 'default_login' {
+    template 'templates/default_login.crotmp', {
+      http-root => sparky-http-root(),
+      css =>css(), 
+      navbar => navbar(Nil, Nil), 
+    }
   }
 
   get -> 'logout', :$user is cookie, :$token is cookie {

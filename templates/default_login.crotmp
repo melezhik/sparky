@@ -1,0 +1,30 @@
+<&HTML-AND-JAVASCRIPT(.css)>
+    <head>
+      <title>~SPARKY CI WEB~ | Build project: <.project> </title>
+    </head>
+    <&HTML-AND-JAVASCRIPT(.navbar)>
+    <div class="panel is-primary">
+      <div class="panel-heading">
+       <h3 class="panel-title">
+          Login
+       </h3>
+      </div>
+      <div class="panel-block" id="notification"></div>
+      <div class="panel-block">
+        <form method="post" id="form01">
+          <div class="field">
+            <div class="control">
+              <label class="label">login</label>
+              <input class="input is-success" type="text" name="login" placeholder="login">
+              <label class="label">password</label>
+              <input class="input is-success" type="password" name="password">
+            </div>
+            <hr>
+            <div class="field is-grouped">
+              <div class="control">
+              <button class="button is-link">Submit</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>

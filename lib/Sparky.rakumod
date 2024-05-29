@@ -42,6 +42,12 @@ sub sparky-api-token is export {
 
 }
 
+sub sparky-auth is export {
+
+  get-sparky-conf()<auth> || {};
+
+}
+
 sub sparky-with-flapper is export {
 
   ! ( get-sparky-conf()<worker><flappers_off> || False ) &&
