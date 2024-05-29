@@ -1,10 +1,10 @@
 # Auth
 
-Sparky authentiction protocols
+Sparky authentication protocols
 
 # Synopsis
 
-Sparky comes with two authentiction protocols:
+Sparky comes with two authentication protocols:
 
 * Default 
 
@@ -12,7 +12,7 @@ Sparky comes with two authentiction protocols:
 
 ## Default protocol
 
-Default protocl is a simples one, when you don't need anything fancy,
+Default protocol is a simplest one, when you don't need anything fancy,
 but authentication, just add these section to your `~/.sparky.yaml` file:
 
 ```yaml
@@ -50,7 +50,7 @@ projects:
 For more secure scenario use  [oauth2](https://oauth.net/2/) authentication 
 protocol.
 
-To enable ouath2, add following section to `~/sparky.yaml` configuration file (
+To enable oauth2, add following section to `~/sparky.yaml` configuration file (
 example for Gitlab provider):
 
 ```yaml
