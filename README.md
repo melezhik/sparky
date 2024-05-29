@@ -124,7 +124,7 @@ SPARKY_TCP_PORT: 5000
 
 Sparky web server _comes with_ two authentication protocols,
 choose proper one depending on your requirements, see details
-at [docs/acl.md](https://github.com/melezhik/sparky/blob/master/docs/acl.md)
+at [docs/auth.md](https://github.com/melezhik/sparky/blob/master/docs/auth.md)
 
 ## ACL
 
