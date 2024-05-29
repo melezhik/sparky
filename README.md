@@ -120,30 +120,15 @@ SPARKY_TCP_PORT: 5000
 
 # Security
 
-## OAUTH 2.0 authentication
+## Authentication
 
-Sparky web server _comes with_ [oauth](https://oauth.net/2/) authentication of out of the box
-
-To enable authentication add following settings to `~/sparky.yaml` configuration file, 
-example for Gitlab provider:
-
-```yaml
-auth:
-  provider: gitlab
-  provider_url: https://gitlab.host/oauth # URL for authentication
-  redirect_url: http://sparky.host:4000/oauth2 # should be something your_sparky_host/oauth2
-  user_api: https://gitlab.host/api/v4/user # API to fetch user data, example for gitlab
-  scope: "openid email read_user" # scopes enabled for oauth token
-  # generate client_id, client_secret when create sparky application in gitlab 
-  client_id: aaabbbcccdddeeefffggghhhiiijjjkkklllmmmnnnooopppqqqrrrssstttuuuvvvww
-  client_secret: 01020102aa01020102bb01020102cc01020102dddd00ee00ff0010101ff0101f
-  state: hellosparky # this is optional
-```
+Sparky web server _comes with_ two authentication protocols,
+choose proper one depending on your requirements, see details
+at [docs/acl.md](https://github.com/melezhik/sparky/blob/master/docs/acl.md)
 
 ## ACL
 
-Sparky ACL allows to create access control lists to manage role based access to Sparky resources, see (docs/acl.md)[https://github.com/melezhik/sparky/blob/master/docs/acl.md]
-
+Sparky ACL allows to create access control lists to manage role based access to Sparky resources, see [docs/acl.md](https://github.com/melezhik/sparky/blob/master/docs/acl.md)
 
 # Creating first sparky project
 
