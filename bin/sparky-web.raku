@@ -900,23 +900,60 @@ sub create-cro-app ($pool) {
       say "auth: default is enabled, redirect to internal endpoint ...";
       redirect :see-other, "/default_login";
     } else {
-      say "auth: request user identity using {get-sparky-conf()<auth><provider_url>}/authorize ...";
+      say "auth: request user identity using {sparky-auth()<provider_url>}/authorize ...";
       redirect :see-other,
-        "{get-sparky-conf()<auth><provider_url>}/authorize?" ~
-        "client_id={get-sparky-conf()<auth><client_id>}&" ~
-        "redirect_uri={get-sparky-conf()<auth><redirect_url>}&" ~
+        "{sparky-auth()<provider_url>}/authorize?" ~
+        "client_id={sparky-auth()<client_id>}&" ~
+        "redirect_uri={sparky-auth()<redirect_url>}&" ~
         "response_type=code&" ~
-        "scope={get-sparky-conf()<auth><scope>}&" ~
-        "state={get-sparky-conf()<auth><state>}&"
+        "scope={sparky-auth()<scope>}&" ~
+        "state={sparky-auth()<state>}&"
     }
   }
 
-  get -> 'default_login' {
+  get -> 'default_login', :$message, :$level {
     template 'templates/default_login.crotmp', {
       http-root => sparky-http-root(),
       css =>css(), 
       navbar => navbar(Nil, Nil), 
+      message => "$message",
+      level => "$level"
     }
+  }
+
+  post -> 'default_login' {
+
+    my $logged = False;
+    my $user_login;
+
+    request-body  -> (:$login, :$password) {
+      if sparky-auth()<users> {
+        my $md5 = qqx[echo $password | md5sum -].chomp.split(/\s+/).head;
+        say "default login protocol: try login: $login, password: $md5";
+        for sparky-auth()<users><> -> $u {
+          if $u<login> eq $login && $u<password> eq $md5 {
+            $logged = True; $user_login = $login; last;
+          }
+        }
+      }
+    }
+
+    if $logged {
+
+      say "default login protocol: set user login to {$user_login}";
+
+      my $date = DateTime.now.later(years => 100);
+
+      set-cookie 'user', $user_login, http-only => True, expires => $date;
+
+      set-cookie 'token', user-create-account($user_login,{}), http-only => True, expires => $date;
+
+      redirect :see-other, "{sparky-http-root()}/?message=user [{$user_login}] logged in&level=info";
+
+    } else {
+      redirect :see-other, "/default_login?message=bad login&level=error";
+    }
+
   }
 
   get -> 'logout', :$user is cookie, :$token is cookie {
@@ -945,7 +982,7 @@ sub create-cro-app ($pool) {
 
   get -> 'oauth2', :$state, :$code {
 
-      say "auth: request oauth token using {get-sparky-conf()<auth><provider_url>}/token ...";
+      say "auth: request oauth token using {sparky-auth()<provider_url>}/token ...";
       say "auth: state: $state code $code";
       # die "";
 
@@ -955,12 +992,12 @@ sub create-cro-app ($pool) {
 
       shell qq:to /CURL/;
       set -x
-      curl -X POST {get-sparky-conf()<auth><provider_url>}/token \\
-      -d client_id={get-sparky-conf()<auth><client_id>} \\
-      -d client_secret={get-sparky-conf()<auth><client_secret>} \\
+      curl -X POST {sparky-auth()<provider_url>}/token \\
+      -d client_id={sparky-auth()<client_id>} \\
+      -d client_secret={sparky-auth()<client_secret>} \\
       -d code=$code \\
       -d grant_type=authorization_code \\
-      -d redirect_uri={get-sparky-conf()<auth><redirect_url>} \\
+      -d redirect_uri={sparky-auth()<redirect_url>} \\
       -f -L -s -o {cache-root()}/users/token_{$id_tmp}.json
       CURL
 
@@ -976,13 +1013,13 @@ sub create-cro-app ($pool) {
 
         say "auth: token recieved - {%data<access_token>} ... ";
 
-        say "auth: request user data using {get-sparky-conf()<auth><user_api>} ...";
+        say "auth: request user data using {sparky-auth()<user_api>} ...";
 
         $id_tmp = "{('a' .. 'z').pick(20).join('')}.{$*PID}";
 
         shell qq:to /CURL/;
         curl -H "Authorization: Bearer {%data<access_token>}" \\
-        {get-sparky-conf()<auth><user_api>} \\
+        {sparky-auth()<user_api>} \\
         -f -L -s -o {cache-root()}/users/user_{$id_tmp}.json
         CURL
 
@@ -998,7 +1035,7 @@ sub create-cro-app ($pool) {
 
         %data2<login> = %data2<username>;
 
-        say "set user login to {%data2<username>}";
+        say "oauth2 protocol: set user login to {%data2<username>}";
 
         my $date = DateTime.now.later(years => 100);
 

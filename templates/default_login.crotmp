@@ -1,6 +1,6 @@
 <&HTML-AND-JAVASCRIPT(.css)>
     <head>
-      <title>~SPARKY CI WEB~ | Build project: <.project> </title>
+      <title>~SPARKY CI WEB~ | Login </title>
     </head>
     <&HTML-AND-JAVASCRIPT(.navbar)>
     <div class="panel is-primary">
@@ -9,7 +9,16 @@
           Login
        </h3>
       </div>
-      <div class="panel-block" id="notification"></div>
+      <?{.level eq 'info' && .message}>
+        <span class="control">
+          <pre class="notification has-text-success"><.message></pre>
+        </span>
+      </?>
+      <?{.level eq 'error' && .message}>
+        <span class="control">
+          <pre class="notification has-text-danger"><.message></pre>
+        </span>
+      </?>
       <div class="panel-block">
         <form method="post" id="form01">
           <div class="field">
