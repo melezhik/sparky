@@ -2,8 +2,17 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.2.4 2024-04-26T16:30:00Z
+
   - Switch to bulma 1.0,
-    remove themes 
+    remove custom themes
+  - Add default authentication
+    protocol as a default 
+    authentication schema
+  - Fix bug in sparkyd scheduller
+    that prevented scm 
+    projects with crontab 
+    settings from run  
 
 0.2.3 2024-04-26T16:30:00Z
 
