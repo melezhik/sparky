@@ -22,7 +22,7 @@
           <div class="message-header">
             <p>Configuration</p>
             <?.error>
-              <span class="tag is-danger">Error</span>
+              <span class="tag is-danger">YAML Error</span>
             </?>
           </div>
           <div class="message-body">
