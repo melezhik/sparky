@@ -14,7 +14,7 @@
       </div>
       <?{ .allow-manual-run == True && .disabled != True}>
       <div class="panel-block">
-        <a class="button is-small" href="<.http-root>/build/project/<.project>" >Build now</a>
+        <a class="button is-info is-rounded is-small" href="<.http-root>/build/project/<.project>" >Build now</a>
       </div>
       </?>
       <div class="is-fullwidth">
