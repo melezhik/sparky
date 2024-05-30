@@ -45,6 +45,11 @@ projects:
         - operator
 ```
 
+Default login and password (if auth section is not set at all):
+
+* login - admin
+* password - admin
+
 ## OAUTH 2.0 protocol
 
 For more secure scenario use  [oauth2](https://oauth.net/2/) authentication 
