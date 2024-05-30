@@ -22,7 +22,7 @@
       <div class="panel-block">
         <a class="button is-info is-rounded is-small" onclick="reBuild()">Rebuild</a>
       </div>
-      <div class="panel-block" id="notification">
+      <div class="notification is-success is-light" id="notification"></div>
       </div>
       <div class="panel-block">
         <pre id="log"></pre>

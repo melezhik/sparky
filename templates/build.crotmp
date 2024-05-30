@@ -9,7 +9,7 @@
           Build: <.project>
        </h3>
       </div>
-      <div class="panel-block" id="notification"></div>
+      <div class="notification is-success is-light" id="notification"></div>
       <div class="panel-block">
         <form method="post" id="form01">
           <div class="field">
