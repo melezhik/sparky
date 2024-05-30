@@ -930,7 +930,9 @@ sub create-cro-app ($pool) {
       if sparky-auth()<users> {
         my $md5 = qqx[echo $password | md5sum -].chomp.split(/\s+/).head;
         say "default login protocol: try login: $login, password: $md5";
+        #say sparky-auth().perl;
         for sparky-auth()<users><> -> $u {
+          #say $u.perl;
           if $u<login> eq $login && $u<password> eq $md5 {
             $logged = True; $user_login = $login; last;
           }

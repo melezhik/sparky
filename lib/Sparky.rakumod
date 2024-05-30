@@ -46,9 +46,11 @@ sub sparky-auth is export {
   get-sparky-conf()<auth> || %(
     default => True,
     users => [
-      login => "admin",
-      # default password is admin
-      password => "456b7016a916a4b178dd72b947c152b7" # md5sum('admin')
+      {
+        login => "admin",
+        # default password is admin
+        password => "456b7016a916a4b178dd72b947c152b7" # md5sum('admin')
+      },
     ]  
   );
 }
