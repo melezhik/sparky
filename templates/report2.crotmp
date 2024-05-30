@@ -20,7 +20,7 @@
         at <.dt>
       </p>
       <div class="panel-block">
-        <a class="button is-small" onclick="reBuild()">Rebuild</a>
+        <a class="button is-info is-rounded is-small" onclick="reBuild()">Rebuild</a>
       </div>
       <div class="panel-block" id="notification">
       </div>

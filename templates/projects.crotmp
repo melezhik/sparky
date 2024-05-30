@@ -52,7 +52,7 @@
             <span class="tag is-success">succeed</span>
           </?>
           <?{$i.state == -2}>
-            <a class="button is-small" href="<.http-root>/build/project/<$i.project>">Build Now</a>
+            <a class="button is-info is-rounded is-small" href="<.http-root>/build/project/<$i.project>">Build Now</a>
           </?>
           </td>
           <td>
