@@ -36,7 +36,7 @@
             <p>Job</p>
           </div>
           <div class="message-body">
-            <pre><code class='language-yaml'><.scenario-code></code></pre>
+            <pre><code class='language-perl'><.scenario-code></code></pre>
           </div>
         </article>
       </div>
