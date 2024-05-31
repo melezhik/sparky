@@ -2,6 +2,10 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.2.6 2024-05-31T11:20:00Z
+
+  - Spruce up CSS
+
 0.2.5 2024-05-30T13:30:00Z
 
   - Add default login/password
