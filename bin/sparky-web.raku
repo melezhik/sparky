@@ -332,6 +332,22 @@ sub create-cro-app ($pool) {
       next unless "$dir/sparky.yaml".IO ~~ :f;
 
       my $project = $dir.IO.basename;
+      my %project-conf;
+      my $error;
+
+      if "$root/$project/sparky.yaml".IO ~~ :f {
+
+        my $project-conf-str = "$root/$project/sparky.yaml".IO.slurp; 
+
+        try { %project-conf = load-yaml($project-conf-str) };
+
+        if $! { 
+          $error = $!;
+          say "project/$project: error parsing $root/$project/sparky.yaml";
+          say $error;
+        }
+
+      }
 
       my $sth = $dbh.prepare("SELECT max(id) as last_build_id FROM builds where project = '{$project}'");
 
@@ -350,6 +366,8 @@ sub create-cro-app ($pool) {
           state         => -2, # never started
           dt            => "N/A",
           last_build_id => "",
+          allow-manual-run => %project-conf<allow_manual_run> || False,
+          disabled => %project-conf<disabled> || False,
         );
         next;
       }
