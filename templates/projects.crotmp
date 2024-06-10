@@ -51,7 +51,7 @@
           <?{$i.state == 1}>
             <span class="tag is-success">succeed</span>
           </?>
-          <?{$i.state == -2}>
+          <?{$i.state == -2 && $i.allow-manual-run == True && $i.disabled != True}>
             <a class="button is-info is-rounded is-small" href="<.http-root>/build/project/<$i.project>">Build Now</a>
           </?>
           </td>
