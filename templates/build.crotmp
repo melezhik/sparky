@@ -13,50 +13,57 @@
       <div class="panel-block">
         <form method="post" id="form01">
           <div class="field">
-            <@vars: $i>
-            <div class="control">
-              <label class="label"><$i.<name>></label>
-                <?{ $i.type eq 'input' }> 
-                  <input class="input is-success" type="text" name="<$i.<name>>" value="<$i.<default>>" placeholder="<$i.<default>>">
-                </?> 
-                <?{ $i.type eq 'password' }>
-                  <input class="input is-success" type="password" name="<$i.<name>>" value="<$i.<default>>" placeholder="<$i.<default>>">
-                </?>
-                <?{ $i.type eq 'textarea' }>
-                  <textarea class="textarea is-success" cols=20 type="textarea" name="<$i.<name>>" placeholder="<$i.<default>>"><$i.<default>></textarea>
-                </?> 
-                <?{ $i.type eq 'checkbox' }>
-                  <?$i.default>
-                  <input class="checkbox is-success" checked type="checkbox" name="<$i.<name>>" value="True">
-                  </?>
-                  <!>
-                  <input class="checkbox is-success" type="checkbox" name="<$i.<name>>" value="True">
-                  </!>
-                </?>
-                <?{ $i.type eq 'select' }>
-                <div class="select">
-                <select name="<$i.<name>>">
-                <@$i.values: $s>
-                  <?{ $i.default eq $s }>
-                    <option selected="selected"><$s></option>
-                  </?>
-                  <!>
-                    <option><$s></option>
-                  </!>
-                </@>
-                </select>
-                </div>
-                </?>
-            </div>
-            </@>
-            <hr>
-            <div class="field is-grouped">
+            <?{ @group_vars }>
+              <@group_vars: $i>
+                <$i><br>
+              </@>
+            </?>
+            <!{ @group_vars }>
+              <@vars: $i>
               <div class="control">
-              <button class="button is-info is-rounded is-small">Submit</button>
+                <label class="label"><$i.<name>></label>
+                  <?{ $i.type eq 'input' }> 
+                    <input class="input is-success" type="text" name="<$i.<name>>" value="<$i.<default>>" placeholder="<$i.<default>>">
+                  </?> 
+                  <?{ $i.type eq 'password' }>
+                    <input class="input is-success" type="password" name="<$i.<name>>" value="<$i.<default>>" placeholder="<$i.<default>>">
+                  </?>
+                  <?{ $i.type eq 'textarea' }>
+                    <textarea class="textarea is-success" cols=20 type="textarea" name="<$i.<name>>" placeholder="<$i.<default>>"><$i.<default>></textarea>
+                  </?> 
+                  <?{ $i.type eq 'checkbox' }>
+                    <?$i.default>
+                    <input class="checkbox is-success" checked type="checkbox" name="<$i.<name>>" value="True">
+                    </?>
+                    <!>
+                    <input class="checkbox is-success" type="checkbox" name="<$i.<name>>" value="True">
+                    </!>
+                  </?>
+                  <?{ $i.type eq 'select' }>
+                  <div class="select">
+                  <select name="<$i.<name>>">
+                  <@$i.values: $s>
+                    <?{ $i.default eq $s }>
+                      <option selected="selected"><$s></option>
+                    </?>
+                    <!>
+                      <option><$s></option>
+                    </!>
+                  </@>
+                  </select>
+                  </div>
+                  </?>
+              </div>
+              </@>
+              <hr>
+              <div class="field is-grouped">
+                <div class="control">
+                <button class="button is-info is-rounded is-small">Submit</button>
+              </div>
             </div>
-          </div>
-        </form>
-      </div>
+          </form>
+        </div>
+      </!>  
     </div>
 
 <script>

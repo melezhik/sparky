@@ -876,6 +876,7 @@ sub create-cro-app ($pool) {
         template 'templates/build.crotmp', {
           http-root => sparky-http-root(),
           sparky-tcp-port => sparky-tcp-port(),
+          group_vars => [],
           css =>css(), 
           navbar => navbar($user, $token), 
           project => $project, 
