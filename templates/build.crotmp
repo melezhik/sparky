@@ -12,13 +12,13 @@
       <div class="notification is-success is-light" id="notification"></div>
       <div class="panel-block">
         <form method="post" id="form01">
-          <div class="field">
-            <?{ @group_vars }>
-              <@group_vars: $i>
-                <$i><br>
+          <div cass="field">
+            <?.group_vars>
+              <@group_vars: $g>
+                <a href="<.http-root>/build/project/<.project>?group=<$g>" ><$g></a><br>
               </@>
             </?>
-            <!{ @group_vars }>
+            <?.render-vars>
               <@vars: $i>
               <div class="control">
                 <label class="label"><$i.<name>></label>
@@ -55,15 +55,15 @@
                   </?>
               </div>
               </@>
-              <hr>
-              <div class="field is-grouped">
-                <div class="control">
-                <button class="button is-info is-rounded is-small">Submit</button>
-              </div>
+             <hr>
+             <div class="field is-grouped">
+               <div class="control">
+               <button class="button is-info is-rounded is-small">Submit</button>
+             </div>
             </div>
           </form>
+         </?> 
         </div>
-      </!>  
     </div>
 
 <script>

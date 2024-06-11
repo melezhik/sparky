@@ -739,7 +739,7 @@ sub create-cro-app ($pool) {
     }
   }
 
-  get -> 'build', 'project', $project, :$user is cookie, :$token is cookie  {
+  get -> 'build', 'project', $project, :$group?, :$user is cookie, :$token is cookie  {
 
     if check-user($user, $token, $project) {
 
@@ -795,7 +795,10 @@ sub create-cro-app ($pool) {
 
         }
 
-        for (%project-conf<vars><> || []) -> $v {
+        my %group_vars = (%project-conf<group_vars> || []).map( { $_ => True } );
+
+        for (%project-conf<vars><> || []).grep({$group ?? (%group_vars{$group}:exists) !! True}) -> $v {
+
         if $v<default> {
           for $v<default> ~~ m:global/"%" (\S+?) "%"/ -> $c {
             my $var_id = $c[0].Str;
@@ -876,7 +879,8 @@ sub create-cro-app ($pool) {
         template 'templates/build.crotmp', {
           http-root => sparky-http-root(),
           sparky-tcp-port => sparky-tcp-port(),
-          group_vars => [],
+          group_vars => $group ?? [] !!  %project-conf<group_vars> || [],
+          render-vars => $group ?? True !! ( %group_vars ?? False !! True ),
           css =>css(), 
           navbar => navbar($user, $token), 
           project => $project, 
@@ -884,7 +888,7 @@ sub create-cro-app ($pool) {
           disabled => %project-conf<disabled> || False,
           project-conf-str => $project-conf-str || "configuration not found",
           project-conf => %project-conf || {},
-          vars => %project-conf<vars> || [],
+          vars => (%project-conf<vars> || []).grep({ $group ?? (%group_vars{$_<name>}:exists) !! True }) || [],
           scenario-code => "$root/$project/sparrowfile".IO ~~ :e ?? "$root/$project/sparrowfile".IO.slurp !! "scenario not found", 
           error => $error
         }
