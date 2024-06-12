@@ -41,6 +41,9 @@
         <pre id="log"></pre>
       </div>
       <div id="Artifacts" class="content-tab" style="display:none">
+      <?{.artifacts.elems == 0}>
+      no artifacts found
+      </?>
       <@artifacts: $i>
       <a href="<.http-root>/file/<.project>/<.job_id>/<$i.name>"><$i.name></a>&nbsp;<$i.size><br>
       </@>
