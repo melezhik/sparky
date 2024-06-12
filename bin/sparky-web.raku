@@ -559,12 +559,13 @@ sub create-cro-app ($pool) {
       }
 
       my $files-dir = get-job-dir($project, $key);
-
+      say "report for build_id: {$build_id} load arifacts from $files-dir ...";
       my $artifacts = [];
 
       if $files-dir.IO ~~ :d {
         for dir($files-dir, test => { "{$files-dir}/$_".IO.f }) -> $a {
-          $artifacts.push: $a;
+          say "report for build_id: {$build_id} add artifact {$a.basename}";
+          $artifacts.push: $a.basename;
         }
       }
 

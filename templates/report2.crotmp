@@ -41,8 +41,8 @@
         <pre id="log"></pre>
       </div>
       <div id="Artifacts" class="content-tab" style="display:none">
-      <@arfifacts: $i>
-      <$i><br>
+      <@artifacts: $i>
+      <a href="<.http-root>/file/<.project>/<.job_id>/<$i>"><$i></a><br>
       </@>
       </div>
     </div>
