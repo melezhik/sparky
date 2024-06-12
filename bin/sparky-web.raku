@@ -565,7 +565,7 @@ sub create-cro-app ($pool) {
       if $files-dir.IO ~~ :d {
         for dir($files-dir, test => { "{$files-dir}/$_".IO.f }) -> $a {
           say "report for build_id: {$build_id} add artifact {$a.basename}";
-          $artifacts.push: $a.basename;
+          $artifacts.push: %( name => $a.basename, size => (sprintf "%.2f KB", $a.s/1024), );
         }
       }
 

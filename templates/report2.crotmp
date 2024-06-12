@@ -42,7 +42,7 @@
       </div>
       <div id="Artifacts" class="content-tab" style="display:none">
       <@artifacts: $i>
-      <a href="<.http-root>/file/<.project>/<.job_id>/<$i>"><$i></a><br>
+      <a href="<.http-root>/file/<.project>/<.job_id>/<$i.name>"><$i.name></a>&nbsp;<$i.size><br>
       </@>
       </div>
     </div>
