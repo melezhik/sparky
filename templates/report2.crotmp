@@ -5,6 +5,7 @@
     </head>
 
 <script src="/js/ansi_up.js" type="text/javascript"></script>
+<script src="/js/misc.js" type="text/javascript"></script>
 
 <&HTML-AND-JAVASCRIPT(.navbar)>
 
@@ -24,11 +25,27 @@
       </div>
       <div class="notification is-success is-light" id="notification"></div>
       </div>
-      <div class="panel-block">
+    </nav>
+    <div class="panel-block">
+        <nav class="tabs is-boxed">
+          <div class="container">
+            <ul>
+              <li class="tab is-active" onclick="openTab(event,'Report')"><a>Report</a></li>
+              <li class="tab" onclick="openTab(event,'Artifacts')"><a>Artifacts</a></li>
+            </ul>
+          </div>
+        </nav>
+    </div>
+    <div class="panel-block">
+      <div id="Report" class="content-tab">
         <pre id="log"></pre>
       </div>
-    </nav>
-
+      <div id="Artifacts" class="content-tab" style="display:none">
+      <@arfifacts: $i>
+      <$i><br>
+      </@>
+      </div>
+    </div>
 
 <script>
 

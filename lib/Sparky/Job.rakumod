@@ -128,3 +128,11 @@ sub get-job-file ($project,$job-id,$filename) is export {
   return "{$sparky-project-dir}/.files/{$job-id}/{$filename}";
 
 }
+
+sub get-job-dir ($project,$job-id) is export {
+
+  my $sparky-project-dir = "{%*ENV<HOME>}/.sparky/projects/{$project}";
+
+  return "{$sparky-project-dir}/.files/{$job-id}";
+
+}

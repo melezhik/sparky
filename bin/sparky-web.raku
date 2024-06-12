@@ -558,6 +558,16 @@ sub create-cro-app ($pool) {
       
       }
 
+      my $files-dir = get-job-dir($project, $key);
+
+      my $artifacts = [];
+
+      if $files-dir.IO ~~ :d {
+        for dir($files-dir, test => { "{$files-dir}/$_".IO.f }) -> $a {
+          $artifacts.push: $a;
+        }
+      }
+
       template 'templates/report2.crotmp', {
         css => css(), 
         navbar => navbar($user,$token), 
@@ -565,7 +575,8 @@ sub create-cro-app ($pool) {
         sparky-tcp-port => sparky-tcp-port(),
         project => $project,
         build_id => $build_id,
-        job_id => "{$key}", 
+        job_id => "{$key}",
+        artifacts => $artifacts, 
         dt => $dt, 
         description => $description, 
         data => $data
