@@ -45,7 +45,13 @@
       no artifacts found
       </?>
       <@artifacts: $i>
-      <a href="<.http-root>/file/<.project>/<.job_id>/<$i.name>"><$i.name></a>&nbsp;<$i.size><br>
+        <$i.name></a>
+        &nbsp;|&nbsp;
+        <$i.size>
+        &nbsp;|&nbsp;
+        <a href="<.http-root>/file_view/<.project>/<.job_id>/<$i.name>">view</a>
+        &nbsp;|&nbsp;
+        <a href="<.http-root>/file/<.project>/<.job_id>/<$i.name>">download</a><br>
       </@>
       </div>
     </div>

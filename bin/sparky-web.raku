@@ -312,6 +312,15 @@ sub create-cro-app ($pool) {
       } 
   }
 
+  get -> 'file_view', $project, $key, $filepath  {
+
+      if get-job-file($project,$key,$filepath).IO ~~ :f {
+        content 'text/plain', slurp(get-job-file($project,$key,$filepath));
+      } else {
+        not-found()
+      } 
+  }
+
   #
   # End of SparkyJobApi methods
   #
