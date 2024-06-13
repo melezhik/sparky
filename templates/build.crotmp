@@ -11,13 +11,19 @@
       </div>
       <div class="notification is-success is-light" id="notification"></div>
       <div class="panel-block">
+            <?.group_vars>
+              <div class="grid">
+              <@group_vars: $g>
+                <div class="cell">
+                  <a href="<.http-root>/build/project/<.project>?group=<$g>" >
+                    <$g>
+                  </a>
+                </div>
+              </@>
+              </div>
+            </?>
         <form method="post" id="form01">
           <div cass="field">
-            <?.group_vars>
-              <@group_vars: $g>
-                <a href="<.http-root>/build/project/<.project>?group=<$g>" ><$g></a><br>
-              </@>
-            </?>
             <?.render-vars>
               <@vars: $i>
               <div class="control">
