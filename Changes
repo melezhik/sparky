@@ -2,6 +2,13 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.2.7 2024-06-13T23:57:00Z
+
+  - Huge overhaul of documentation
+  - UI - subtasks
+  - UI - multiple select 
+  - Artifacts (not yet documented)
+  
 0.2.6 2024-05-31T11:20:00Z
 
   - Spruce up CSS
