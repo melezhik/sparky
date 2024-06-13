@@ -11,3 +11,16 @@ function openTab(evt, tabName) {
   document.getElementById(tabName).style.display = "block";
   evt.currentTarget.className += " is-active";
 }
+
+function getSelectValues(elm) {
+  var result = [];
+  var options = elm && elm.options;
+  var opt;
+  for (var i=0, iLen=options.length; i<iLen; i++) {
+    opt = options[i];
+    if (opt.selected) {
+     result.push(opt.value || opt.text);
+    }
+  }
+  return result;
+}

@@ -2,6 +2,7 @@
     <head>
       <title>~SPARKY CI WEB~ | Build project: <.project> </title>
     </head>
+    <script src="/js/misc.js" type="text/javascript"></script>
     <&HTML-AND-JAVASCRIPT(.navbar)>
     <div class="panel is-primary">
       <div class="panel-heading">
@@ -46,8 +47,14 @@
                     </!>
                   </?>
                   <?{ $i.type eq 'select' }>
+                  <?{ $i.multiple }>
+                  <div class="select is-multiple">
+                    <select name="<$i.<name>>" multiple size="8">
+                  </?>
+                  <!{ $i.multiple }>
                   <div class="select">
-                  <select name="<$i.<name>>">
+                    <select name="<$i.<name>>">
+                  </!>
                   <@$i.values: $s>
                     <?{ $i.default eq $s }>
                       <option selected="selected"><$s></option>
@@ -118,10 +125,11 @@
       var e = document.getElementById("form01").elements["<$i.name>"];
       var t = "<$i.name>";
       <?{ $i.type eq 'select'}>
-      var v = e.value;
-      var v_text = e.options[e.selectedIndex].text;
-      tags.push(`${t}=${v_text}`);
-      console.log(`${t}: ${v}`);
+      v_array = getSelectValues(e)
+      v_array.forEach((v_text) => {
+        tags.push(`${t}=${v_text}`);
+        console.log(`${t}: ${v_text}`);
+      });
       </?>
       <?{ $i.type eq 'textarea' or $i.type eq 'input' or $i.type eq 'password'}>
       var v = e.value;

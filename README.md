@@ -270,6 +270,7 @@ vars:
       values: [ Raku, Rust, Golang ]
       type: select
       default: Rust
+      multiple: true
 
   -
       name: Color
