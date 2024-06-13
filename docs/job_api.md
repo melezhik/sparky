@@ -1,8 +1,6 @@
 # Job API
 
-Job API allows to trigger new builds from a main scenario. 
-
-This allow one to create multi stage scenarios.
+Job API allows to orchestrate multiple Sparky jobs.
 
 For example:
 

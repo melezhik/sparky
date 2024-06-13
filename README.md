@@ -6,14 +6,14 @@ Sparky is a flexible and minimalist continuous integration server and distribute
 
 Sparky features:
 
-* Defining builds scheduling times in crontab style
-* Triggering builds using external APIs and custom logic
-* Build scenarios are defined as Raku scripts with support of [Sparrow6](https://github.com/melezhik/Sparrow6/blob/master/documentation/dsl.md) DSL 
-* CICD code could be extended using various scripting languages
+* Defining jobs scheduling times in crontab style
+* Triggering jobs using external APIs and custom logic
+* Jobs scenarios are pure Raku code with additional support of [Sparrow6](https://github.com/melezhik/Sparrow6/blob/master/documentation/dsl.md) automation framework
+* Use of plugins on different programming languages
 * Everything is kept in SCM repository - easy to port, maintain and track changes
-* Builds gets run in one of 3 flavors - 1) on localhost 2) on remote machines via ssh 3) on docker instances
-* Nice web UI to run build and read reports
-* Runs in a peer-to-peer network fashion with distributed tasks support
+* Jobs get run in one of 3 flavors - 1) on localhost 2) on remote machines via ssh 3) on docker instances
+* Nice web UI to run jobs and read reports
+* Could be runs in a peer-to-peer network fashion with distributed tasks support
 
 # Build status
 
@@ -23,10 +23,10 @@ Sparky features:
 # Sparky workflow in 4 lines:
 
 ```bash
-$ nohup sparkyd & # run Sparky daemon to trigger build jobs
-$ nohup cro run & # run Sparky CI UI to see build statuses and reports
-$ nano ~/.sparky/projects/my-project/sparrowfile  # write a build scenario
-$ firefox 127.0.0.1:4000 # run builds and get reports
+$ nohup sparkyd & # run Sparky daemon to trigger jobs
+$ nohup cro run & # run Sparky CI UI to see job statuses and reports
+$ nano ~/.sparky/projects/my-project/sparrowfile  # write a job scenario
+$ firefox 127.0.0.1:4000 # run jobs and get reports
 ```
 
 # Installation
@@ -57,7 +57,7 @@ $ sparkyd
 
 * Sparky daemon traverses sub directories found at the project root directory.
 
-* For every directory found initiate build process invoking sparky worker ( `sparky-runner.raku` ).
+* For every directory found initiate job run process invoking sparky worker ( `sparky-runner.raku` ).
 
 * Sparky root directory default location is `~/.sparky/projects`.
 
@@ -94,7 +94,7 @@ $ sparrowdo --sparrowfile=utils/install-sparkyd-systemd.raku --no_sudo --localho
 
 # Sparky Web UI
 
-And finally Sparky has a simple web UI to show builds statuses and reports.
+And finally Sparky has a simple web UI to show jobs statuses and reports.
 
 To run Sparky CI web app:
 
@@ -126,23 +126,28 @@ Sparky project is just a directory located at the sparky root directory:
 $ mkdir ~/.sparky/projects/teddy-bear-app
 ```
 
-# Build scenario
+# Job scenario
 
-Sparky is built on top of Sparrow/Sparrowdo, read [Sparrowdo](https://github.com/melezhik/sparrowdo)
-_to know how to write Sparky scenarios_. 
-
-Here is a short example.
-
-Git check out a Raku project, install dependencies and run unit tests:
+Sparky uses pure [Raku](https://raku.org) as job language, so simple job is just 
+a Raku code:
 
 ```bash
-$ nano ~/.sparky/projects/teddy-bear-app/sparrowfile
+$ nano ~/.sparky/projects/hello-world/sparrowfile
 ```
 
-And add content like this:
+```raku
+say "hello Sparky!";
+```
+
+To leverage useful tasks and plugins, Sparky is fully integrated with [Sparrow](https://github.com/melezhik/Sparrow6) automation framework.
+
+Here in example of job that checks out a Raku project, install dependencies and run unit tests:
+
+```bash
+$ nano ~/.sparky/projects/raku-build/sparrowfile
+```
 
 ```raku
-
 directory "project";
 
 git-scm 'https://github.com/melezhik/rakudist-teddy-bear.git', %(
@@ -163,8 +168,7 @@ bash 'prove6 -l', %(
 
 # Configure Sparky workers
 
-By default the build scenario gets executed _on the same machine you run Sparky at_, but you can change this
-to _any remote host_ setting Sparrowdo related parameters in the `sparky.yaml` file:
+By default the job scenario get executed _on the same machine you run Sparky at_, but you can change this to _any remote host_ setting Sparrowdo section in `sparky.yaml` file:
 
 ```bash
 $ nano ~/.sparky/projects/teddy-bear-app/sparky.yaml
@@ -195,30 +199,29 @@ sparrowdo:
 
 # Purging old builds
 
-To remove old build set `keep_builds` parameter in `sparky.yaml`:
+To remove old job builds set `keep_builds` parameter in `sparky.yaml`:
 
 ```bash
 $ nano ~/.sparky/projects/teddy-bear-app/sparky.yaml
 ```
 
-Put number of past builds to keep:
+Put number of builds to keep:
 
 ```yaml
 keep_builds: 10
 ```
 
-That makes Sparky remove old build and only keep last `keep_builds` builds.
+That makes Sparky remove old builds and only keep last `keep_builds` builds.
 
 # Run by cron
 
 It's possible to setup scheduler for Sparky builds, you should define `crontab` entry in sparky yaml file.
-for example to run a build every hour at 30,50 or 55 minute say this:
+
+For example, to run a job every hour at 30,50 or 55 minutes:
 
 ```bash
 $ nano ~/.sparky/projects/teddy-bear-app/sparky.yaml
 ```
-
-With this schedule:
 
 ```cron
 crontab: "30,50,55 * * * *"
@@ -228,22 +231,19 @@ Follow [Time::Crontab](https://github.com/ufobat/p6-time-crontab) documentation 
 
 # Manual run
 
-If you want to build a project from web UI, use `allow_manual_run`:
+To trogger job manually from web UI, use `allow_manual_run`:
 
 ```bash
 $ nano ~/.sparky/projects/teddy-bear-app/sparky.yaml
 ```
 
-And activate manual run:
 ```yaml
 allow_manual_run: true
 ```
 
-# Trigger build by SCM changes
+# Trigger job by SCM changes
 
-** warning ** - the feature is not properly tested, feel free to post issues or suggestions
-
-To trigger Sparky builds on SCM changes, define `scm` section in `sparky.yaml` file:
+To trigger Sparky jobs on SCM changes, define `scm` section in `sparky.yaml` file:
 
 ```yaml
 scm:
@@ -264,7 +264,7 @@ scm:
   branch: master
 ```
 
-Once a build is triggered respected SCM attributes available via `tags()<SCM_*>` elements:
+Once a job is triggered respected SCM data is available via `tags()<SCM_*>` function:
 
 ```raku
 directory "scm";
@@ -281,7 +281,6 @@ bash "ls -l {%*ENV<PWD>}/scm";
 
 To set default values for SCM_URL and SCM_BRANCH, use sparrowdo `tags`:
 
-
 `sparky.yaml`:
 
 ```yaml
@@ -289,7 +288,7 @@ To set default values for SCM_URL and SCM_BRANCH, use sparrowdo `tags`:
     tags: SCM_URL=https://github.com/melezhik/rakudist-teddy-bear.git,SCM_BRANCH=master
 ```
 
-These is useful when trigger build manually.
+These is useful when trigger job manually.
 
 # Flappers protection mechanism 
 
@@ -305,16 +304,18 @@ worker:
 
 # Disable project
 
-You can disable project builds by setting `disable` option to true:
+You can disable job runs by setting `disable` option to true:
 
 ```bash
 $ nano ~/.sparky/projects/teddy-bear-app/sparky.yaml
 
 disabled: true
 ```
-It's handy when you start a new project and don't want to add it into build pipeline.
 
 # Advanced topics
+
+Following are some advanced topics, that might be of interest once you
+are familar with a basis.
 
 # Job UIs
 
@@ -337,13 +338,13 @@ Read more at [docs/stp.md](https://github.com/melezhik/sparky/blob/master/docs/s
 
 ## Job API
 
-Job API allows to trigger new builds from a main scenario. 
+Job API allows to orchestrate multiple Sparky jobs
 
 Read more at [docs/job_api.md](https://github.com/melezhik/sparky/blob/master/docs/job_api.md)
 
 ## Sparky plugins
 
-Sparky plugins are extensions points to add extra functionality to Sparky builds.
+Sparky plugins is way to extend Sparky jobs by writting plugins as Raku modules
 
 Read more at [docs/plugins.md](https://github.com/melezhik/sparky/blob/master/docs/plugins.md)
 
@@ -393,7 +394,7 @@ tls:
 
 # Command line client
 
-You can build the certain project using sparky command client called `sparky-runner.raku`:
+To trigger Sparky job in terminal use `sparky-runner.raku` cli:
 
 ```bash
 $ sparky-runner.raku --dir=/home/user/.sparky/projects/teddy-bear-app
