@@ -1,6 +1,6 @@
 # UI DSL
 
-Sparky  UI DSL allows to programatically descibe UI for Sparky jobs
+Sparky  UI DSL allows to grammatically describe UI for Sparky jobs
 and pass user input into scenario as variables.
 
 ## Simple example
@@ -47,7 +47,7 @@ Sparky job now gets html controls for input parameters:
 
 ![build parameters](https://raw.githubusercontent.com/melezhik/sparky/master/images/sparky-web-ui-build-with-params.jpeg)
  
-Whin scenario those parameters are available through `tags()` function:
+Whinin scenario those parameters are available through `tags()` function:
 
 ```raku
 say "Name param passed: ", tags()<Name>;
@@ -87,8 +87,8 @@ Currently following UI controls are supported:
 
 ## UI sub tasks
 
-UI sub tasks allow to split complex UI into smaller parts, by specifing `group` term.
-Considet this example:
+UI sub tasks allow to split complex UI into smaller parts, by specifying `group` term.
+Consider this example:
 
 ```
 vars:
@@ -132,7 +132,7 @@ group_vars:
 ```
 
 When a user clicks a job page, they'll get a choice of two separate pages, one for
-coffee (group coffee) and nother one for tea (group tea) UI with respected UI elements.
+coffee (group coffee) and another one for tea (group tea) UI with respected UI elements.
 
 
 ## Templating UI variables
@@ -177,9 +177,9 @@ vars:
 ```
 
 `*` Where `$hostame` is output of `hostame` command executed on the server that hosts Sparky,
-this varibale could be overriden by `HOSTNAME` environment variable 
+this variable could be overridden by `HOSTNAME` environment variable 
 
-Host specific variables always override variable specifed at `SPARKY_ROOT/templates/vars.yaml`
+Host specific variables always override variable specified at `SPARKY_ROOT/templates/vars.yaml`
 
 ---
 
@@ -205,7 +205,7 @@ vars:
 
 ## Templating tag variables
 
-Tag variables in `sparky.yaml` could use template varibales:
+Tag variables in `sparky.yaml` could use template variables:
 
 `vars.yaml`:
 

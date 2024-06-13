@@ -252,7 +252,7 @@ allow_manual_run: true
 
 # UI DSL
 
-Sparky  UI DSL allows to programatically descibe UI for Sparky jobs
+Sparky  UI DSL allows to grammatically describe UI for Sparky jobs
 and pass user input into scenario as variables.
 
 Read more at [docs/ui.md](https://github.com/melezhik/sparky/blob/master/docs/ui.md)
