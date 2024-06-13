@@ -1,4 +1,4 @@
-# UI DSL
+# Job UIs
 
 Sparky  UI DSL allows to grammatically describe UI for Sparky jobs
 and pass user input into scenario as variables.

@@ -118,18 +118,6 @@ SPARKY_HOST: 127.0.0.1
 SPARKY_TCP_PORT: 5000 
 ```
 
-# Security
-
-## Authentication
-
-Sparky web server _comes with_ two authentication protocols,
-choose proper one depending on your requirements, see details
-at [docs/auth.md](https://github.com/melezhik/sparky/blob/master/docs/auth.md)
-
-## ACL
-
-Sparky ACL allows to create access control lists to manage role based access to Sparky resources, see [docs/acl.md](https://github.com/melezhik/sparky/blob/master/docs/acl.md)
-
 # Creating first sparky project
 
 Sparky project is just a directory located at the sparky root directory:
@@ -328,9 +316,9 @@ It's handy when you start a new project and don't want to add it into build pipe
 
 # Advanced topics
 
-# UI DSL
+# Job UIs
 
-Sparky  UI DSL allows to grammatically describe UI for Sparky jobs
+Sparky UI DSL allows to grammatically describe UI for Sparky jobs
 and pass user input into scenario as variables.
 
 Read more at [docs/ui.md](https://github.com/melezhik/sparky/blob/master/docs/ui.md)
@@ -359,13 +347,25 @@ Sparky plugins are extensions points to add extra functionality to Sparky builds
 
 Read more at [docs/plugins.md](https://github.com/melezhik/sparky/blob/master/docs/plugins.md)
 
-# HTTP API
+## HTTP API
 
 Sparky HTTP API allows execute Sparky jobs remotely over HTTP
 
 Read more at [docs/api.md](https://github.com/melezhik/sparky/blob/master/docs/api.md)
 
-# Databases support
+## Security
+
+### Authentication
+
+Sparky web server _comes with_ two authentication protocols,
+choose proper one depending on your requirements, see details
+at [docs/auth.md](https://github.com/melezhik/sparky/blob/master/docs/auth.md)
+
+### ACL
+
+Sparky ACL allows to create access control lists to manage role based access to Sparky resources, see [docs/acl.md](https://github.com/melezhik/sparky/blob/master/docs/acl.md)
+
+## Databases support
 
 Sparky keeps it's data in database, by default it uses sqlite,
 following databases are supported:
