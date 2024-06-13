@@ -79,9 +79,7 @@ $ sparkyd --timeout=600 # sleep 10 minutes
 $ SPARKY_TIMEOUT=30 sparkyd ...
 ```
 
-Running sparky in demonized mode.
-
-At the moment sparky can't demonize itself, as temporary workaround use linux `nohup` command:
+Running job scheduler in demonized mode:
 
 ```bash 
 $ nohup sparkyd &
@@ -96,12 +94,12 @@ $ sparrowdo --sparrowfile=utils/install-sparkyd-systemd.raku --no_sudo --localho
 
 # Sparky Web UI
 
-And finally Sparky has a simple web UI to show jobs statuses and reports.
+Sparky has a simple web UI to allow trigger jobs and get reports.
 
-To run Sparky CI web app:
+To run Sparky UI web application:
 
 ```bash
-$ nohup cro run &
+$ cro run
 ```
 
 To install Sparky CI web app as a systemd unit:
@@ -113,9 +111,9 @@ $ sparrowdo --sparrowfile=utils/install-sparky-web-systemd.raku --no_sudo --loca
 
 ---
 
-Setting web app tcp parameters.
-
-By default web app listens on host `0.0.0.0`, port `4000`, to configure web app tcp host and port set `SPARKY_HOST` and  `SPARKY_TCP_PORT` variables in `~/sparky.yaml`
+By default Sparky UI application listens on host `0.0.0.0`, port `4000`, 
+to override these settings set  `SPARKY_HOST`, `SPARKY_TCP_PORT` 
+in `~/sparky.yaml` configuration file:
 
 ```yaml
 SPARKY_HOST: 127.0.0.1
@@ -130,13 +128,14 @@ Sparky job is just a directory located at the sparky root directory:
 $ mkdir ~/.sparky/projects/teddy-bear-app
 ```
 
-Sparky uses pure [Raku](https://raku.org) as job language, so simple job is just a Raku code:
+Sparky uses pure [Raku](https://raku.org) as a job language, for example:
 
 ```bash
 $ nano ~/.sparky/projects/hello-world/sparrowfile
 ```
 
 ```raku
+#!raku
 say "hello Sparky!";
 ```
 
