@@ -17,8 +17,8 @@ Sparky features:
 
 # Build status
 
-![github actions](https://github.com/melezhik/sparky/actions/workflows/main.yml/badge.svg)
-![SparkyCI](https://ci.sparrowhub.io/project/gh-melezhik-sparky/badge)
+![Github actions](https://github.com/melezhik/sparky/actions/workflows/main.yml/badge.svg)
+![SparrowCI](https://ci.sparrowhub.io/project/gh-melezhik-sparky/badge)
 
 # Sparky workflow in 4 lines:
 
@@ -37,7 +37,7 @@ $ git clone https://github.com/melezhik/sparky.git
 $ cd sparky && zef install .
 ```
 
-# Setup
+# Database initialization
 
 Run database initialization script to populate database schema:
 
@@ -111,7 +111,9 @@ $ nano utils/install-sparky-web-systemd.raku # change working directory, user an
 $ sparrowdo --sparrowfile=utils/install-sparky-web-systemd.raku --no_sudo --localhost
 ```
 
-## Setting web app tcp parameters
+---
+
+Setting web app tcp parameters.
 
 By default web app listens on host `0.0.0.0`, port `4000`, to configure web app tcp host and port set `SPARKY_HOST` and  `SPARKY_TCP_PORT` variables in `~/sparky.yaml`
 
@@ -303,9 +305,9 @@ worker:
   flappers_off: true
 ```
 
-# Disable job
+## Disable jobs
 
-To privent Sparky job from execution use `disable` option:
+To prevent Sparky job from execution use `disable` option:
 
 ```bash
 $ nano ~/.sparky/projects/teddy-bear-app/sparky.yaml
