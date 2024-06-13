@@ -45,9 +45,9 @@ Run database initialization script to populate database schema:
 $ raku db-init.raku
 ```
 
-# Job scheduller
+# Job scheduler
 
-To run Sparky jobs scheduller runs in console:
+To run Sparky jobs scheduler runs in console:
 
 ```bash
 $ sparkyd
@@ -232,7 +232,7 @@ Follow [Time::Crontab](https://github.com/ufobat/p6-time-crontab) documentation 
 
 ## Manual run
 
-To trogger job manually from web UI, use `allow_manual_run`:
+To trigger job manually from web UI, use `allow_manual_run`:
 
 ```bash
 $ nano ~/.sparky/projects/teddy-bear-app/sparky.yaml
@@ -316,7 +316,7 @@ disabled: true
 # Advanced topics
 
 Following are some advanced topics, that might be of interest once you
-are familar with a basis.
+are familiar with a basis.
 
 # Job UIs
 
@@ -345,7 +345,7 @@ Read more at [docs/job_api.md](https://github.com/melezhik/sparky/blob/master/do
 
 ## Sparky plugins
 
-Sparky plugins is way to extend Sparky jobs by writting plugins as Raku modules
+Sparky plugins is way to extend Sparky jobs by writing plugins as Raku modules
 
 Read more at [docs/plugins.md](https://github.com/melezhik/sparky/blob/master/docs/plugins.md)
 
