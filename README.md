@@ -435,7 +435,7 @@ You can disable cron check to run project forcefully, by setting `SPARKY_SKIP_CR
 $ export SPARKY_SKIP_CRON=1 && sparkyd
 ```
 
-## SPARKI_MAX_JOBS
+## SPARKY_MAX_JOBS
 
 Threshold of concurrent jobs maximum number. Use it to protect Sparky server from overload.
 
