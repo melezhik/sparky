@@ -365,6 +365,17 @@ Sparky HTTP API allows execute Sparky jobs remotely over HTTP
 
 Read more at [docs/api.md](https://github.com/melezhik/sparky/blob/master/docs/api.md)
 
+# Databases support
+
+Sparky keeps it's data in database, by default it uses sqlite,
+following databases are supported:
+
+* SQLite
+* MySQL/MariaDB
+* PostgreSQL
+
+Read more at [docs/database.md](https://github.com/melezhik/sparky/blob/master/docs/database.md)
+
 # SSL Support
 
 Sparky web server may run on SSL. To enable this add a couple of parameters to `~/sparky.yaml`
@@ -452,63 +463,6 @@ Sets timeout for sparky workers, see [Running daemon](#running-daemon) section.
 
 How many seconds wait till a job is considered as timeouted (used in Sparky Job API calls).
 
-# Use of different databases (MySQL, PostgreSQL)
-
-By default Sparky uses sqlite as database engine, which makes it easy to use when developing.
-However sqlite has limitation on transactions locking whole database when doing inserts/updates (Database Is Locked errors).
-
-if you prefer other databases here is guideline.
-
-## Create Sparky configuration file
-
-You should defined database engine and connection parameters, say we want to use MySQL:
-
-```bash
-$ nano ~/sparky.yaml
-```
-
-With content:
-
-```yaml
-database:
-  engine: mysql
-  host: $dbhost
-  port: $dbport
-  name: $dbname
-  user: $dbuser
-  pass: $dbpassword
-```
-
-For example:
-
-```yaml
-database:
-  engine: mysql
-  host: "127.0.0.1"
-  port: 3306
-  name: sparky
-  user: sparky
-  pass: "123"
-```
-
-## Installs dependencies
-
-Depending on platform it should be client needed for your database API, for example for Debian we have to:
-
-```bash
-$ sudo yum install mysql-client
-```
-
-## Creating database user, password and schema
-
-DB init script will generate database schema, provided that user defined and sparky configuration file has access to
-the database:
-
-```bash
-$ raku db-init.raku
-```
-
-That is it, now sparky runs under MySQL!
 
 # CSS
 
