@@ -47,7 +47,7 @@ Sparky job now gets html controls for input parameters:
 
 ![build parameters](https://raw.githubusercontent.com/melezhik/sparky/master/images/sparky-web-ui-build-with-params.jpeg)
  
-Whinin scenario those parameters are available through `tags()` function:
+Whini scenario those parameters are available through `tags()` function:
 
 ```raku
 say "Name param passed: ", tags()<Name>;
@@ -110,7 +110,7 @@ vars:
     name: Flavor
     default: "latte"
     type: select 
-    values: [espresso, amerikano, latte]
+    values: [espresso, americano, latte]
     group: [ coffee ]
 
   -

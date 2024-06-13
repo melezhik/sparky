@@ -5,10 +5,10 @@ Downstream jobs get run after some _main_ job has finished.
 One define job as downstream by referencing to downstream job in main job:
 
 ```yaml
-# defintion of main job here
-# job named clenup will be executed
+# definition of main job here
+# job named cleanup will be executed
 # after the main job
-downstream: clenup
+downstream: cleanup
 ```
 
 Downstream jobs could be chained, so one could defined downstream within another

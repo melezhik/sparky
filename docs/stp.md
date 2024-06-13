@@ -2,7 +2,7 @@
 
 Sparky Triggering Protocol allows to trigger jobs automatically by creating files in special format.
 
-Conside an example.
+Consider an example.
 
 ```bash
 $ nano $project/.triggers/$key
