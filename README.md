@@ -45,7 +45,9 @@ Run database initialization script to populate database schema:
 $ raku db-init.raku
 ```
 
-# Running daemon
+# Job scheduller
+
+To run Sparky jobs scheduller runs in console:
 
 ```bash
 $ sparkyd
@@ -118,18 +120,15 @@ SPARKY_HOST: 127.0.0.1
 SPARKY_TCP_PORT: 5000 
 ```
 
-# Creating first sparky project
+# Sparky jobs
 
-Sparky project is just a directory located at the sparky root directory:
+Sparky job is just a directory located at the sparky root directory:
 
 ```bash
 $ mkdir ~/.sparky/projects/teddy-bear-app
 ```
 
-# Job scenario
-
-Sparky uses pure [Raku](https://raku.org) as job language, so simple job is just 
-a Raku code:
+Sparky uses pure [Raku](https://raku.org) as job language, so simple job is just a Raku code:
 
 ```bash
 $ nano ~/.sparky/projects/hello-world/sparrowfile
@@ -166,7 +165,9 @@ bash 'prove6 -l', %(
 );
 ```
 
-# Configure Sparky workers
+Repository of available Sparky plugins - [https://sparrowhub.io](https://sparrowhub.io)
+
+# Sparky workers
 
 By default the job scenario get executed _on the same machine you run Sparky at_, but you can change this to _any remote host_ setting Sparrowdo section in `sparky.yaml` file:
 
@@ -187,7 +188,7 @@ sparrowdo:
 
 Follow [sparrowdo cli](https://github.com/melezhik/sparrowdo#sparrowdo-cli) documentation for `sparrowdo` parameters explanation.
 
-# Skip bootstrap
+## Skip bootstrap
 
 Sparrowdo bootstrap takes a while, if you don't need bootstrap ( sparrow client is already installed at a target host )
 use `bootstrap: false` option:
@@ -197,7 +198,7 @@ sparrowdo:
   bootstrap: false
 ```
 
-# Purging old builds
+## Purging old builds
 
 To remove old job builds set `keep_builds` parameter in `sparky.yaml`:
 
@@ -213,7 +214,7 @@ keep_builds: 10
 
 That makes Sparky remove old builds and only keep last `keep_builds` builds.
 
-# Run by cron
+## Run jobs by cron
 
 It's possible to setup scheduler for Sparky builds, you should define `crontab` entry in sparky yaml file.
 
@@ -229,7 +230,7 @@ crontab: "30,50,55 * * * *"
 
 Follow [Time::Crontab](https://github.com/ufobat/p6-time-crontab) documentation on crontab entries format.
 
-# Manual run
+## Manual run
 
 To trogger job manually from web UI, use `allow_manual_run`:
 
@@ -241,7 +242,7 @@ $ nano ~/.sparky/projects/teddy-bear-app/sparky.yaml
 allow_manual_run: true
 ```
 
-# Trigger job by SCM changes
+## Trigger job by SCM changes
 
 To trigger Sparky jobs on SCM changes, define `scm` section in `sparky.yaml` file:
 
@@ -290,7 +291,7 @@ To set default values for SCM_URL and SCM_BRANCH, use sparrowdo `tags`:
 
 These is useful when trigger job manually.
 
-# Flappers protection mechanism 
+## Flappers protection mechanism 
 
 Flapper protection mechanism kicks out SCM urls that are timeouted (certain amount of time) during git connection, from scheduling, this mechanism protects sparkyd worker from stalling.
 
@@ -302,9 +303,9 @@ worker:
   flappers_off: true
 ```
 
-# Disable project
+# Disable job
 
-You can disable job runs by setting `disable` option to true:
+To privent Sparky job from execution use `disable` option:
 
 ```bash
 $ nano ~/.sparky/projects/teddy-bear-app/sparky.yaml
