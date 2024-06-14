@@ -22,7 +22,7 @@ Runtime parameters could be overridden by command line ( `--root`, `--work-root`
 
 ### root directory
 
-Directory where scheduller looks for job scenarios, by default:
+Directory where scheduler looks for job scenarios, by default:
 
 ```bash
 ~/.sparky/projects/
@@ -30,7 +30,7 @@ Directory where scheduller looks for job scenarios, by default:
 
 ###  work directory
 
-Directory where scheduller keeps internal jobs data:
+Directory where scheduler keeps internal jobs data:
 
 ```bash
 ~/.sparky/work

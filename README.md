@@ -47,7 +47,7 @@ $ raku db-init.raku
 
 # Sparky components
 
-Sparky comproses of several components:
+Sparky comprises of several components:
 
 * Job scheduler
 
@@ -182,7 +182,7 @@ Repository Sparrow plugins is available by [https://sparrowhub.io](https://sparr
 
 Sparky uses [Sparrowdo](https://github.com/melezhik/sparrowdo) to launch jobs in three fashions:
 
-* on localhost ( the same machine where Sparky is isttalled, default)
+* on localhost ( the same machine where Sparky is installed, default)
 * on remote host with ssh
 * docker container on localhost / remote machine 
 
@@ -213,7 +213,7 @@ Follow [sparrowdo cli](https://github.com/melezhik/sparrowdo#sparrowdo-cli) docu
 
 ### Skip bootstrap
 
-Sparrowdo clinent bootstrap might take some time, disable bootstrap by 
+Sparrowdo client bootstrap might take some time, disable bootstrap by 
 ( if client is already installed on target host ) using `bootstrap: false` option:
 
 ```yaml
@@ -239,7 +239,7 @@ That makes Sparky remove old builds and only keep last `keep_builds` builds.
 
 ### Run jobs by cron
 
-To run Sparky jobs periodially, set `crontab` entry in sparky.yaml file.
+To run Sparky jobs periodically, set `crontab` entry in sparky.yaml file.
 
 For example, to run a job every hour at 30,50 or 55 minutes:
 
