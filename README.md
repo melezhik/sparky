@@ -39,6 +39,8 @@ $ cd sparky && zef install .
 
 ## Database initialization
 
+Sparky requires a database to operate.
+
 Run database initialization script to populate database schema:
 
 ```bash
@@ -49,13 +51,15 @@ $ raku db-init.raku
 
 Sparky comprises of several components:
 
-* Job scheduler
+* Jobs scheduler
+
+* Jobs Defintions
+
+* Jobs workers (including remote jobs)
 
 * Jobs UI
 
-* Sparky jobs
-
-* Job workers (inc remote jobs)
+* CLI
 
 ## Job scheduler
 
@@ -128,9 +132,9 @@ SPARKY_HOST: 127.0.0.1
 SPARKY_TCP_PORT: 5000 
 ```
 
-## Sparky jobs
+## Sparky jobs defintions
 
-Sparky job needs a  directory located at the sparky root directory:
+Sparky job needs a directory located at the sparky root directory:
 
 ```bash
 $ mkdir ~/.sparky/projects/teddy-bear-app
@@ -149,9 +153,22 @@ $ nano ~/.sparky/projects/hello-world/sparrowfile
 say "hello Sparky!";
 ```
 
-To leverage useful tasks and plugins, Sparky is fully integrated with [Sparrow](https://github.com/melezhik/Sparrow6) automation framework.
+To allow job to be executed by scheduler one need to create `sparky.yaml` - yaml based
+job defintion, minimal form would be:
 
-Here in example of job that checks out a Raku project, install dependencies and run unit tests:
+```bash
+$ nano ~/.sparky/projects/hello-world/sparky.yaml
+```
+
+```yaml
+allow_manual_run: true
+```
+
+## Extending scenarios with Sparrow automation framework
+
+To extend core functions, Sparky is fully integrated with [Sparrow](https://github.com/melezhik/Sparrow6) automation framework.
+
+Here in example of job that uses Sparrow plugins, to build typical Raku project:
 
 ```bash
 $ nano ~/.sparky/projects/raku-build/sparrowfile
@@ -176,7 +193,7 @@ bash 'prove6 -l', %(
 );
 ```
 
-Repository Sparrow plugins is available by [https://sparrowhub.io](https://sparrowhub.io)
+Repository of Sparrow plugins is available at [https://sparrowhub.io](https://sparrowhub.io)
 
 ## Sparky workers
 
@@ -185,7 +202,6 @@ Sparky uses [Sparrowdo](https://github.com/melezhik/sparrowdo) to launch jobs in
 * on localhost ( the same machine where Sparky is installed, default)
 * on remote host with ssh
 * docker container on localhost / remote machine 
-
 
 ```
 /--------------------\                                             [ localhost ]
@@ -213,8 +229,11 @@ Follow [sparrowdo cli](https://github.com/melezhik/sparrowdo#sparrowdo-cli) docu
 
 ### Skip bootstrap
 
-Sparrowdo client bootstrap might take some time, disable bootstrap by 
-( if client is already installed on target host ) using `bootstrap: false` option:
+Sparrowdo client bootstrap might take some time. 
+
+To disable bootstrap use  `bootstrap: false` option. 
+
+Useful if sparrowdo client is already installed on target host.
 
 ```yaml
 sparrowdo:
@@ -338,13 +357,12 @@ disabled: true
 
 # Advanced topics
 
-Following are some advanced topics, that might be of interest once you
-are familiar with a basis.
+Following are advanced topics covering some cool Sparky features.
 
 ## Job UIs
 
 Sparky UI DSL allows to grammatically describe UI for Sparky jobs
-and pass user input into scenario as variables.
+and pass user input into a scenario as variables.
 
 Read more at [docs/ui.md](https://github.com/melezhik/sparky/blob/master/docs/ui.md)
 
@@ -356,25 +374,25 @@ Read more at [docs/downstream.md](https://github.com/melezhik/sparky/blob/master
 
 ## Sparky triggering protocol (STP)
 
-Sparky Triggering Protocol allows to trigger jobs automatically by creating files in special format
+Sparky triggering protocol allows to trigger jobs automatically by creating files in special format.
 
 Read more at [docs/stp.md](https://github.com/melezhik/sparky/blob/master/docs/stp.md)
 
 ## Job API
 
-Job API allows to orchestrate multiple Sparky jobs
+Job API allows to orchestrate multiple Sparky jobs.
 
 Read more at [docs/job_api.md](https://github.com/melezhik/sparky/blob/master/docs/job_api.md)
 
 ## Sparky plugins
 
-Sparky plugins is way to extend Sparky jobs by writing reusable plugins as Raku modules
+Sparky plugins is way to extend Sparky jobs by writing reusable plugins as Raku modules.
 
 Read more at [docs/plugins.md](https://github.com/melezhik/sparky/blob/master/docs/plugins.md)
 
 ## HTTP API
 
-Sparky HTTP API allows execute Sparky jobs remotely over HTTP
+Sparky HTTP API allows execute Sparky jobs remotely over HTTP.
 
 Read more at [docs/api.md](https://github.com/melezhik/sparky/blob/master/docs/api.md)
 
@@ -383,12 +401,15 @@ Read more at [docs/api.md](https://github.com/melezhik/sparky/blob/master/docs/a
 ### Authentication
 
 Sparky web server _comes with_ two authentication protocols,
-choose proper one depending on your requirements, see details
-at [docs/auth.md](https://github.com/melezhik/sparky/blob/master/docs/auth.md)
+choose proper one depending on your requirements.
+
+Read more at [docs/auth.md](https://github.com/melezhik/sparky/blob/master/docs/auth.md)
 
 ### ACL
 
-Sparky ACL allows to create access control lists to manage role based access to Sparky resources, see [docs/acl.md](https://github.com/melezhik/sparky/blob/master/docs/acl.md)
+Sparky ACL allows to create access control lists to manage role based access to Sparky resources.
+
+Read more at [docs/acl.md](https://github.com/melezhik/sparky/blob/master/docs/acl.md)
 
 ## Databases support
 
@@ -401,9 +422,9 @@ following databases are supported:
 
 Read more at [docs/database.md](https://github.com/melezhik/sparky/blob/master/docs/database.md)
 
-## SSL Support
+## TLS Support
 
-Sparky web server may run on SSL. To enable this add a couple of parameters to `~/sparky.yaml`
+Sparky web server may run on TLS. To enable this add a couple of parameters to `~/sparky.yaml`
 
 configuration file:
 
@@ -438,11 +459,11 @@ Read more at [docs/glossary.md](https://github.com/melezhik/sparky/blob/master/d
 
 ## CSS
 
-Sparky uses [Bulma](https://bulma.io/) as CSS framework
+Sparky uses [Bulma](https://bulma.io/) as CSS framework for web UI.
 
 ## Sparky job examples
 
-Examples of various Sparky jobs could be found at `examples/` folder.
+Examples of various Sparky jobs could be found at [examples/](https://github.com/melezhik/sparky/tree/master/examples) folder.
 
 # See also
 

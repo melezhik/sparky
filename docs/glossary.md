@@ -2,7 +2,7 @@
 
 Some useful glossary
 
-# Job aka Sparky aka Sparky project
+# Job aka Sparky project
 
 Raku scenario gets executed on some event and does some useful job
 
