@@ -314,7 +314,7 @@ To set default values for SCM_URL and SCM_BRANCH, use sparrowdo `tags`:
 
 These is useful when trigger job manually.
 
-## Flappers protection mechanism 
+### Flappers protection mechanism 
 
 Flapper protection mechanism kicks out SCM urls that are timeouted (certain amount of time) during git connection, from scheduling, this mechanism protects sparkyd worker from stalling.
 
@@ -401,7 +401,7 @@ following databases are supported:
 
 Read more at [docs/database.md](https://github.com/melezhik/sparky/blob/master/docs/database.md)
 
-# SSL Support
+## SSL Support
 
 Sparky web server may run on SSL. To enable this add a couple of parameters to `~/sparky.yaml`
 
