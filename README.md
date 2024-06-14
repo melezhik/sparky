@@ -341,7 +341,7 @@ disabled: true
 Following are some advanced topics, that might be of interest once you
 are familiar with a basis.
 
-# Job UIs
+## Job UIs
 
 Sparky UI DSL allows to grammatically describe UI for Sparky jobs
 and pass user input into scenario as variables.
@@ -368,7 +368,7 @@ Read more at [docs/job_api.md](https://github.com/melezhik/sparky/blob/master/do
 
 ## Sparky plugins
 
-Sparky plugins is way to extend Sparky jobs by writing plugins as Raku modules
+Sparky plugins is way to extend Sparky jobs by writing reusable plugins as Raku modules
 
 Read more at [docs/plugins.md](https://github.com/melezhik/sparky/blob/master/docs/plugins.md)
 
@@ -430,17 +430,17 @@ Use environment variables to tune Sparky configuration.
 
 Read more at [docs/env.md](https://github.com/melezhik/sparky/blob/master/docs/env.md)
 
-# Glossary
+## Glossary
 
 Some useful glossary.
 
 Read more at [docs/glossary.md](https://github.com/melezhik/sparky/blob/master/docs/glossary.md)
 
-# CSS
+## CSS
 
 Sparky uses [Bulma](https://bulma.io/) as CSS framework
 
-# Sparky job examples
+## Sparky job examples
 
 Examples of various Sparky jobs could be found at `examples/` folder.
 

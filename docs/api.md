@@ -7,6 +7,7 @@ Sparky HTTP API allows execute Sparky jobs remotely over HTTP
 ```http
 POST /build/project/$project
 ```
+
 Returns `$key` - unique build identification ( aka Sparky Job ID )
 
 ## Trigger job with parameters
@@ -34,7 +35,7 @@ curl -k  -H "Content-Type: application/json" \
 https://127.0.0.1:4000/build-with-tags/project/hello-world
 ```
 
-Will trigger build for `hello-world` project, with named parameters `message` and `from`.
+Will trigger a job `hello-world`, with named parameters `message` and `from`.
 
 Parameters are handled within Sparky scenario as:
 
@@ -45,7 +46,7 @@ my $from = tags()<from>;
 
 ## Job status
 
-Get project's status ( image/status of the last build ):
+Get job status - status of the last executed build:
 
 ```http
 GET /status/$project/$key
@@ -63,7 +64,7 @@ Returns `$status`:
 
 ## Badges
 
-Get project's badge ( image/status of the project's last build ):
+Get job badge - image with status of the last executed build
 
 ```http
 GET /badge/$project
