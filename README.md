@@ -37,7 +37,7 @@ $ git clone https://github.com/melezhik/sparky.git
 $ cd sparky && zef install .
 ```
 
-# Database initialization
+## Database initialization
 
 Run database initialization script to populate database schema:
 
@@ -45,17 +45,27 @@ Run database initialization script to populate database schema:
 $ raku db-init.raku
 ```
 
-# Job scheduler
+# Sparky components
 
-To run Sparky jobs scheduler runs in console:
+Sparky comproses of several components:
+
+* Job scheduler
+
+* Jobs UI
+
+* Sparky jobs
+
+* Job workers (inc remote jobs)
+
+## Job scheduler
+
+To run Sparky jobs scheduler (aka daemon) runs in console:
 
 ```bash
 $ sparkyd
 ```
 
-`sparkyd` should be in your PATH, usually you need to `export PATH=~/.raku/bin:$PATH` after 
-
-`zef install .` 
+Scheduler logic:
 
 * Sparky daemon traverses sub directories found at the project root directory.
 
@@ -92,7 +102,7 @@ $ nano utils/install-sparky-web-systemd.raku # change working directory and user
 $ sparrowdo --sparrowfile=utils/install-sparkyd-systemd.raku --no_sudo --localhost
 ```
 
-# Sparky Web UI
+## Sparky Jobs UI
 
 Sparky has a simple web UI to allow trigger jobs and get reports.
 
@@ -109,8 +119,6 @@ $ nano utils/install-sparky-web-systemd.raku # change working directory, user an
 $ sparrowdo --sparrowfile=utils/install-sparky-web-systemd.raku --no_sudo --localhost
 ```
 
----
-
 By default Sparky UI application listens on host `0.0.0.0`, port `4000`, 
 to override these settings set  `SPARKY_HOST`, `SPARKY_TCP_PORT` 
 in `~/sparky.yaml` configuration file:
@@ -120,15 +128,17 @@ SPARKY_HOST: 127.0.0.1
 SPARKY_TCP_PORT: 5000 
 ```
 
-# Sparky jobs
+## Sparky jobs
 
-Sparky job is just a directory located at the sparky root directory:
+Sparky job needs a  directory located at the sparky root directory:
 
 ```bash
 $ mkdir ~/.sparky/projects/teddy-bear-app
 ```
 
-Sparky uses pure [Raku](https://raku.org) as a job language, for example:
+To create a job scenario, create file named `sparrowfile` located in job directory.
+
+Sparky uses pure [Raku](https://raku.org) for job syntax, for example:
 
 ```bash
 $ nano ~/.sparky/projects/hello-world/sparrowfile
@@ -166,11 +176,24 @@ bash 'prove6 -l', %(
 );
 ```
 
-Repository of available Sparky plugins - [https://sparrowhub.io](https://sparrowhub.io)
+Repository Sparrow plugins is available by [https://sparrowhub.io](https://sparrowhub.io)
 
-# Sparky workers
+## Sparky workers
 
-By default the job scenario get executed _on the same machine you run Sparky at_, but you can change this to _any remote host_ setting Sparrowdo section in `sparky.yaml` file:
+Sparky uses [Sparrowdo](https://github.com/melezhik/sparrowdo) to launch jobs in three fashions:
+
+* on localhost ( the same machine where Sparky is isttalled, default)
+* on remote host with ssh
+* docker container on localhost / remote machine 
+
+
+```
+/--------------------\                                             [ localhost ]
+| Sparky on localhost| --> sparrowdo client --> job (sparrow) -->  [ container ]
+\--------------------/                                             [ ssh host  ]
+```
+
+By default job scenarios get executed _on the same machine you run Sparky at_, but you can change this to _any remote host_ setting Sparrowdo section in `sparky.yaml` file:
 
 ```bash
 $ nano ~/.sparky/projects/teddy-bear-app/sparky.yaml
@@ -187,19 +210,18 @@ sparrowdo:
   sync: /tmp/repo
 ```
 
-Follow [sparrowdo cli](https://github.com/melezhik/sparrowdo#sparrowdo-cli) documentation for `sparrowdo` parameters explanation.
+Follow [sparrowdo cli](https://github.com/melezhik/sparrowdo#sparrowdo-cli) documentation for `sparrowdo` configuration section explanation.
 
-## Skip bootstrap
+### Skip bootstrap
 
-Sparrowdo bootstrap takes a while, if you don't need bootstrap ( sparrow client is already installed at a target host )
-use `bootstrap: false` option:
+Sparrowdo bootstrap takes a while, if you don't need bootstrap ( sparrow client is already installed at a target host ) use `bootstrap: false` option:
 
 ```yaml
 sparrowdo:
   bootstrap: false
 ```
 
-## Purging old builds
+### Purging old builds
 
 To remove old job builds set `keep_builds` parameter in `sparky.yaml`:
 
@@ -215,9 +237,9 @@ keep_builds: 10
 
 That makes Sparky remove old builds and only keep last `keep_builds` builds.
 
-## Run jobs by cron
+### Run jobs by cron
 
-It's possible to setup scheduler for Sparky builds, you should define `crontab` entry in sparky yaml file.
+To run Sparky jobs periodially, set `crontab` entry in sparky.yaml file.
 
 For example, to run a job every hour at 30,50 or 55 minutes:
 
@@ -231,7 +253,7 @@ crontab: "30,50,55 * * * *"
 
 Follow [Time::Crontab](https://github.com/ufobat/p6-time-crontab) documentation on crontab entries format.
 
-## Manual run
+### Manual run
 
 To trigger job manually from web UI, use `allow_manual_run`:
 
@@ -243,7 +265,7 @@ $ nano ~/.sparky/projects/teddy-bear-app/sparky.yaml
 allow_manual_run: true
 ```
 
-## Trigger job by SCM changes
+### Trigger job by SCM changes
 
 To trigger Sparky jobs on SCM changes, define `scm` section in `sparky.yaml` file:
 
@@ -304,7 +326,7 @@ worker:
   flappers_off: true
 ```
 
-## Disable jobs
+### Disable jobs
 
 To prevent Sparky job from execution use `disable` option:
 
@@ -408,11 +430,11 @@ Or just:
 $ cd ~/.sparky/projects/teddy-bear-app && sparky-runner.raku
 ```
 
-# Sparky runtime parameters
+## Sparky runtime parameters
 
-All this parameters could be overridden by command line ( `--root`, `--work-root` )
+Runtime parameters could be overridden by command line ( `--root`, `--work-root` )
 
-##  Root directory
+###  Root directory
 
 This is Sparky root directory, or directory where Sparky looks for jobs descriptions:
 
@@ -420,7 +442,7 @@ This is Sparky root directory, or directory where Sparky looks for jobs descript
 ~/.sparky/projects/
 ```
 
-##  Work directory
+###  Work directory
 
 This is working directory where sparky might place some stuff, useless at the moment:
 
@@ -428,44 +450,9 @@ This is working directory where sparky might place some stuff, useless at the mo
 ~/.sparky/work
 ```
 
-# Environment variables
+# Sparky Environment variables
 
-## SPARKY_SKIP_CRON
-
-You can disable cron check to run project forcefully, by setting `SPARKY_SKIP_CRON` environment variable:
-
-```bash
-$ export SPARKY_SKIP_CRON=1 && sparkyd
-```
-
-## SPARKY_MAX_JOBS
-
-Threshold of concurrent jobs maximum number. Use it to protect Sparky server from overload.
-
-(WARNING! This variable is not currently supported)
-
-## SPARKY_FLAPPERS_OFF
-
-Disable flappers mechanism, see "Flappers mechanism" section.
-
-## SPARKY_ROOT
-
-Sets the sparky root directory
-
-## SPARKY_HTTP_ROOT
-
-Set sparky web application http root. Useful when proxy application through Nginx:
-
-    SPARKY_HTTP_ROOT='/sparky' cro run
-
-## SPARKY_TIMEOUT
-
-Sets timeout for sparky workers, see [Running daemon](#running-daemon) section.
-
-## SPARKY_JOB_TIMEOUT
-
-How many seconds wait till a job is considered as timeouted (used in Sparky Job API calls).
-
+Read more at [docs/env.md](https://github.com/melezhik/sparky/blob/master/docs/env.md)
 
 # CSS
 
