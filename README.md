@@ -53,7 +53,7 @@ Sparky comprises of several components:
 
 * Jobs scheduler
 
-* Jobs Defintions
+* Jobs Definitions
 
 * Jobs workers (including remote jobs)
 
@@ -132,7 +132,7 @@ SPARKY_HOST: 127.0.0.1
 SPARKY_TCP_PORT: 5000 
 ```
 
-## Sparky jobs defintions
+## Sparky jobs definitions
 
 Sparky job needs a directory located at the sparky root directory:
 
@@ -154,7 +154,7 @@ say "hello Sparky!";
 ```
 
 To allow job to be executed by scheduler one need to create `sparky.yaml` - yaml based
-job defintion, minimal form would be:
+job definition, minimal form would be:
 
 ```bash
 $ nano ~/.sparky/projects/hello-world/sparky.yaml
