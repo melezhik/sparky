@@ -193,13 +193,12 @@ Sparky uses [Sparrowdo](https://github.com/melezhik/sparrowdo) to launch jobs in
 \--------------------/                                             [ ssh host  ]
 ```
 
-By default job scenarios get executed _on the same machine you run Sparky at_, but you can change this to _any remote host_ setting Sparrowdo section in `sparky.yaml` file:
+By default job scenarios get executed _on the same machine you run Sparky at_, 
+to run jobs on _remote host_ set sparrowdo section in `sparky.yaml` file:
 
 ```bash
 $ nano ~/.sparky/projects/teddy-bear-app/sparky.yaml
 ```
-
-And define worker configuration:
 
 ```yaml
 sparrowdo:
@@ -214,7 +213,8 @@ Follow [sparrowdo cli](https://github.com/melezhik/sparrowdo#sparrowdo-cli) docu
 
 ### Skip bootstrap
 
-Sparrowdo bootstrap takes a while, if you don't need bootstrap ( sparrow client is already installed at a target host ) use `bootstrap: false` option:
+Sparrowdo clinent bootstrap might take some time, disable bootstrap by 
+( if client is already installed on target host ) using `bootstrap: false` option:
 
 ```yaml
 sparrowdo:
@@ -416,43 +416,25 @@ tls:
 
 `SPARKY_USE_TLS` enables SSL mode and `tls` section has paths to ssl certificate ( key and certificate parts ).
 
-# Command line client
+# Additional topics
 
-To trigger Sparky job in terminal use `sparky-runner.raku` cli:
+## Sparky cli
 
-```bash
-$ sparky-runner.raku --dir=/home/user/.sparky/projects/teddy-bear-app
-```
+Sparky cli allows to trigger jobs in terminal.
 
-Or just:
+Read more at [docs/cli.md](https://github.com/melezhik/sparky/blob/master/docs/cli.md)
 
-```bash
-$ cd ~/.sparky/projects/teddy-bear-app && sparky-runner.raku
-```
+## Sparky Environment variables
 
-## Sparky runtime parameters
-
-Runtime parameters could be overridden by command line ( `--root`, `--work-root` )
-
-###  Root directory
-
-This is Sparky root directory, or directory where Sparky looks for jobs descriptions:
-
-```bash
-~/.sparky/projects/
-```
-
-###  Work directory
-
-This is working directory where sparky might place some stuff, useless at the moment:
-
-```bash
-~/.sparky/work
-```
-
-# Sparky Environment variables
+Use environment variables to tune Sparky configuration.
 
 Read more at [docs/env.md](https://github.com/melezhik/sparky/blob/master/docs/env.md)
+
+# Glossary
+
+Some useful glossary.
+
+Read more at [docs/glossary.md](https://github.com/melezhik/sparky/blob/master/docs/glossary.md)
 
 # CSS
 
