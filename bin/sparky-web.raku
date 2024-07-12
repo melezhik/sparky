@@ -826,13 +826,26 @@ sub create-cro-app ($pool) {
         my @vars;
 
         for (%project-conf<vars><> || []) -> $v {
-  
-          if ($v<group> && %project-conf<group_vars><>.Bag ∩ $v<group><>.Bag) {
-            say "{$v<name>} group:{$v<group>} is added by group condition ...";
+        
+          my $pass = False;
+
+          if ($group) {
+            for ($v<group>||[])<> -> $i {
+              if $i eq $group {
+                $pass = True;
+                last;
+              }
+            }
           } else {
-            say "{$v<name>} group:{($v<group>||[]).perl} is filtered out by group condition ...";
-            next;
+            $pass = True
           }
+
+        if $pass {
+          say "{$v<name>} is added to final vars";
+        } else {
+          next;
+          say "{$v<name>} is filtered out from final vars";
+        }
 
         @vars.push($v);
 
@@ -861,6 +874,7 @@ sub create-cro-app ($pool) {
             }
           }
         }
+
         if $v<value> && $v<value>.isa(Str) {
           for $v<value> ~~ m:global/"%" (\S+?) "%"/ -> $c {
             my $var_id = $c[0].Str;
@@ -917,7 +931,7 @@ sub create-cro-app ($pool) {
           http-root => sparky-http-root(),
           sparky-tcp-port => sparky-tcp-port(),
           group_vars => $group ?? [] !!  %project-conf<group_vars> || [],
-          render-vars => $group ?? True !! ( @vars.elems > 0 ?? True !! False ),
+          render-vars => $group ?? True !! (%project-conf<group_vars> ?? False !! True),
           css =>css(), 
           navbar => navbar($user, $token), 
           project => $project, 
