@@ -823,9 +823,18 @@ sub create-cro-app ($pool) {
 
         }
 
-        my @group_vars = %project-conf<group_vars> || [];
+        my @vars;
 
-        for (%project-conf<vars><> || []).grep({$group ?? @group_vars.Bag ∩ $_<group><>.Bag !! True}) -> $v {
+        for (%project-conf<vars><> || []) -> $v {
+  
+          if ($v<group> && %project-conf<group_vars><>.Bag ∩ $v<group><>.Bag) {
+            say "{$v<name>} group:{$v<group>} is added by group condition ...";
+          } else {
+            say "{$v<name>} group:{($v<group>||[]).perl} is filtered out by group condition ...";
+            next;
+          }
+
+        @vars.push($v);
 
         if $v<default> {
           for $v<default> ~~ m:global/"%" (\S+?) "%"/ -> $c {
@@ -908,7 +917,7 @@ sub create-cro-app ($pool) {
           http-root => sparky-http-root(),
           sparky-tcp-port => sparky-tcp-port(),
           group_vars => $group ?? [] !!  %project-conf<group_vars> || [],
-          render-vars => $group ?? True !! ( @group_vars ?? False !! True ),
+          render-vars => $group ?? True !! ( @vars.elems > 0 ?? True !! False ),
           css =>css(), 
           navbar => navbar($user, $token), 
           project => $project, 
@@ -916,7 +925,7 @@ sub create-cro-app ($pool) {
           disabled => %project-conf<disabled> || False,
           project-conf-str => $project-conf-str || "configuration not found",
           project-conf => %project-conf || {},
-          vars => (%project-conf<vars> || []).grep({$group ?? [$group].Bag ∩ $_<group><>.Bag !! True}) || [],
+          vars => @vars,
           scenario-code => "$root/$project/sparrowfile".IO ~~ :e ?? "$root/$project/sparrowfile".IO.slurp !! "scenario not found", 
           error => $error
         }

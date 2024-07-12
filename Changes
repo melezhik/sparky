@@ -2,6 +2,11 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+  - Fix issues with a usage of
+    group variables
+    and template varibaes
+    together
+
 0.2.7 2024-06-14T13:30:00Z
 
   - Huge overhaul of documentation

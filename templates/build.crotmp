@@ -36,7 +36,12 @@
                     <input class="input is-success" type="password" name="<$i.<name>>" value="<$i.<default>>" placeholder="<$i.<default>>">
                   </?>
                   <?{ $i.type eq 'textarea' }>
+                    <?$i.default>
                     <textarea class="textarea is-success" cols=20 type="textarea" name="<$i.<name>>" placeholder="<$i.<default>>"><$i.<default>></textarea>
+                    </?>
+                    <!$i.default>
+                    <textarea class="textarea is-success" cols=20 type="textarea" name="<$i.<name>>" placeholder=""></textarea>
+                    </!>
                   </?> 
                   <?{ $i.type eq 'checkbox' }>
                     <?$i.default>
@@ -56,7 +61,7 @@
                     <select name="<$i.<name>>">
                   </!>
                   <@$i.values: $s>
-                    <?{ $i.default eq $s }>
+                    <?{ $i.default && $i.default eq $s }>
                       <option selected="selected"><$s></option>
                     </?>
                     <!>
