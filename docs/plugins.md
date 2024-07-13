@@ -107,7 +107,7 @@ That contains:
 
 ```yaml
 plugins:
-  - Sparky::Plugin::Hello:
+  Sparky::Plugin::Hello:
     parameters:
       name: Sparrow from project %PROJECT%
 ```
@@ -123,14 +123,13 @@ You can defined _when_ to run plugin, here are 3 run scopes:
 Scopes are defined at `run_scope:` parameter:
 
 ```yaml
-- Sparky::Plugin::Hello:
+Sparky::Plugin::Hello:
   run_scope: fail
   parameters:
     name: Sparrow
 ```
 
 ## Examples of Sparky plugins
-
 
 * [Sparky::Plugin::Hello](https://github.com/melezhik/sparky-plugin-hello)
 * [Sparky::Plugin::Notify::Email](https://github.com/melezhik/sparky-plugin-notify-email)
