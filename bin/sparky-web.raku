@@ -510,19 +510,23 @@ sub create-cro-app ($pool) {
     $dbh.dispose;
 
     if $state == -1 {
-      redirect :permanent, '/icons/build-fail.png';
+      #redirect :permanent, '/icons/build-fail.png';
+      redirect :see-other, 'https://img.shields.io/static/v1?label=Sparky&message=Build+|+FAIL&color=red'
     }
 
     if $state == 1 {
-      redirect :permanent, '/icons/build-pass.png';
+      #redirect :permanent, '/icons/build-pass.png';
+      redirect :see-other, 'https://img.shields.io/static/v1?label=Sparky&message=Build+|+OK&color=green'
     }
 
     if $state == 0 {
-      redirect :permanent, '/icons/build-run.png';
+      #redirect :permanent, '/icons/build-run.png';
+      redirect :see-other, 'https://img.shields.io/static/v1?label=Sparky&message=Build+|+Run&color=yellow'
     }
 
     if $state == -2 {
-      redirect :permanent, '/icons/build-na.png';
+      #redirect :permanent, '/icons/build-na.png';
+      redirect :see-other, 'https://img.shields.io/static/v1?label=Sparky&message=Build+|+UNKOWN&color=gray'
     }
 
   }
