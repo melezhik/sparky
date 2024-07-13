@@ -454,12 +454,9 @@ LEAVE {
   my %config =  read-config($DIR);
 
   if  %config<plugins> {
-    my $i =  %config<plugins>.iterator;
-    for 1 .. %config<plugins>.elems {
-      my $plg = $i.pull-one;
-      my $plg-name = $plg.keys[0];
-      my %plg-params = $plg{$plg-name}<parameters>;
-      my $run-scope = $plg{$plg-name}<run_scope> || 'anytime';
+    for %config<plugins>.kv -> $plg-name, $plg-data {
+      my %plg-params = $plg-data<parameters> || %();
+      my $run-scope = $plg-data<run_scope> || 'anytime';
 
       #say "$plg-name, $run-scope, $SPARKY-BUILD-STATE";
       if ( $run-scope eq "fail" and $SPARKY-BUILD-STATE ne "FAILED" ) {

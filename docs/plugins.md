@@ -32,12 +32,12 @@ That contains:
 
 ```yaml
 plugins:
-  - Sparky::Plugin::Email:
+  Sparky::Plugin::Email:
     parameters:
       subject: "I finished"
       to: "happy@user.email"
       text: "here will be log"
-  - Sparky::Plugin::Hello:
+  Sparky::Plugin::Hello:
     parameters:
       name: Sparrow
 ```
