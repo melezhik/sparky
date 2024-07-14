@@ -2,6 +2,10 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.2.8 2024-07-14T12:30:00Z
+
+  - Migrate ci pipeline to Sparky
+
   - Use img.shields.io to render
     project badges
   - Fix issues with a usage of
