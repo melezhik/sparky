@@ -76,7 +76,7 @@ sub get-sparky-conf is export {
 
   # say ">>> ", $conf-file.IO.slurp;
 
-  say ">>> parse sparky yaml config from: $conf-file";
+  # say ">>> parse sparky yaml config from: $conf-file";
 
   %conf = $conf-file.IO ~~ :f ?? load-yaml($conf-file.IO.slurp) !! Hash.new;
 
