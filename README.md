@@ -439,6 +439,10 @@ tls:
 
 # Additional topics
 
+## Sparman
+
+Sparman is a cli to ease SparrowCI management. See [sparman.md](docs/sparman.md) document.
+
 ## Sparky cli
 
 Sparky cli allows to trigger jobs in terminal.
