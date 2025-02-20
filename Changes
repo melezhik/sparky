@@ -2,6 +2,13 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.2.9 2025-02-20T14:50:00Z
+
+  - Make sparman part of
+    Sparky distribution
+
+  - Comment some noisy logs
+
 0.2.8 2024-07-14T12:30:00Z
 
   - Migrate ci pipeline to Sparky
