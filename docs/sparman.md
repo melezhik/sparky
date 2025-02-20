@@ -33,10 +33,10 @@ sparman.raku worker_ui status
 
 To pass environmental variables to services, use `--env var=val,var2=val ...` notation.
 
-For example, to set worker polling timeout to 10 seconds and set SPARROWCI_HOST:
+For example, to set worker polling timeout to 10 seconds and skip cron jobs:
 
 ```bash
-sparman.raku --env SPARKY_TIMEOUT=10,SPARROWCI_HOST=http://127.0.0.1:2222 worker start
+sparman.raku --env SPARKY_TIMEOUT=10,SPARKY_SKIP_CRON=1 worker start
 ```
 
 ## Logs

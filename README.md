@@ -441,7 +441,7 @@ tls:
 
 ## Sparman
 
-Sparman is a cli to ease SparrowCI management. See [sparman.md](docs/sparman.md) document.
+Sparman is a cli to ease SparrowCI management. See [docs/sparman.md](docs/sparman.md) document.
 
 ## Sparky cli
 
