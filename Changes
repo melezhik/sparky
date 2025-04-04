@@ -2,6 +2,12 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.2.10 2025-04-04T21:18:00Z
+
+  - Improved algorithm
+    of sending data to
+    browser via web socket
+
 0.2.9 2025-02-20T14:50:00Z
 
   - Make sparman part of

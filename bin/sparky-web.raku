@@ -33,6 +33,7 @@ sub create-cro-app ($pool) {
                 my $done = False;
                 my @chunk;
                 my $i = 0;
+                my $j = 0;
                 while True  {
                   my @data = "$reports-dir/$project/build-$build_id.txt".IO.lines;
                   for @data[$last_e .. *] -> $l {
@@ -43,11 +44,22 @@ sub create-cro-app ($pool) {
                     @chunk.push($msg);
                     #emit($msg);
                   }
-                  $i++; sleep(1);
-                  if @chunk.elems > 0 and (@chunk.elems >= 1000 or $i <= 10) {
+                  $i++; $j++; sleep(1);
+                  # we send data back to browser via web socket if
+                  # at least one of the following conditions is true:
+                  # - during first 10 seconds (every second )
+                  # - size of accumulated data chunk is more then 100 lines
+                  # - (after first 100 seconds ) every 10 seconds
+                  # in all cases we emit no more then 100 messages at once
+                  if @chunk.elems > 0 and (@chunk.elems >= 100 or $i <= 10 or $j >= 10) {
                     say("ws: send data to client: {@chunk.elems} lines");
-                    emit(@chunk.join("\n"));
-                    @chunk = ();
+                    my $k = 1;
+                    while (@chunk.elems and $k <= 100) {
+                      my $d = shift @chunk;
+                      emit($d);
+                      $k++;
+                    }
+                    @chunk = (); $j = 0;
                   }
                   $last_e = @data.elems;
                   #if trigger-exists($root,$project,$key) {
