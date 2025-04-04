@@ -52,7 +52,6 @@ sub create-cro-app ($pool) {
                   # - (after first 100 seconds ) every 10 seconds
                   # in all cases we emit no more then 100 messages at once
                   if @chunk.elems > 0 and (@chunk.elems >= 100 or $i <= 10 or $j >= 10) {
-                    say("ws: send data to client: {@chunk.elems} lines");
                     my $k = 1;
                     while (@chunk.elems and $k <= 100) {
                       my $d = shift @chunk;
@@ -60,6 +59,7 @@ sub create-cro-app ($pool) {
                       $k++;
                     }
                     @chunk = (); $j = 0;
+                    say("ws: send data to client: {$k} lines");
                   }
                   $last_e = @data.elems;
                   #if trigger-exists($root,$project,$key) {
