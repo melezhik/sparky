@@ -2,6 +2,11 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.2.11 2025-04-04T21:50:00Z
+
+  - Improved algorithm
+    after v 0.2.10 fix
+
 0.2.10 2025-04-04T21:18:00Z
 
   - Improved algorithm

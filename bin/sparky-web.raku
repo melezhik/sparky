@@ -58,7 +58,7 @@ sub create-cro-app ($pool) {
                       emit($d);
                       $k++;
                     }
-                    @chunk = (); $j = 0;
+                    $j = 0;
                     say("ws: send data to client: {$k-1} lines");
                   }
                   $last_e = @data.elems;
