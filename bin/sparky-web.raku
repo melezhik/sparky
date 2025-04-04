@@ -59,7 +59,7 @@ sub create-cro-app ($pool) {
                       $k++;
                     }
                     @chunk = (); $j = 0;
-                    say("ws: send data to client: {$k} lines");
+                    say("ws: send data to client: {$k-1} lines");
                   }
                   $last_e = @data.elems;
                   #if trigger-exists($root,$project,$key) {
