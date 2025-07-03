@@ -32,9 +32,10 @@ Go to http://localhost:4000
 
 ## Add new project
 
-To add new project just copy project into local storage: 
-
+To add new project, just create it in on local storage: 
 
 ```bash
-cp -r /path/to/project/hello-world/ /home/raku/.sparky/projects/
+$ mkdir ~/.sparky/projects/new-project
+$ nano  ~/.sparky/projects/new-project/sparky.yaml
+$ nano  ~/.sparky/projects/new-project/sparrowfile
 ```
