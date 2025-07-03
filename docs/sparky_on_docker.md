@@ -24,7 +24,7 @@ This storage persists on host file system and remains across Sparky container re
 ## Run sparky 
 
 ```
-docker run -it  -p 4000:4000 -v ~/.sparky/:/home/raku/.sparky local/sparky:latest 
+$ docker run -it  -p 4000:4000 -v ~/.sparky/:/home/raku/.sparky local/sparky:latest 
 ```
 
 Go to http://localhost:4000
