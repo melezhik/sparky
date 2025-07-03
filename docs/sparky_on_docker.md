@@ -2,6 +2,13 @@
 
 How to run Sparky on docker
 
+## Build docker image
+
+```bash
+$ git clone https://github.com/melezhik/sparky.git
+$ docker build . -t local/sparky
+```
+
 ## Prepare Sparky projects local storage
 
 ```bash
@@ -13,11 +20,10 @@ $ raku db-init.raku
 
 This storage persists on host file system and remains across Sparky container restarts
 
-
 ## Run sparky 
 
 ```
-docker run -it  -p 4000:4000 -v ~/.sparky/:/home/raku/.sparky melezhik/sparky:latest 
+docker run -it  -p 4000:4000 -v ~/.sparky/:/home/raku/.sparky local/sparky:latest 
 ```
 
 Go to http://localhost:4000
