@@ -6,6 +6,7 @@ How to run Sparky on docker
 
 ```bash
 $ git clone https://github.com/melezhik/sparky.git
+$ cd sparky/
 $ docker build . -t local/sparky
 ```
 
