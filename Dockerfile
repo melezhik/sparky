@@ -11,6 +11,7 @@ RUN sudo echo
 
 USER raku
 RUN zef install --/test https://github.com/melezhik/sparky.git
+RUN zef install --/test --force-install https://github.com/melezhik/sparky.git
 RUN git clone https://github.com/melezhik/sparky.git /home/raku/Sparky
 WORKDIR /home/raku/Sparky
 RUN ls -l && raku db-init.raku

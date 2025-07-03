@@ -45,5 +45,5 @@ Logs are available at the following locations:
 
 Sparky Woker UI - `~/.sparky/sparky-web.log`
 
-Sparky Woker - `~/.sparky/sparkyd.log `
+Sparky Woker - `~/.sparky/sparkyd.log`
 

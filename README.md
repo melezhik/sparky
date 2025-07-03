@@ -439,6 +439,10 @@ tls:
 
 # Additional topics
 
+## Sparky on docker
+
+How to run Sparky via docker container. See [docs/sparky_on_docker.md](docs/sparky_on_docker.md) document.
+
 ## Sparman
 
 Sparman is a cli to ease SparrowCI management. See [docs/sparman.md](docs/sparman.md) document.
