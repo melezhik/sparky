@@ -436,8 +436,8 @@ sub create-cro-app ($pool) {
       css => css(), 
       navbar => navbar($user, $token), 
       projects => @projects.sort(*.<project>),
-      message => "$message",
-      level => "$level",
+      message => $message || "",
+      level => $level || "",
     }
   
   }
