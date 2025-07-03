@@ -15,8 +15,8 @@ $ docker build . -t local/sparky
 ```bash
 $ sudo apt-get install sqlite3
 $ git clone https://github.com/melezhik/sparky.git
-$ cd sparky && zef install .
-$ raku db-init.raku
+$ cd sparky && zef install --/test YAMLish DBIish Time::Crontab Data::Dump
+$ raku -I lib/ db-init.raku
 ```
 
 This storage persists on host file system and remains across Sparky container restarts
