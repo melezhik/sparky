@@ -45,7 +45,9 @@ projects:
         - operator
 ```
 
-Default login and password (if auth section is not set at all):
+### Default login and password 
+
+By default use following credentials:
 
 * login - admin
 * password - admin
