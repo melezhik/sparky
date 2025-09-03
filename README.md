@@ -23,8 +23,8 @@ Sparky features:
 # Sparky workflow in 4 lines:
 
 ```bash
-$ nohup sparkyd & # run Sparky daemon to trigger jobs
-$ nohup cro run & # run Sparky CI UI to see job statuses and reports
+$ sparkyd # run Sparky daemon to trigger jobs
+$ cro run # run Sparky CI UI to see job statuses and reports
 $ nano ~/.sparky/projects/my-project/sparrowfile  # write a job scenario
 $ firefox 127.0.0.1:4000 # run jobs and get reports
 ```
