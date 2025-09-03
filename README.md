@@ -92,20 +92,6 @@ $ sparkyd --timeout=600 # sleep 10 minutes
 ```bash
 $ SPARKY_TIMEOUT=30 sparkyd ...
 ```
-
-Running job scheduler in demonized mode:
-
-```bash 
-$ nohup sparkyd &
-```
-
-To install sparkyd as a systemd unit:
-
-```bash
-$ nano utils/install-sparky-web-systemd.raku # change working directory and user
-$ sparrowdo --sparrowfile=utils/install-sparkyd-systemd.raku --no_sudo --localhost
-```
-
 ## Sparky Jobs UI
 
 Sparky has a simple web UI to allow trigger jobs and get reports.
@@ -114,13 +100,6 @@ To run Sparky UI web application:
 
 ```bash
 $ cro run
-```
-
-To install Sparky CI web app as a systemd unit:
-
-```bash
-$ nano utils/install-sparky-web-systemd.raku # change working directory, user and root directory
-$ sparrowdo --sparrowfile=utils/install-sparky-web-systemd.raku --no_sudo --localhost
 ```
 
 By default Sparky UI application listens on host `0.0.0.0`, port `4000`, 
@@ -194,6 +173,15 @@ bash 'prove6 -l', %(
 ```
 
 Repository of Sparrow plugins is available at [https://sparrowhub.io](https://sparrowhub.io)
+
+
+## Systemd units
+
+To install sparky UI, sparkyd systemd units:
+
+```bash
+$ sparrowdo --sparrowfile=utils/install-sparky-systemd.raku --localhost
+```
 
 ## Sparky workers
 
