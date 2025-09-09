@@ -73,7 +73,7 @@ Scheduler logic:
 
 * Sparky daemon traverses sub directories found at the project root directory.
 
-* For every directory found initiate job run process invoking sparky worker ( `sparky-runner.raku` ).
+* For every directory found initiate job run process invoking sparky worker ( `sparky-runner` ).
 
 * Sparky root directory default location is `~/.sparky/projects`.
 

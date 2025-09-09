@@ -1,6 +1,6 @@
 use v6;
 
-unit module Sparky:ver<0.2.11>;
+unit module Sparky:ver<0.2.12>;
 use YAMLish;
 use DBIish;
 use Time::Crontab;
@@ -163,7 +163,7 @@ sub build-is-running ( $dir ) {
 
   my $project = $dir.IO.basename;
 
-  my @proc-check-cmd = ("bash", "-c", "ps aux | grep sparky-runner.raku | grep '\\--marker=$project ' | grep -v grep");
+  my @proc-check-cmd = ("bash", "-c", "ps aux | grep sparky-runner | grep '\\--marker=$project ' | grep -v grep");
 
   my $proc-run = run @proc-check-cmd, :out;
 
@@ -186,7 +186,7 @@ sub build-is-running ( $dir ) {
 
 sub builds-running-cnt {
 
-  my @proc-check-cmd = ("bash", "-c", "ps aux | grep sparky-runner.raku | grep -v grep | wc -l");
+  my @proc-check-cmd = ("bash", "-c", "ps aux | grep sparky-runner | grep -v grep | wc -l");
 
   my $proc-run = run @proc-check-cmd, :out;
 
@@ -262,7 +262,7 @@ sub schedule-build ( $dir, %opts? ) is export {
       if ! build-is-running($dir) {
 
         Proc::Async.new(
-          'sparky-runner.raku',
+          'sparky-runner',
           "--marker=$project",
           "--dir=$dir",
           "--trigger=$trigger-file",

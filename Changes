@@ -2,6 +2,14 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.2.12 2025-09-25T15:50:00Z
+
+  Rename bin/ scripts to foo
+  instead of foo.raku
+  to support both Rakubrew
+  and standard Raku
+  installations
+
 0.2.11 2025-04-04T21:51:00Z
 
   - Improved algorithm
