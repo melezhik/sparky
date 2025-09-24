@@ -39,6 +39,9 @@
           <?{$i.state == -1}>
             <span class="tag is-danger">failed</span>
           </?>
+          <?{$i.state == -11}>
+            <span class="tag is-warning">terminated</span>
+          </?>
           <?{$i.state == 0}>
             <span class="tag is-primary">running</span>
           </?>

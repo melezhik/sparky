@@ -23,6 +23,9 @@
       <div class="panel-block">
         <a class="button is-info is-rounded is-small" onclick="reBuild()">Rebuild</a>
       </div>
+      <div class="panel-block">
+        <a class="button is-warning is-rounded is-small" onclick="Terminate()">Terminate</a>
+      </div>
       <div class="notification is-success is-light" id="notification"></div>
       </div>
     </nav>
@@ -110,6 +113,24 @@
         // document.getElementById('notification').innerHTML += "<br>";
         document.getElementById('notification').innerHTML = `<small>Build queued: ${job_id}</small>`;
         connect2(job_id);
+    })
+  }
+
+  function Terminate() {
+
+    url = "<.http-root>/cancel/project/<.project>/<.job_id>"
+    fetch(url, { method: 'POST' })
+    .then(function(response) {
+      console.log(response.status); // Will show you the status
+      if (!response.ok) {
+        document.getElementById('notification').innerHTML = `<small>Terminate error: ${response.status} ${response.statusText}</small>`;
+      } else {
+        return response.text();
+      }
+    })
+    .then(function(job_id) {
+        // document.getElementById('notification').innerHTML += "<br>";
+        document.getElementById('notification').innerHTML = `<small>Termination started: ${job_id}</small>`;
     })
   }
 

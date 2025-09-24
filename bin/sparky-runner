@@ -34,7 +34,7 @@ sub MAIN (
 
   my %config = read-config($dir);
 
-  say "load sparky.yaml config from $dir ..";
+  say "load sparky.yaml config from $dir ...";
   say ">>>", Dump(%config);
   mkdir $dir;
 
@@ -325,41 +325,84 @@ sub MAIN (
     "{$build-cache-dir}/{$trigger.IO.basename}".IO.spurt(%t.perl);
   }
 
+  my $job-channel = Channel.new;
+  my $report-file = "$reports-dir/build-$build_id.txt";
+
   if $make-report {
-    my $report-file = "$reports-dir/build-$build_id.txt";
-    shell("export SP6_FORMAT_COLOR=1 && cd $run-dir && $sparrowdo-run 1>$report-file" ~ ' 2>&1');
-  } else{
+    $sparrowdo-run  ~=  " 1>$report-file";
+  }
+  $sparrowdo-run ~= ' 2>&1 & pid=$!;';
+  $sparrowdo-run ~= ' echo $pid > ' ~ "{$build-state-dir}/{$job-id}.pid;";
+  $sparrowdo-run ~=  ' wait $pid;';
+  $sparrowdo-run ~=  ' echo $! > ' ~ "{$build-state-dir}/{$job-id}.exit-code";
+
+  start { 
     shell("export SP6_FORMAT_COLOR=1 && cd $run-dir && $sparrowdo-run" ~ ' 2>&1');
+    say "sparky job: job finished";
+    if "{$build-state-dir}/{$job-id}.exit-code".IO ~~ :f {
+      my $ex-code = "{$build-state-dir}/{$job-id}.exit-code".IO.slurp.chomp;
+      if $ex-code = 0 {
+        $job-channel.send("OK");
+      }
+    } 
+  };
+  start {
+    while True {
+      if "{$build-state-dir}/{$job-id}.terminate".IO ~~ :f {
+        say "sparky job: job terminated";
+        unlink("{$build-state-dir}/{$job-id}.terminate");
+        if "{$build-state-dir}/{$job-id}.pid".IO ~~ :f {
+          my $pid = "{$build-state-dir}/{$job-id}.pid".IO.slurp.chomp;
+          say "terminate sparky job process and all sub processes: PID=$pid";
+          shell('list_descendants () { local children=$(pgrep -P "$1"); for pid in $children; do list_descendants "$pid"; done; echo "$children"; }; echo "kill " $(list_descendants %PID%); kill $(list_descendants %PID%)'.subst("%PID%",$pid,:g));
+        } 
+        $job-channel.send("TERMINATE");
+      }
+      sleep(2);
+    }
   }
 
+  my $status = "UNKNOWN";
 
-  if $make-report { $dbh.do("UPDATE builds SET state = 1 WHERE id = $build_id"); 
+  react {
+    whenever $job-channel.Supply -> $event {
+        say "sparky job: event received: $event";
+        $status = $event;
+        done();
+    }
+  }
+
+  my $state;
+
+  say "sparky job: status: $status";
+
+  if $status eq "OK" {
+    $state = 1;
+  } elsif $status eq "TERMINATE" {
+    $state = -11
+  } else {
+    $state = -1
+  }
+
+  say "sparky job: state: $state";
+
+  if $make-report { 
+    $dbh.do("UPDATE builds SET state = $state WHERE id = $build_id");
+  }
+  if $state == 1 { 
     say "BUILD SUCCEED $project" ~ '@' ~ $build_id; 
-    $SPARKY-BUILD-STATE="OK"; 
+    $SPARKY-BUILD-STATE = "OK"; 
     "{$build-state-dir}/{$job-id}".IO.spurt(1);
   } else {
-    say "BUILD SUCCEED <$project>";
-    $SPARKY-BUILD-STATE="OK";
-    "{$build-state-dir}/{$job-id}".IO.spurt(1);
-  }
-
-  CATCH {
-
-      # will definitely catch all the exception
-      default {
-        warn .say;
-        if $make-report {
-          say "BUILD FAILED $project" ~ '@' ~ $build_id;
-          $dbh.do("UPDATE builds SET state = -1 WHERE id = $build_id");
-          $SPARKY-BUILD-STATE="FAILED";
-         "{$build-state-dir}/{$job-id}".IO.spurt(-1);
-        } else {
-          say "BUILD FAILED <$project>";
-          $SPARKY-BUILD-STATE="FAILED";
-         "{$build-state-dir}/{$job-id}".IO.spurt(-1);
-        }
-      }
-
+    if $status eq "TERMINATE" {
+      say "BUILD TERMINATED $project" ~ '@' ~ $build_id;
+      $SPARKY-BUILD-STATE = "TERMINATED"; 
+      "{$build-state-dir}/{$job-id}".IO.spurt(-11);
+    } else {
+      say "BUILD FAILED $project" ~ '@' ~ $build_id;
+      $SPARKY-BUILD-STATE = "FAILED"; 
+      "{$build-state-dir}/{$job-id}".IO.spurt(-1);
+    }
   }
 
   # remove old builds
@@ -409,6 +452,27 @@ sub MAIN (
               say "remove state cache: {$build-state-dir}/{$job-id}";
             } else {
               say "!!! can't remove state cache: {$build-state-dir}/{$job-id}";
+            }
+            if "{$build-files-dir}/{$job-id}.pid".IO ~~ :f {
+              if unlink "{$build-files-dir}/{$job-id}.pid".IO {
+                say "remove job pid file: {$build-files-dir}/{$job-id}.pid";
+              } else {
+                say "!!! can't remove job pid file: {$build-files-dir}/{$job-id}.pid";
+              }
+            }
+            if "{$build-files-dir}/{$job-id}.exit".IO ~~ :f {
+              if unlink "{$build-files-dir}/{$job-id}.exit".IO {
+                say "remove job exit code file: {$build-files-dir}/{$job-id}.exit";
+              } else {
+                say "!!! can't remove job exit code file: {$build-files-dir}/{$job-id}.exit";
+              }
+            }
+            if "{$build-files-dir}/{$job-id}.terminate".IO ~~ :f {
+              if unlink "{$build-files-dir}/{$job-id}.terminate".IO {
+                say "remove job terminate request file: {$build-files-dir}/{$job-id}.terminate";
+              } else {
+                say "!!! can't remove job terminate request file: {$build-files-dir}/{$job-id}.terminate";
+              }
             }
             if "{$build-files-dir}/{$job-id}".IO ~~ :d {
               if rmtree "{$build-files-dir}/{$job-id}" {

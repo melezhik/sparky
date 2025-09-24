@@ -93,7 +93,7 @@ sub create-cro-app ($pool) {
                     $dbh.dispose;
 
                   if $state.defined {
-                    if $state == -1 or $state == 1 {
+                    if $state == -1 or $state == -11 or $state == 1 {
                       say "ws: done - job has finsihed - state: [$state]";
                       $done = True;
                       last();
@@ -203,6 +203,25 @@ sub create-cro-app ($pool) {
 
     } else {
       forbidden;
+    }
+    
+  }
+
+  post -> 'cancel', 'project', $project, $key, :$user is cookie, :$token is cookie {
+
+    if check-user($user, $token, $project) {
+
+      mkdir "$root/$project/.triggers";
+
+      spurt "$root/../work/$project/.states/$key.terminate", "";
+
+      content 'text/plain', "{$key}.terminate";
+
+    } else {
+
+      #content "text/plain", "OK";
+      forbidden;
+
     }
     
   }
@@ -524,6 +543,11 @@ sub create-cro-app ($pool) {
     if $state == -1 {
       #redirect :permanent, '/icons/build-fail.png';
       redirect :see-other, 'https://img.shields.io/static/v1?label=Sparky&message=Build+|+FAIL&color=red'
+    }
+
+    if $state == -11 {
+      #redirect :permanent, '/icons/build-fail.png';
+      redirect :see-other, 'https://img.shields.io/static/v1?label=Sparky&message=Build+|+TERM&color=red'
     }
 
     if $state == 1 {
