@@ -327,6 +327,9 @@ sub MAIN (
 
   my $job-channel = Channel.new;
   my $report-file = "$reports-dir/build-$build_id.txt";
+  my $report-file-sys = "$reports-dir/build-$build_id.syslog";
+
+  update-sys-report($report-file-sys,"job ready to start");
 
   if $make-report {
     $sparrowdo-run  ~=  " 1>$report-file";
@@ -334,31 +337,48 @@ sub MAIN (
   $sparrowdo-run ~= ' 2>&1 & pid=$!;';
   $sparrowdo-run ~= ' echo $pid > ' ~ "{$build-state-dir}/{$job-id}.pid;";
   $sparrowdo-run ~=  ' wait $pid;';
-  $sparrowdo-run ~=  ' echo $! > ' ~ "{$build-state-dir}/{$job-id}.exit-code";
+  $sparrowdo-run ~=  ' echo $? > ' ~ "{$build-state-dir}/{$job-id}.exit-code";
 
   start { 
+    update-sys-report($report-file-sys,"job started");
     shell("export SP6_FORMAT_COLOR=1 && cd $run-dir && $sparrowdo-run" ~ ' 2>&1');
+    if "{$build-state-dir}/{$job-id}.pid".IO ~~ :f {
+      my $pid = "{$build-state-dir}/{$job-id}.pid".IO.slurp.chomp;
+      update-sys-report($report-file-sys,"job pid file: {$build-state-dir}/{$job-id}.pid");
+      update-sys-report($report-file-sys,"job pid: $pid");
+    }
     say "sparky job: job finished";
+    update-sys-report($report-file-sys,"job finished");
     if "{$build-state-dir}/{$job-id}.exit-code".IO ~~ :f {
       my $ex-code = "{$build-state-dir}/{$job-id}.exit-code".IO.slurp.chomp;
-      if $ex-code = 0 {
+      update-sys-report($report-file-sys,"job exit code: $ex-code");
+      if Int($ex-code) == 0 {
         $job-channel.send("OK");
+      } else {
+        $job-channel.send("FAIL");
       }
+    } else {
+        $job-channel.send("FAIL");
     } 
   };
   start {
+    my $cnt = 0;
     while True {
       if "{$build-state-dir}/{$job-id}.terminate".IO ~~ :f {
         say "sparky job: job terminated";
         unlink("{$build-state-dir}/{$job-id}.terminate");
-        if "{$build-state-dir}/{$job-id}.pid".IO ~~ :f {
-          my $pid = "{$build-state-dir}/{$job-id}.pid".IO.slurp.chomp;
-          say "terminate sparky job process and all sub processes: PID=$pid";
-          shell('list_descendants () { local children=$(pgrep -P "$1"); for pid in $children; do list_descendants "$pid"; done; echo "$children"; }; echo "kill " $(list_descendants %PID%); kill $(list_descendants %PID%)'.subst("%PID%",$pid,:g));
-        } 
+        update-sys-report($report-file-sys,"job terminated by request");
+        terminate-job("{$build-state-dir}/{$job-id}.pid");
+        $job-channel.send("TERMINATE");
+      } elsif $cnt >= 1600 {
+        # kill sparky job by timeout
+        # in 1 hour
+        update-sys-report($report-file-sys,"job terminated by timeout");
+        terminate-job("{$build-state-dir}/{$job-id}.pid");
         $job-channel.send("TERMINATE");
       }
       sleep(2);
+      $cnt++;
     }
   }
 
@@ -378,10 +398,13 @@ sub MAIN (
 
   if $status eq "OK" {
     $state = 1;
+    update-sys-report($report-file-sys,"job succeeded");
   } elsif $status eq "TERMINATE" {
-    $state = -11
+    $state = -11;
+    update-sys-report($report-file-sys,"job terminated");
   } else {
-    $state = -1
+    $state = -1;
+    update-sys-report($report-file-sys,"job failed");
   }
 
   say "sparky job: state: $state";

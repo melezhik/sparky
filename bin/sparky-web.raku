@@ -356,6 +356,7 @@ sub create-cro-app ($pool) {
   # End of SparkyJobApi methods
   #
 
+  # home page
   get -> "", :$message, :$level, :$user is cookie, :$token is cookie {
   
     my @projects = Array.new;
@@ -461,6 +462,7 @@ sub create-cro-app ($pool) {
   
   }
   
+  # recent builds
   get -> 'builds', :$user is cookie, :$token is cookie {
 
     my $dbh = $pool ?? $pool.get-connection() !! get-dbh();
@@ -600,6 +602,11 @@ sub create-cro-app ($pool) {
       $dbh.dispose;
 
       my $data = "$reports-dir/$project/build-$build_id.txt".IO.slurp;
+      my $sys-report;
+      
+      if "$reports-dir/$project/build-$build_id.syslog".IO ~~ :f {
+        $sys-report = "$reports-dir/$project/build-$build_id.syslog".IO.slurp;
+      }
 
       if sparky-api-token() {
 
@@ -633,7 +640,8 @@ sub create-cro-app ($pool) {
         project => $project,
         build_id => $build_id,
         job_id => "{$key}",
-        artifacts => $artifacts, 
+        artifacts => $artifacts,
+        sys-report => $sys-report, 
         dt => $dt, 
         description => $description, 
         data => $data

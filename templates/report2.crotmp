@@ -35,6 +35,7 @@
             <ul>
               <li class="tab is-active" onclick="openTab(event,'Report')"><a>Report</a></li>
               <li class="tab" onclick="openTab(event,'Artifacts')"><a>Artifacts</a></li>
+              <li class="tab" onclick="openTab(event,'SysReport')"><a>System Log</a></li>
             </ul>
           </div>
         </nav>
@@ -56,6 +57,14 @@
         &nbsp;|&nbsp;
         <a href="<.http-root>/file/<.project>/<.job_id>/<$i.name>">download</a><br>
       </@>
+      </div>
+      <div id="SysReport" class="content-tab" style="display:none">
+        <?.sys-report>
+        <pre><.sys-report></pre>
+        </?>
+        <!.sys-report>
+        no data
+        </!>
       </div>
     </div>
 
