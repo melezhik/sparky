@@ -465,6 +465,13 @@ sub MAIN (
           } else {
             say "!!! can't remove report: $reports-dir/build-$bid.txt";
           }
+          if "$reports-dir/build-$bid.syslog".IO ~~ :f {
+            if unlink "$reports-dir/build-$bid.syslog".IO {
+              say "remove report syslog: $reports-dir/build-$bid.syslog";
+            } else {
+              say "!!! can't remove report syslog: $reports-dir/build-$bid.syslog";
+            }
+          }
           if $job-id {
             if unlink "{$build-cache-dir}/{$job-id}".IO {
               say "remove trigger cache: {$build-cache-dir}/{$job-id}";
