@@ -2,10 +2,14 @@ Revision history for Sparky
 
 {{$NEXT}}
 
-  Build termination
-  Build timeouts
+0.2.13 2025-09-25T10:00:00Z
+
+  New features:
+   - Build terminations
+   - Build timeouts
+   - Report syslogs
   
-0.2.12 2025-09-25T15:50:00Z
+0.2.12 2025-08-25T15:50:00Z
 
   Rename bin/ scripts to foo
   instead of foo.raku
