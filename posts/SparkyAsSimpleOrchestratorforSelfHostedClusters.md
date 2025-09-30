@@ -1,4 +1,4 @@
-# Sparky as a simple orchestator for self hosted clusters
+# Sparky as a simple orchestrator for self hosted clusters
 
 Kubernetes seems to overkill and too complex when all you have is few pods scattered across 3 virtual machines.
 
