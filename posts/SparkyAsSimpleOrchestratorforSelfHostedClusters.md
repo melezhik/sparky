@@ -223,7 +223,7 @@ $s = task-run "app deploy", "quadlet-container-deploy", %(
 
 bash "systemctl daemon-reload";
 
-service-start "my-app\@$version$";
+service-start "my-app\@$version";
 
 ```
 
