@@ -1,14 +1,14 @@
 # Sparky as a simple orchestrator for self hosted clusters
 
-Kubernetes seems to overkill and too complex when all you have is few pods scattered across 3 virtual machines.
+Kubernetes seems to be an overkill and too complex when all you have is few pods scattered across 3 virtual machines.
 
-People use selfhosted or homelabs systems a lot, and every time I see those posts on [fosstdon](https://fosstodon.org/tags/homelab) I think how great solution [Sparky](https://github.com/melezhik/sparky) would be:
+People use selfhosted or homelabs systems a lot, and every time I see those posts on [fosstdon](https://fosstodon.org/tags/homelab) I think what a great solution for that [Sparky](https://github.com/melezhik/sparky) would be:
 
 - Simple installation
 
 - Included control plane with clear and easy to use UI
 
-- Rakulang + Sparrow all battery included framework for automation
+- Rakulang + Sparrow - all battery included framework for automation
 
 
 # Design
@@ -45,17 +45,17 @@ So the design would be:
 
 # Ssh connection
 
-Basically we need to make it sure there is ssh passwordless connection from control plane to
-any of VMs. Also the ssh account we use need to have root privileges to do a further
+Basically we need to make it sure there is a ssh passwordless connection from control plane to
+any of VMs. Also the ssh account has to have root privileges to allow further
 provisioning:
 
-```
-ssh VM1 sudo echo # should succeed
+```bash
+$ ssh VM1 sudo echo # should succeed
 ```
 
 # Install Sparky
 
-Any Linux box is enough, recommended system resources - 6 GB RAM ( maybe less ). Sparky
+Any Linux box should be just fine, recommended system resources - 6 GB RAM ( maybe less ). Sparky
 is written on Raku, so we need to install Raku first 
 
 ```bash
@@ -89,7 +89,7 @@ with no projects ( will be created later )
 
 Hosts file ala Ansible inventory file describes all our cluster VMs and their roles.
 
-Image a simple setup with two virtual machines with backend and one virtual machine
+Imaging a simple setup with two virtual machines for backend and one virtual machine
 with frontend:
 
 `nano hosts.raku`
@@ -120,8 +120,7 @@ with frontend:
 # Create provision scenario
 
 Sparky is really cool as it has all you need to provision VMs, let's say for all VMs
-we need to install podman and for frontend VMs we want to install nginx server:
-
+we need to install podman and for frontend VM we want to install nginx server:
 
 `nano sparrowfile`
 
@@ -134,29 +133,28 @@ if tags()<frontend> {
 ```
 
 In general provision scenario could be complex, but I'd like to keep things simple for 
-demo only purposes. However may plugins and useful function are already available,
-please refer documentation:
+demonstration purposes. However many plugins and useful functions are already available,
+please refer the documentation:
 
 - Sparrow DSL - https://github.com/melezhik/Sparrow6/blob/master/documentation/dsl.md
 
 - Sparrow plugins - https://sparrowhub.io/search?q=all
 
-
 # Provision VMs
 
-To provision VMs all we need to is to kick Sparky scenario via sparrowdo cli:
+To provision VMs all we need is to kick Sparky scenario via Sparky cli (called sparrowdo):
 
-```
+```bash
 sparrowdo --host=hosts.raku --bootstrap
 ```
 
 What will happen under the hood Sparky jobs will be fired to run across your cluster VMs and
-provision them accordingly. To track changes and see what's going on in Sparky cluster
-just visit UI and find proper report page.
+provision them accordingly. To track changes and see what's going on - just visit UI, 
+go to project page and get real time reports.
 
-Boostrap flag is only required once, when VMs are provisioned for the first time, as this
-will make sure that Sparky client is installed on those VMs first. Sparky client will
-then parse Sparky scenario and execute it.
+Bootstrap flag is only required once, when VMs are provisioned for the first time, as this
+will make it sure that Sparky client is installed on VMs first. Sparky client will
+then parse and execute scenario.
 
 
 # Live updates 
@@ -199,7 +197,7 @@ bash "systemctl daemon-reload" if $s<changed>;
 ```
 
 This scenario will go across all cluster VMs and install podman network and podman container template on them,
-to run scenario just repeat previous command, pointing different scenario file (pay attention we don't need to provide boostrap this time):
+to run scenario just repeat previous command, pointing different scenario file (pay attention we don't need to provide bootstrap option this time):
 
 ```
 sparrowdo --host hosts.raku --sparrowfile quadlet-setup.raku
@@ -207,7 +205,7 @@ sparrowdo --host hosts.raku --sparrowfile quadlet-setup.raku
 
 Again to track changes in real time we need to go to Sparky UI and wait till all jobs are finished
 
-Once podman basic resources are setup, let create a very simple scenario to deploy podman 
+Once podman basic resources are setup, let's create a very simple scenario to deploy podman 
 containers on our cluster:
 
 `nano update.raku`
@@ -224,26 +222,25 @@ $s = task-run "app deploy", "quadlet-container-deploy", %(
 bash "systemctl daemon-reload";
 
 service-start "my-app\@$version";
-
 ```
 
 Now we are ready to deploy the very first version of our application on cluster. 
 
-Let's not describe here how we prepare podman images, as this is beyond the topic.
+Let's not describe here how we prepare podman images, as this goes beyond the topic.
 
-Deploy frontend:
+So, to deploy frontend:
 
 ```
 sparrowdo --host hosts.raku --tags version=frontend-0.0.1,frontend --sparrowfile update.raku
 ```
 
-Deploy backends:
+To deploy backends:
 
 ```
 sparrowdo --host hosts.raku --tags version=backend-0.0.1,backend --sparrowfile update.raku
 ```
 
-Again to track changes in real time we should go to Sparky dashboard page
+Again, to track changes in real time we should go to Sparky dashboard page
 
 # More things to tell
 
@@ -256,5 +253,7 @@ This short introduction has not covered other cool Sparky features:
 * Collect and download jobs artifacts from VMs across cluster
 
 * Create custom Sparky plugins using all popular programming languages
+
+---
 
 Please let me know what you think and I will probably create the second part of tutorial
