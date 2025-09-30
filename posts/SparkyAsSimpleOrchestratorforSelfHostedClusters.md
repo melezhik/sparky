@@ -50,13 +50,13 @@ any of VMs. Also the ssh account we use need to have root privileges to do a fur
 provisioning:
 
 ```
-$ ssh VM1 sudo echo # should succeed
+ssh VM1 sudo echo # should succeed
 ```
 
 # Install Sparky
 
 Any Linux box is enough, recommended system resources - 6 GB RAM ( maybe less ). Sparky
-is is written on Raku, so we need to install Raku first 
+is written on Raku, so we need to install Raku first 
 
 ```bash
 curl https://rakubrew.org/install-on-perl.sh | sh
