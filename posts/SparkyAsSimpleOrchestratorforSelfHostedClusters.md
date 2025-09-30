@@ -2,7 +2,7 @@
 
 Kubernetes seems to overkill and too complex when all you have is few pods scattered across 3 virtual machines.
 
-People use selfhosted or homelabs systems a lot, and every time I see those posts on [fosstdon](https://fosstodon.org/tags/homelab) I think how great solution Sparky would be:
+People use selfhosted or homelabs systems a lot, and every time I see those posts on [fosstdon](https://fosstodon.org/tags/homelab) I think how great solution [Sparky](https://github.com/melezhik/sparky) would be:
 
 - Simple installation
 
