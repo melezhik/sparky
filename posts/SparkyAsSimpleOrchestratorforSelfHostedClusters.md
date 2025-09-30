@@ -83,7 +83,7 @@ sparman  worker start # start Sparky job runner
 ```
 
 Once everything is set up you will be able to go to http://127.0.0.1:4000 and see Sparky dashboard
-with no project ( will be created it later )
+with no projects ( will be created later )
 
 # Hosts file
 
