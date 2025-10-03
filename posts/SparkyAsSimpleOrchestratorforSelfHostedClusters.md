@@ -70,8 +70,8 @@ And then install Sparky and run Sparky services required for control plane opera
 ```bash
 git clone https://github.com/melezhik/sparky.git
 cd sparky
-raku db-init.raku # initialize Sparky sqlite database
 zef install --/test .
+raku db-init.raku # initialize Sparky sqlite database
 ```
 
 Run sparky services:
