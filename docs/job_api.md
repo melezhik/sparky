@@ -467,6 +467,40 @@ my $j = Sparky::JobApi.new( :$project, :$job-id );
 $j.get-stash();
 ```
 
+## Job meta
+
+Job meta strings is a lightweight alternative to job stash, child job may send some feedback
+to a parent job by just adding meta information to report:
+
+Code in child job:
+
+```raku
+
+say "meta: name=alexey age=48";
+say "meta: reboot=need";
+```
+
+Meta handled in parent job:
+
+```
+# spawn a child job
+my $j = Sparky::JobApi.new();
+
+my $st = self.wait-job($j);
+
+die unless $st<OK>;
+
+# collect any meta information
+# from child job
+# meta comes as Arraty of Hashes
+
+my @meta = $j.meta;
+
+say @meta[0]<name>; # alexey;
+say @meta[0]<age>; # 48;
+say @meta[1]<reboot>; # need;
+```
+
 ## Job files
 
 Job files are similar to job stash, but used to transfer files between jobs, not
