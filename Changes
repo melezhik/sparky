@@ -2,7 +2,12 @@ Revision history for Sparky
 
 {{$NEXT}}
 
-0.2.14 2025-11-01T11:50:00Z
+0.2.15 2025-09-04T15:55:00Z
+
+  Bump dependencies:
+    - Sparky-Job-Api
+
+0.2.14 2025-09-01T11:50:00Z
 
   Bump dependencies:
     - Sparrowdo
