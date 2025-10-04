@@ -475,14 +475,13 @@ to a parent job by just adding meta information to report:
 Code in child job:
 
 ```raku
-
 say "meta: name=alexey age=48";
 say "meta: reboot=need";
 ```
 
 Meta handled in parent job:
 
-```
+```raku
 # spawn a child job
 my $j = Sparky::JobApi.new();
 
@@ -543,7 +542,6 @@ Here is an example how one can share file between child and parent job:
 
 
 ```raku
-
 use Sparky::JobApi;
 
 class Pipeline
