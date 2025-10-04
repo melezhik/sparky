@@ -12,7 +12,7 @@
     "HTTP::Tiny",
     "Sparrow6:ver<0.0.49+>",
     "Sparrowdo:ver<0.1.47+>",
-    "Sparky-Job-Api:ver<0.0.9+>",
+    "Sparky-Job-Api:ver<0.0.10+>",
     "Time::Crontab",
     "File::Directory::Tree",
     "cro",
@@ -43,5 +43,5 @@
   },
   "tags" : [ ],
   "test-depends" : [ ],
-  "version" : "0.2.15"
+  "version" : "0.2.16"
 }
