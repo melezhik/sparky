@@ -469,7 +469,7 @@ $j.get-stash();
 
 ## Job meta
 
-Job meta strings is a lightweight alternative to job stash, child job may send some feedback
+Job meta strings is a lightweight alternative to job stashes, child job may send some feedback
 to a parent job by just adding meta information to report:
 
 Code in child job:
@@ -499,6 +499,24 @@ my @meta = $j.meta;
 say @meta[0]<name>; # alexey;
 say @meta[0]<age>; # 48;
 say @meta[1]<reboot>; # need;
+```
+
+Short form `key`/`!key` allow pass boolean values via meta:
+
+Child job:
+
+```raku
+say "meta: reboot";
+say "meta: !reboot";
+```
+
+Parent job:
+
+```raku
+my @meta = $j.meta;
+
+say @meta[0]<reboot>; # True;
+say @meta[1]<reboot>; # False;
 ```
 
 ## Job reports
