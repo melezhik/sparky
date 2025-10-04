@@ -492,13 +492,28 @@ die unless $st<OK>;
 
 # collect any meta information
 # from child job
-# meta comes as Arraty of Hashes
+# meta comes as Array of Hashes
 
 my @meta = $j.meta;
 
 say @meta[0]<name>; # alexey;
 say @meta[0]<age>; # 48;
 say @meta[1]<reboot>; # need;
+```
+
+## Job reports
+
+If you need to load child job report into parent one, use `report` method:
+
+```raku
+# spawn a child job
+my $j = Sparky::JobApi.new();
+
+my $st = self.wait-job($j);
+
+die unless $st<OK>;
+
+say $j.report();
 ```
 
 ## Job files
