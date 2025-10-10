@@ -240,6 +240,10 @@ sub MAIN (
   }
 
 
+  if %sparrowdo-config<secretsfile> {
+    $sparrowdo-run ~= " --secretsfile=" ~ %sparrowdo-config<secretsfile>;
+  }
+
   if %sparrowdo-config<tags> {
     for %sparrowdo-config<tags> ~~ m:global/"%" (\S+?) "%"/ -> $c {
       my $var_id = $c[0].Str;
