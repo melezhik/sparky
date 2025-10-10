@@ -1,6 +1,6 @@
 use v6;
 
-unit module Sparky:ver<0.2.17>;
+unit module Sparky:ver<0.2.18>;
 use YAMLish;
 use DBIish;
 use Time::Crontab;
