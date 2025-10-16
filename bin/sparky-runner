@@ -341,9 +341,11 @@ sub MAIN (
     $sparrowdo-run-sanitized = $sparrowdo-run;
   }
 
-  $sparrowdo-run-sanitized = $sparrowdo-run-sanitized.subst(/\s/,"\n<br>",:g);
+  $sparrowdo-run-sanitized = $sparrowdo-run-sanitized.subst(/\s/,"\n",:g);
 
-  update-sys-report($report-file-sys,"sparrowdo command: $sparrowdo-run-sanitized");
+  $sparrowdo-run-sanitized = $sparrowdo-run-sanitized.subst(/","/,",\n",:g);
+
+  update-sys-report($report-file-sys,"sparrowdo command:\n$sparrowdo-run-sanitized");
 
 
   if $make-report {
