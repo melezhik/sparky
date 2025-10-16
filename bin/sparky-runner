@@ -334,7 +334,15 @@ sub MAIN (
   my $report-file-sys = "$reports-dir/build-$build_id.syslog";
 
   update-sys-report($report-file-sys,"job ready to start");
-  my $sparrowdo-run-sanitized = $sparrowdo-run.subst(/"SPARKY_API_TOKEN=" .? ","/,",");
+  my $sparrowdo-run-sanitized;
+  if sparky-api-token() {
+    $sparrowdo-run-sanitized = $sparrowdo-run.subst("{sparky-api-token()}","******");
+  } else {
+    $sparrowdo-run-sanitized = $sparrowdo-run;
+  }
+
+  $sparrowdo-run-sanitized = $sparrowdo-run-sanitized.subst(/\s/,"\n<br>",:g);
+
   update-sys-report($report-file-sys,"sparrowdo command: $sparrowdo-run-sanitized");
 
 
