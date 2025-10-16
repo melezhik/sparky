@@ -2,6 +2,14 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.2.19 2025-10-16T22:40:00Z
+
+  - switch to config.raku 
+    default
+
+  - add sparrowdo run info
+    to system console
+
 0.2.18 2025-10-10T18:50:00Z
 
   - bump sparrowdo 
