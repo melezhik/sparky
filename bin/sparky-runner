@@ -334,6 +334,8 @@ sub MAIN (
   my $report-file-sys = "$reports-dir/build-$build_id.syslog";
 
   update-sys-report($report-file-sys,"job ready to start");
+  update-sys-report($report-file-sys,"sparrowdo command: $sparrowdo-run");
+
 
   if $make-report {
     $sparrowdo-run  ~=  " 1>$report-file";

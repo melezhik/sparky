@@ -21,7 +21,7 @@ sub job-queue-fs (%config,%trigger,$sparrowfile,$sparrowdo-config) is export {
 
   mkdir $cache-dir;
 
-  "{$cache-dir}/config.pl6".IO.spurt($sparrowdo-config.perl);
+  "{$cache-dir}/config.raku".IO.spurt($sparrowdo-config.raku);
 
   %trigger<cwd> = $cache-dir;
 
@@ -65,7 +65,7 @@ sub job-queue-fs (%config,%trigger,$sparrowfile,$sparrowdo-config) is export {
     }).join(","); 
   }
 
-  %trigger<sparrowdo><conf> = "config.pl6";
+  %trigger<sparrowdo><conf> = "config.raku";
 
   say "job-queue-fs: create trigger file: {$sparky-project-dir}/.triggers/$job-id";
 
