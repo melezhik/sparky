@@ -387,9 +387,9 @@ sub MAIN (
         update-sys-report($report-file-sys,"job terminated by request");
         terminate-job("{$build-state-dir}/{$job-id}.pid");
         $job-channel.send("TERMINATE");
-      } elsif $cnt >= 18000 {
+      } elsif $cnt >= 21600 {
         # kill sparky job by timeout
-        # in 3 hours
+        # in 6 hours
         update-sys-report($report-file-sys,"job terminated by timeout");
         terminate-job("{$build-state-dir}/{$job-id}.pid");
         $job-channel.send("TERMINATE");
