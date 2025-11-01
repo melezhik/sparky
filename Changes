@@ -2,6 +2,10 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+  - Enable unbufferd output
+    By running sparrowdo
+    through script command
+
 0.2.19 2025-10-16T22:40:00Z
 
   - switch to config.raku 

@@ -347,6 +347,7 @@ sub MAIN (
 
   update-sys-report($report-file-sys,"sparrowdo command:\n$sparrowdo-run-sanitized");
 
+  $sparrowdo-run = "script -q -e -c '$sparrowdo-run' ";
 
   if $make-report {
     $sparrowdo-run  ~=  " 1>$report-file";
