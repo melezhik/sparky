@@ -497,8 +497,8 @@ sub create-cro-app ($pool) {
 
     my $dbh = $pool ?? $pool.get-connection() !! get-dbh();
 
-    my $sth = $dbh.prepare(q:to/STATEMENT/);
-        SELECT * FROM builds where project = $project order by id desc limit 500
+    my $sth = $dbh.prepare(qq:to/STATEMENT/);
+        SELECT * FROM builds where project = '{$project}' order by id desc limit 500
     STATEMENT
 
     $sth.execute();
