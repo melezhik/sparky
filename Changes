@@ -2,6 +2,10 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+  - Add all builds link
+    to view builds
+    per project
+    
   - Enable unbufferd output
     By running sparrowdo
     through script command

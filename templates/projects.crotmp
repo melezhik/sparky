@@ -25,6 +25,7 @@
         <tr>
           <td>Project</td>
           <td>Last Build</td>
+          <td>Builds</td>
           <td>State</td>
           <td>Time</td>
         </tr>
@@ -40,6 +41,9 @@
           <?{$i.state != -2}>
             <a href="<.http-root>/report/<$i.project>/<$i.last_build_id>"><$i.last_build_id></a>
           </?>
+          </td>
+          <td>
+            <a href="<.http-root>/project/<$i.project>/builds">builds</a>
           </td>
           <td>
           <?{$i.state == -1}>

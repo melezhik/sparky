@@ -491,7 +491,37 @@ sub create-cro-app ($pool) {
     }
  
   }
+
+  # project recent builds
+  get -> 'project', $project, 'builds', :$user is cookie, :$token is cookie {
+
+    my $dbh = $pool ?? $pool.get-connection() !! get-dbh();
+
+    my $sth = $dbh.prepare(q:to/STATEMENT/);
+        SELECT * FROM builds where project = $project order by id desc limit 500
+    STATEMENT
+
+    $sth.execute();
+
+    my @rows = $sth.allrows(:array-of-hash);
+
+    $sth.finish;
+
+    $dbh.dispose;
+
+    #say @rows.perl;
   
+    template 'templates/builds.crotmp', {
+
+      css => css(), 
+      navbar => navbar($user,$token),
+      http-root => sparky-http-root(),
+      builds => @rows,
+
+    }
+ 
+  }
+
   get -> 'queue', :$user is cookie, :$token is cookie {
     template 'templates/queue.crotmp', {
       css => css(), 
