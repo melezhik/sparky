@@ -36,6 +36,7 @@
               <li class="tab is-active" onclick="openTab(event,'Report')"><a>Report</a></li>
               <li class="tab" onclick="openTab(event,'Artifacts')"><a>Artifacts</a></li>
               <li class="tab" onclick="openTab(event,'SysReport')"><a>System Log</a></li>
+              <li class="tab" onclick="openTab(event,'RawData')"><a>Raw Data</a></li>
             </ul>
           </div>
         </nav>
@@ -63,6 +64,14 @@
         <pre><.sys-report></pre>
         </?>
         <!.sys-report>
+        no data
+        </!>
+      </div>
+      <div id="RawData" class="content-tab" style="display:none">
+        <?.rd>
+        <pre><.rd></pre>
+        </?>
+        <!.rd>
         no data
         </!>
       </div>

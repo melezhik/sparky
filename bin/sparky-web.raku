@@ -674,7 +674,9 @@ sub create-cro-app ($pool) {
         sys-report => $sys-report, 
         dt => $dt, 
         description => $description, 
-        data => $data
+        data => $data,
+        rd => "$reports-dir/$project/build-$build_id.txt".IO ~~ :f ?? 
+        "$reports-dir/$project/build-$build_id.txt".IO.slurp() !! "";
       }
 
     } else {
