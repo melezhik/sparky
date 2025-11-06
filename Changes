@@ -2,6 +2,9 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+  - Add recent data tab
+    in report page
+
 0.2.20 2025-11-03T19:15:00Z
 
   - Add all builds link
@@ -86,7 +89,7 @@ Revision history for Sparky
     project badges
   - Fix issues with a usage of
     group variables
-    and template varibaes
+    and template variables
     together
 
 0.2.7 2024-06-14T13:30:00Z
@@ -112,7 +115,7 @@ Revision history for Sparky
   - Add default authentication
     protocol as a default 
     authentication schema
-  - Fix bug in sparkyd scheduller
+  - Fix bug in sparkyd scheduler
     that prevented scm 
     projects with crontab 
     settings from run  
@@ -132,7 +135,7 @@ Revision history for Sparky
 0.2.1 2024-03-08T21:20:00Z
 
   - Fix various issues with template vars
-  - Fix CPU too much consumtion 
+  - Fix CPU too much consumption 
     over web socket on the main page
   - Bump Sparrow6 deps version
 
@@ -162,7 +165,7 @@ Revision history for Sparky
 
 0.1.14 2023-29-12T17:00:00Z
 
-  - Build paramaters, UI
+  - Build parameters, UI
     checkboxes support
 
 0.1.13 2023-28-12T17:20:00Z

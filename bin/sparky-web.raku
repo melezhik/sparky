@@ -676,7 +676,12 @@ sub create-cro-app ($pool) {
         description => $description, 
         data => $data,
         rd => "$reports-dir/$project/build-$build_id.txt".IO ~~ :f ?? 
-        "$reports-dir/$project/build-$build_id.txt".IO.slurp() !! "";
+        "$reports-dir/$project/build-$build_id.txt".IO.
+        slurp().
+        split("\n").
+        tail(10).
+        join("\n").
+        subst(sparky-api-token(),"*******",:g) !! "";
       }
 
     } else {
