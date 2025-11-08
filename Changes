@@ -2,6 +2,9 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+  Fix for broken tags
+  and script wrapper
+
 0.2.21 2025-11-08T14:40:00Z
 
   - Bump sparky job api

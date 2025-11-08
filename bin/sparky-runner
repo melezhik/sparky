@@ -285,7 +285,7 @@ sub MAIN (
     %sparrowdo-config<tags> ~= ",SPARKY_TCP_PORT={sparky-tcp-port()}";
     %sparrowdo-config<tags> ~= ",SPARKY_API_TOKEN={sparky-api-token()}" if sparky-api-token();
     %sparrowdo-config<tags> ~= ",SPARKY_USE_TLS=1" if sparky-use-tls();
-    $sparrowdo-run ~= " --tags='{%sparrowdo-config<tags>}'";
+    $sparrowdo-run ~= " --tags=" ~ %sparrowdo-config<tags>.subst(/"," \s+ /,",",:g);
   } elsif $trigger {
     $sparrowdo-run ~= " --tags=SPARKY_PROJECT={$project},SPARKY_JOB_ID={$trigger.IO.basename},SPARKY_TCP_PORT={sparky-tcp-port()}";
     $sparrowdo-run ~= ",SPARKY_WORKER=docker" if %sparrowdo-config<docker>;
@@ -333,8 +333,12 @@ sub MAIN (
   my $report-file = "$reports-dir/build-$build_id.txt";
   my $report-file-sys = "$reports-dir/build-$build_id.syslog";
 
+  $sparrowdo-run.=subst("\n","",:g).subst(/^^ \s+ $$/,"",:g); 
+
   update-sys-report($report-file-sys,"job ready to start");
+
   my $sparrowdo-run-sanitized;
+
   if sparky-api-token() {
     $sparrowdo-run-sanitized = $sparrowdo-run.subst("{sparky-api-token()}","******");
   } else {
@@ -345,7 +349,7 @@ sub MAIN (
 
   $sparrowdo-run-sanitized = $sparrowdo-run-sanitized.subst(/","/,",\n",:g);
 
-  update-sys-report($report-file-sys,"sparrowdo command:\n$sparrowdo-run-sanitized");
+  update-sys-report($report-file-sys,"sparrowdo command:\n[$sparrowdo-run-sanitized]");
 
   $sparrowdo-run = "script -q -e -c '$sparrowdo-run' ";
 
@@ -359,6 +363,7 @@ sub MAIN (
 
   start { 
     update-sys-report($report-file-sys,"job started");
+    say ">>>>>>>>> sparrowdo-run: $sparrowdo-run";
     shell("export SP6_FORMAT_COLOR=1 && cd $run-dir && $sparrowdo-run" ~ ' 2>&1');
     if "{$build-state-dir}/{$job-id}.pid".IO ~~ :f {
       my $pid = "{$build-state-dir}/{$job-id}.pid".IO.slurp.chomp;
