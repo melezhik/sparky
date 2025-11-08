@@ -69,7 +69,7 @@
       </div>
       <div id="RecentData" class="content-tab" style="display:none">
         <?.rd>
-        <pre><.rd></pre>
+        <pre id="rd"><.rd></pre>
         </?>
         <!.rd>
         no data
@@ -152,8 +152,14 @@
     })
   }
 
-var log = document.getElementById('log');
 var ansi_up = new AnsiUp;
+
+var log = document.getElementById('log');
+var rd = document.getElementById('rd');
+var text_rd = ansi_up.ansi_to_html(rd.innerText);
+
+rd.innerHTML = text_rd;
+
 
 info.innerHTML = '<small>report loading ...</small>';
 
