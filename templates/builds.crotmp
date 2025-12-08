@@ -2,6 +2,7 @@
 
     <head>
       <title>~SPARKY CI WEB~</title>
+      <meta http-equiv="refresh" content="10">
     </head>
 
 <&HTML-AND-JAVASCRIPT(.navbar)>
