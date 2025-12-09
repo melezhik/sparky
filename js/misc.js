@@ -12,9 +12,8 @@ function openTab(evt, tabName) {
   evt.currentTarget.className += " is-active";
 }
 
-tab = window.location.hash.replace("#", "") || "Report";
-tab = tab.replace("/", "");
-
+//tab = window.location.hash.replace("#", "") || "Report";
+//tab = tab.replace("/", "");
 //alert(tab)
 
 if (tab != "Report") {
