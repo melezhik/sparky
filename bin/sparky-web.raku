@@ -670,7 +670,7 @@ sub create-cro-app ($pool) {
         project => $project,
         build_id => $build_id,
         job_id => "{$key}",
-        artifacts => $artifacts,
+        artifacts => $artifacts.sort({.<name>}),
         sys-report => $sys-report, 
         dt => $dt, 
         description => $description, 

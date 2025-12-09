@@ -2,6 +2,10 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+  - Sort artifacts by name
+
+  - Auto refresh /builds
+
 0.2.22 2025-11-23T19:40:00Z
 
   Fix for broken tags
