@@ -2,6 +2,9 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+  - Support local links
+    to report tabs
+
   - Sort artifacts by name
 
   - Auto refresh /builds

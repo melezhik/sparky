@@ -12,6 +12,15 @@ function openTab(evt, tabName) {
   evt.currentTarget.className += " is-active";
 }
 
+tab = window.location.hash.replace("#", "") || "Report";
+tab = tab.replace("/", "");
+
+//alert(tab)
+
+if (tab != "Report") {
+  document.getElementById(tab).click();
+}
+
 function getSelectValues(elm) {
   var result = [];
   var options = elm && elm.options;
