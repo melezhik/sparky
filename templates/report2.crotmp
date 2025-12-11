@@ -33,10 +33,10 @@
         <nav class="tabs is-boxed">
           <div class="container">
             <ul>
-              <li class="tab is-active" onclick="openTab(event,'Report')"><a>Report</a></li>
-              <li class="tab" onclick="openTab(event,'Artifacts')"><a>Artifacts</a></li>
-              <li class="tab" onclick="openTab(event,'SysReport')"><a>System Log</a></li>
-              <li class="tab" onclick="openTab(event,'RecentData')"><a>Recent Data</a></li>
+              <li class="tab is-active" onclick="openTab(event,'Report')"><a href="#Report/" id="tabReport">Report</a></li>
+              <li class="tab" onclick="openTab(event,'Artifacts')"><a href="#Artifacts/" id="tabArtifacts">Artifacts</a></li>
+              <li class="tab" onclick="openTab(event,'SysReport')"><a href="#SysReport/" id="tabSysReport">System Log</a></li>
+              <li class="tab" onclick="openTab(event,'RecentData')"><a href="#RecentData/" id="tabRecentData">Recent Data</a></li>
             </ul>
           </div>
         </nav>
@@ -78,6 +78,15 @@
     </div>
 
 <script>
+
+    tab = window.location.hash.replace("#", "") || "Report";
+    tab = tab.replace("/", "");
+
+    //alert(tab)
+
+    if (tab != "Report") {
+      document.getElementById("tab" + tab).click();
+    }
 
     var info = document.getElementById('notification');
     var ip = location.host;
