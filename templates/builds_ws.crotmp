@@ -1,0 +1,119 @@
+<&HTML-AND-JAVASCRIPT(.css)>
+
+    <head>
+      <title>~SPARKY CI WEB~ | latest builds</title>
+    </head>
+
+<script src="/js/ansi_up.js" type="text/javascript"></script>
+
+<&HTML-AND-JAVASCRIPT(.navbar)>
+
+    <nav class="panel is-warning">
+      <p class="panel-heading"> 
+        Latest builds
+      </p>
+    </nav>
+    <div class="panel-block">
+      <div id="builds" class="content-tab">
+      </div>
+    </div>
+
+<script>
+
+var ansi_up = new AnsiUp;
+
+var ip = location.host;
+if (location.protocol == 'https:') {
+  var proto = "wss"
+} else {
+  var proto = "ws"
+}
+
+function connect() {
+  var ws = new WebSocket(`${proto}://${ip}/livebuilds`);
+  ws.onopen = function() {
+    console.log('ws - socket is open');
+    // subscribe to some channels
+    ws.send("Меня зовут Джон");
+  };
+
+  ws.onmessage = function(e) {
+    //console.log('ws - status - ', e.data);
+    const builds = JSON.parse(e.data)
+    var p_cont = document.createElement('table');
+    p_cont.setAttribute("id","builds_table");
+    var table = document.createElement('table');
+    table.setAttribute("class","table");
+    var th = document.createElement('tr');
+    var thd1 = document.createElement('td');
+    thd1.appendChild(document.createTextNode('build'));
+    var thd2 = document.createElement('td');
+    thd2.appendChild(document.createTextNode('description'));
+    var thd3 = document.createElement('td');
+    thd3.appendChild(document.createTextNode('state'));
+    th.appendChild(thd1);
+    th.appendChild(thd2);
+    th.appendChild(thd3);
+    table.appendChild(th);          
+    for (const build of builds) {
+      var tr = document.createElement('tr');
+
+      var td1 = document.createElement('td');
+      var a = document.createElement('a');
+      a.setAttribute("href","/report/" + build.project + "/" + build.id);
+      a.appendChild(document.createTextNode(build.project + '@' + build.id));
+      td1.appendChild(a);
+      var td2 = document.createElement('td');
+      td2.appendChild(document.createTextNode(build.description));
+
+      var state = build.state;
+      var build_st_str = "";
+      if (state == 0 ){
+        build_st_str = "unknown"
+      }
+      if (state == -1 ){
+        build_st_str = "fail"
+      }
+      if (state == -11 ){
+        build_st_str = "terminated"
+      }
+      if (state == 1 ){
+        build_st_str = "ok"
+      }
+      if (state == 0 ){
+        build_st_str = "run"
+      }
+      if (state == -2 ){
+        build_st_str = "unknown"
+      }
+      console.log(build);
+      var td3 = document.createElement('td');
+      td3.appendChild(document.createTextNode(build_st_str)); 
+      tr.appendChild(td1);
+      tr.appendChild(td2);
+      tr.appendChild(td3);
+      table.appendChild(tr);          
+    }
+    p_cont.appendChild(table) 
+    var builds_obj = document.getElementById('builds');
+    //builds_ws.replaceChildren(p_cont);
+    builds_obj.innerHTML = p_cont.outerHTML
+  };
+
+  ws.onclose = function(e) {
+    console.log('ws - socket is closed', e.reason);
+    //info.innerHTML = '<small>report loaded</small>';
+    //setTimeout(function() {
+    //  connect();
+    //}, 1000);
+  };
+
+  ws.onerror = function(err) {
+    console.error('ws - socket encountered error: ', err.message, 'Closing socket');
+    ws.close();
+  };
+}
+
+connect();
+
+</script>

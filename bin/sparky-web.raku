@@ -464,38 +464,42 @@ sub create-cro-app ($pool) {
   
   # recent builds
 
-  get -> 'builds_ws' {
-    my $dbh = $pool ?? $pool.get-connection() !! get-dbh();
+  get -> 'livebuilds' {
     web-socket -> $incoming {
-        supply {
-            whenever $incoming -> $message {
-              my $done = False;
-              while True  {
-                my $sth = $dbh.prepare(q:to/STATEMENT/);
-                    SELECT * FROM builds order by id desc limit 10
-                STATEMENT
-                $sth.execute();
-                my @rows = $sth.allrows(:array-of-hash);
-                $sth.finish;
-                $dbh.dispose;
-                for @rows -> $b {
-                  my %b = $b;
-                  %b<data> = [];
-                  my @data = "$reports-dir/$project/build-$build_id.txt".IO.lines;
-                  for @data.tail(3) -> $l {
-                    my $msg = "{$l}";
-                    if sparky-api-token() {
-                      $msg.=subst(sparky-api-token(),"*******",:g);
-                    }
-                    %b<data>.push($msg);
-                  }
-                  emit(%b);
-                  sleep(10);
+      supply {
+        whenever $incoming -> $message {
+          my $dbh = $pool ?? $pool.get-connection() !! get-dbh();
+          my $done = False;
+          my %stat; my $changed = False; my $msg;
+          while True  {
+            my $sth = $dbh.prepare(q:to/STATEMENT/);
+                SELECT * FROM builds order by id desc limit 10
+            STATEMENT
+            $sth.execute();
+            my @rows = $sth.allrows(:array-of-hash);
+            $sth.finish;
+            my @builds;
+            for @rows -> $b {
+              my %b = $b;
+              %b<data> = [];
+              my @data = "$reports-dir/{$b<project>}/build-{$b<id>}.txt".IO.lines.tail(3);
+              for @data -> $l {
+                my $msg = "{$l}";
+                if sparky-api-token() {
+                  $msg.=subst(sparky-api-token(),"*******",:g);
                 }
-              } 
+                %b<data>.push($msg);
+              }
+              push @builds, %b;
+              $msg = to-json(@builds);
             }
+            say "livebuilds, emit: {@builds.elems} items";
+            emit($msg);
+            sleep(10);
           }
+          $dbh.dispose; 
         }
+      }
     }
   }
 
@@ -524,6 +528,16 @@ sub create-cro-app ($pool) {
       http-root => sparky-http-root(),
       builds => @rows,
 
+    }
+ 
+  }
+
+  get -> 'builds_ws', :$user is cookie, :$token is cookie {
+  
+    template 'templates/builds_ws.crotmp', {
+      css => css(), 
+      navbar => navbar($user,$token),
+      http-root => sparky-http-root(),
     }
  
   }
