@@ -1,7 +1,5 @@
 unit module Sparky::Utils;
 
-use DateTime::Format;
-
 sub hostname () is export {
 
   return %*ENV<HOSTNAME> ??
