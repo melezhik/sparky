@@ -10,7 +10,7 @@
     "DBIish::Pool",
     "JSON::Fast",
     "HTTP::Tiny",
-    "Sparrow6:ver<0.0.49+>",
+    "Sparrow6:ver<0.0.80+>",
     "Sparrowdo:ver<0.1.48+>",
     "Sparky-Job-Api:ver<0.0.11+>",
     "Time::Crontab",
@@ -43,5 +43,5 @@
   },
   "tags" : [ ],
   "test-depends" : [ ],
-  "version" : "0.2.22"
+  "version" : "0.2.23"
 }

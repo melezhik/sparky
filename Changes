@@ -2,6 +2,8 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.2.23 2025-11-23T19:40:00Z
+
   - Support local links
     to report tabs
 
@@ -14,6 +16,10 @@ Revision history for Sparky
     as it's not compatible
     with Linux one
 
+  - Use the latest version
+    of Sparrow6 to properly
+    serialize tags parameters
+    
 0.2.22 2025-11-23T19:40:00Z
 
   Fix for broken tags
