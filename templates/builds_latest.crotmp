@@ -86,7 +86,7 @@ function connect() {
       if (state == -2 ){
         build_st_str = "unknown"
       }
-      console.log(build);
+      //console.log(build);
       var td3 = document.createElement('td');
       td3.appendChild(document.createTextNode(build_st_str)); 
       tr.appendChild(td1);
