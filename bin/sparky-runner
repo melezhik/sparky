@@ -285,7 +285,7 @@ sub MAIN (
     %sparrowdo-config<tags> ~= ",SPARKY_TCP_PORT={sparky-tcp-port()}";
     %sparrowdo-config<tags> ~= ",SPARKY_API_TOKEN={sparky-api-token()}" if sparky-api-token();
     %sparrowdo-config<tags> ~= ",SPARKY_USE_TLS=1" if sparky-use-tls();
-    $sparrowdo-run ~= " --tags=" ~ %sparrowdo-config<tags>.subst(/"," \s+ /,",",:g);
+    $sparrowdo-run ~= " --tags=" ~ %sparrowdo-config<tags>.subst("\n","___nl___",:g).subst(/\s+/,"___space___",:g);
   } elsif $trigger {
     $sparrowdo-run ~= " --tags=SPARKY_PROJECT={$project},SPARKY_JOB_ID={$trigger.IO.basename},SPARKY_TCP_PORT={sparky-tcp-port()}";
     $sparrowdo-run ~= ",SPARKY_WORKER=docker" if %sparrowdo-config<docker>;
@@ -332,8 +332,6 @@ sub MAIN (
   my $job-channel = Channel.new;
   my $report-file = "$reports-dir/build-$build_id.txt";
   my $report-file-sys = "$reports-dir/build-$build_id.syslog";
-
-  $sparrowdo-run.=subst("\n","",:g).subst(/^^ \s+ $$/,"",:g); 
 
   update-sys-report($report-file-sys,"job ready to start");
 
