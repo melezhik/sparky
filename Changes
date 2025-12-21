@@ -7,7 +7,12 @@ Revision history for Sparky
 
   - Sort artifacts by name
 
-  - Auto refresh /builds
+  - Latest builds dynamic view
+
+  - Don't use  script
+    command for MacOS
+    as it's not compatible
+    with Linux one
 
 0.2.22 2025-11-23T19:40:00Z
 

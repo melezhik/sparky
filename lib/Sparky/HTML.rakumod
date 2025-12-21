@@ -36,11 +36,14 @@ sub navbar (Mu $user?, Mu $token?) is export {
       </div>
       <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-start">
-          <a class="navbar-item" href="{sparky-http-root()}/">
+          <a class="navbar-item" href="{sparky-http-root()}/projects">
             Projects
           </a>
-          <a class="navbar-item" href="{sparky-http-root()}/builds">
+          <a class="navbar-item" href="{sparky-http-root()}/builds_latest">
             Recent Builds
+          </a>
+          <a class="navbar-item" href="{sparky-http-root()}/builds">
+            All Builds
           </a>
           <a class="navbar-item" href="{sparky-http-root()}/queue">
             Queue

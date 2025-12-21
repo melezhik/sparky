@@ -337,6 +337,10 @@ sub MAIN (
 
   update-sys-report($report-file-sys,"job ready to start");
 
+  unless qx[uname -s 2>/dev/null || :].chomp eq 'Darwin' {
+    $sparrowdo-run = "script -q -e -c '$sparrowdo-run' "
+  }
+
   my $sparrowdo-run-sanitized;
 
   if sparky-api-token() {
@@ -345,13 +349,14 @@ sub MAIN (
     $sparrowdo-run-sanitized = $sparrowdo-run;
   }
 
-  $sparrowdo-run-sanitized = $sparrowdo-run-sanitized.subst(/\s/,"\n",:g);
 
-  $sparrowdo-run-sanitized = $sparrowdo-run-sanitized.subst(/","/,",\n",:g);
+  #$sparrowdo-run-sanitized = $sparrowdo-run-sanitized.subst(/\s/,"\n",:g);
 
-  update-sys-report($report-file-sys,"sparrowdo command:\n[$sparrowdo-run-sanitized]");
+  #$sparrowdo-run-sanitized = $sparrowdo-run-sanitized.subst(/","/,",\n",:g);
 
-  $sparrowdo-run = "script -q -e -c '$sparrowdo-run' ";
+  update-sys-report($report-file-sys,"sparrowdo command:\n$sparrowdo-run-sanitized");
+
+
 
   if $make-report {
     $sparrowdo-run  ~=  " 1>$report-file";
