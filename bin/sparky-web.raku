@@ -14,6 +14,7 @@ use Sparky::Utils;
 use YAMLish;
 use Text::Markdown;
 use Sparky::Job;
+use Sparky::Utils;
 use JSON::Fast;
 use DBIish::Pool;
 
@@ -528,12 +529,19 @@ sub create-cro-app ($pool) {
 
     #say @rows.perl;
   
+    my @builds;
+
+    for @rows -> $i {
+      $i<dt_ago> = time-ago($i<dt>);
+      push @builds, $i;
+    }
+
     template 'templates/builds.crotmp', {
 
       css => css(), 
       navbar => navbar($user,$token),
       http-root => sparky-http-root(),
-      builds => @rows,
+      builds => @builds,
 
     }
  

@@ -2,6 +2,15 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.2.24 2025-11-23T22:10:00Z
+
+  - Show times in time ago
+    format on all builds
+    page
+    
+  - Remove old refresh
+    from all builds page
+
 0.2.23 2025-11-23T19:40:00Z
 
   - Support local links

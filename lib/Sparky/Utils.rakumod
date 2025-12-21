@@ -1,5 +1,7 @@
 unit module Sparky::Utils;
 
+use DateTime::Format;
+
 sub hostname () is export {
 
   return %*ENV<HOSTNAME> ??
@@ -46,5 +48,33 @@ sub update-sys-report( $file, $line ) is export {
   my $fh = open :a, $file;
   $fh.say: DateTime.now ~ " >> " ~ $line;
   $fh.close;
+
+}
+
+sub time-ago ($time) is export {
+
+  my $past_time = DateTime.new($time.subst(" ","T"));
+  my $now = DateTime.now;
+  my $duration = $now.Instant - $past_time.Instant;
+
+  my $seconds = $duration.round;
+  my $minutes = floor($seconds / 60);
+  my $hours = floor($minutes / 60);
+  my $days = floor($hours / 24);
+
+  # Calculate remaining units after extracting days, hours, etc.
+
+  my $remaining_hours = $hours % 24;
+  my $remaining_minutes = $minutes % 60;
+
+  if ($days > 0) {
+      return "$days day(s) and $remaining_hours hour(s) ago";
+  } elsif ($hours > 0) {
+      return "$hours hour(s) and $remaining_minutes minute(s) ago";
+  } elsif ($minutes > 0) {
+      return "$minutes minute(s) ago";
+  } else {
+      return "just now";
+  }
 
 }
