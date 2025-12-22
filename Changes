@@ -2,15 +2,17 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.2.26 2025-12-22T18:10:00Z
+
   - ws reconnection
   on latest builds
 
-0.2.25 2025-11-23T22:10:00Z
+0.2.25 2025-12-19T22:10:00Z
 
   - Remove DateTime::Format
     deps
     
-0.2.24 2025-11-23T22:10:00Z
+0.2.24 2025-12-19T22:10:00Z
 
   - Show times in time ago
     format on all builds
