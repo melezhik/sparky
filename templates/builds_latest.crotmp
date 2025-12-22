@@ -29,6 +29,10 @@ if (location.protocol == 'https:') {
   var proto = "ws"
 }
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 function connect() {
   var ws = new WebSocket(`${proto}://${ip}/livebuilds`);
   ws.onopen = function() {
@@ -101,7 +105,14 @@ function connect() {
   };
 
   ws.onclose = function(e) {
-    console.log('ws - socket is closed', e.reason);
+
+    console.log('ws - socket is closed, reconnecting', e.reason);
+
+    sleep(10000).then(() => {
+      connect();
+    });
+
+
     //info.innerHTML = '<small>report loaded</small>';
     //setTimeout(function() {
     //  connect();

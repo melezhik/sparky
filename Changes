@@ -2,6 +2,9 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+  - ws reconnection
+  on latest builds
+
 0.2.25 2025-11-23T22:10:00Z
 
   - Remove DateTime::Format
