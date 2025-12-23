@@ -3,7 +3,7 @@ unit module Sparky::HTML;
 use Sparky;
 use Sparky::Security;
 
-my $bulma-version = "1.0.1";
+my $bulma-version = "1.0.4";
 
 sub css () is export {
 
@@ -13,10 +13,6 @@ sub css () is export {
   <meta charset="utf-8">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma\@{$bulma-version}/css/bulma.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/perl.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
-  <script>hljs.initHighlightingOnLoad();</script>
   <!-- <link rel="stylesheet" href="{sparky-http-root()}/css/style.css"> -->
   HERE
 
