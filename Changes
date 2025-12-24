@@ -2,6 +2,10 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.2.27 2025-12-24T23:10:00Z
+
+  - restore highlighter
+
   - fix redirect 
     message/level
 
