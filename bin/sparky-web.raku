@@ -359,13 +359,17 @@ sub create-cro-app ($pool) {
 
   # home page
 
-  get -> "", :$message, :$level, :$user is cookie, :$token is cookie {
-      redirect :see-other, "{sparky-http-root()}/builds_latest";
+  get -> '', :$message, :$level, :$user is cookie, :$token is cookie {
+      if $message {
+        redirect :see-other, "{sparky-http-root()}/builds_latest?message=$message&level={$level||''}";
+      } else {
+        redirect :see-other, "{sparky-http-root()}/builds_latest";
+      }
   }
 
   # project list
 
-  get -> "projects", :$message, :$level, :$user is cookie, :$token is cookie {
+  get -> 'projects', :$message, :$level, :$user is cookie, :$token is cookie {
   
     my @projects = Array.new;
 
@@ -547,12 +551,14 @@ sub create-cro-app ($pool) {
  
   }
 
-  get -> 'builds_latest', :$user is cookie, :$token is cookie {
+  get -> 'builds_latest', :$message, :$level, :$user is cookie, :$token is cookie {
   
     template 'templates/builds_latest.crotmp', {
       css => css(), 
       navbar => navbar($user,$token),
       http-root => sparky-http-root(),
+      message => $message || "",
+      level => $level || "",
     }
  
   }

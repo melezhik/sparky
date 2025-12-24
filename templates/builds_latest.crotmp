@@ -12,6 +12,16 @@
       <p class="panel-heading"> 
         Latest builds
       </p>
+      <?{.level eq 'info' && .message}>
+        <span class="control">
+          <pre class="notification has-text-success"><.message></pre>
+        </span>
+      </?>
+      <?{.level eq 'error' && .message}>
+        <span class="control">
+          <pre class="notification has-text-danger"><.message></pre>
+        </span>
+      </?>
     </nav>
     <div class="panel-block">
       <div id="builds" class="content-tab">
