@@ -17,6 +17,7 @@ sub css () is export {
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/perl.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"></script>
   <script>hljs.initHighlightingOnLoad();</script>
+  <script src="/js/fix_navbar.js" type="text/javascript"></script>
   <!-- <link rel="stylesheet" href="{sparky-http-root()}/css/style.css"> -->
   HERE
 
