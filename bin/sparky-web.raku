@@ -678,7 +678,26 @@ sub create-cro-app ($pool) {
 
   }
 
-  get -> 'report', $project, $build_id,:$user is cookie, :$token is cookie {
+  get -> 'report_jid', $project, $key {
+
+     my $dbh = $pool ?? $pool.get-connection() !! get-dbh();
+
+      my $sth = $dbh.prepare("SELECT id FROM builds where job_id = \"{$key}\"");
+
+      $sth.execute();
+
+      my @r = $sth.allrows(:array-of-hash);
+
+      if @r {
+        my $build_id = @r[0]<id>;
+        redirect :see-other, "{sparky-http-root()}/report/$project/$build_id";
+      } else {
+        not-found();
+      }
+
+  }
+
+  get -> 'report', $project, $build_id, :$user is cookie, :$token is cookie {
 
     if "$reports-dir/$project/build-$build_id.txt".IO ~~ :f {
 

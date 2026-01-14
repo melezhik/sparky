@@ -2,6 +2,11 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+  - add get -> 'report_jid', 
+    $project, $key
+    to get job report by
+    job id
+
 0.2.27 2025-12-24T23:10:00Z
 
   - restore highlighter
