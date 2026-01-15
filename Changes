@@ -2,6 +2,11 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+  - set default value for
+    sparky-api-token 
+    to address Raku .subs
+    issue
+
   - add get -> 'report_jid', 
     $project, $key
     to get job report by

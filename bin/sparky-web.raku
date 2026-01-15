@@ -697,7 +697,7 @@ sub create-cro-app ($pool) {
 
   }
 
-  get -> 'report', $project, $build_id, :$user? is cookie, :$token? is cookie {
+  get -> 'report', $project, $build_id, :$user is cookie, :$token is cookie {
 
     if "$reports-dir/$project/build-$build_id.txt".IO ~~ :f {
 
