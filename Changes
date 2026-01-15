@@ -2,6 +2,9 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+  - add integration
+    with forgejo
+
   - set default value for
     sparky-api-token 
     to address Raku .subs

@@ -1308,6 +1308,36 @@ sub create-cro-app ($pool) {
   # End of Authentication methods
   #
 
+  # 
+  # Extrenal Systems Integratio method
+  #
+
+  post -> 'forgejo_hook', {
+    request-body -> %json {
+
+      say "hit for {%json<after>}";
+
+      my %trigger = %(
+        description => "{%json<after>} | {%json<head_commit><message>}",
+        #cwd => "/path/to/working/directory",
+        sparrowdo => %(
+        #  localhost => True,
+        #  no_sudo   => True,
+        #  conf      => "/path/to/file.conf"
+          tags => "sha={%json<after>},scm={%json<repository><clone_url>.subst('127.0.0.1','host.docker.internal')},message={%json<head_commit><message>}",
+        )
+      );
+      my $key = "{%json<after>}.{now.Int()}";
+      mkdir "{%*ENV<HOME>}/.sparky/projects/dsci/.triggers/";
+      "{%*ENV<HOME>}/.sparky/projects/dsci/.triggers/{$key}".IO.spurt(%trigger.raku);
+      content 'text/plain', $key; 
+    }
+  }
+
+  # 
+  # End of Extrenal Systems Integratio method
+  #
+
   #
   # Static files methods
   #
