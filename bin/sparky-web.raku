@@ -752,6 +752,17 @@ sub create-cro-app ($pool) {
         }
       }
 
+      my $rdata = "$reports-dir/$project/build-$build_id.txt".IO ~~ :f ?? 
+        "$reports-dir/$project/build-$build_id.txt".IO.
+        slurp().
+        split("\n").
+        tail(10).
+        join("\n") !! "";
+
+      if sparky-api-token() && $rdata {
+        $rdata.=subst(sparky-api-token(),"*******",:g)
+      }
+
       template 'templates/report2.crotmp', {
         css => css(), 
         navbar => navbar($user,$token), 
@@ -765,13 +776,7 @@ sub create-cro-app ($pool) {
         dt => $dt, 
         description => $description, 
         data => $data,
-        rd => "$reports-dir/$project/build-$build_id.txt".IO ~~ :f ?? 
-        "$reports-dir/$project/build-$build_id.txt".IO.
-        slurp().
-        split("\n").
-        tail(10).
-        join("\n").
-        subst(sparky-api-token(),"*******",:g) !! "";
+        rd => $rdata,
       }
 
     } else {
