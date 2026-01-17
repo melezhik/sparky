@@ -38,7 +38,7 @@ sub sparky-tcp-port is export {
 
 sub sparky-api-token is export {
 
-  get-sparky-conf()<SPARKY_API_TOKEN> || "sparky-token";
+  get-sparky-conf()<SPARKY_API_TOKEN> || "";
 
 }
 
