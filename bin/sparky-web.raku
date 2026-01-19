@@ -1329,7 +1329,7 @@ sub create-cro-app ($pool) {
         #  localhost => True,
         #  no_sudo   => True,
         #  conf      => "/path/to/file.conf"
-          tags => "repo_full_name={%json<repository><full_name>},sha={%json<after>},scm={%json<repository><clone_url>.subst('127.0.0.1','host.docker.internal')},message={%json<head_commit><message>}",
+          tags => "ref={%json<ref>},repo_full_name={%json<repository><full_name>},sha={%json<after>},scm={%json<repository><clone_url>.subst('127.0.0.1','host.docker.internal')},message={%json<head_commit><message>}",
         )
       );
       my $key = "{%json<after>}.{now.Int()}";
