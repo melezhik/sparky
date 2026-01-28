@@ -4,6 +4,7 @@ unit module Sparky:ver<0.2.27>;
 use YAMLish;
 use DBIish;
 use Time::Crontab;
+use JSON::Fast;
 
 my $root = %*ENV<SPARKY_ROOT> || %*ENV<HOME> ~ '/.sparky/projects';
 my %conf;
@@ -415,7 +416,7 @@ sub find-triggers ($root) is export {
     if "{$dir}/.triggers/".IO ~~ :d {
       for dir("{$dir}/.triggers/") -> $file {
         say ">> load trigger from file $file ...";
-        my %trigger = EVALFILE($file);
+        my %trigger = $file.IO.basename ~~ /".json" $$/  ?? from-json($file.IO.slurp) !!  EVALFILE($file);
         %trigger<project> = $project;
         %trigger<file> = $file;
         %trigger<dt> = $file.IO.modified.DateTime;
