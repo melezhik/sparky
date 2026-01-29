@@ -59,7 +59,7 @@ sub MAIN (
 
   if $trigger {
     say "loading trigger $trigger into Raku ...";
-    %trigger = $trigger.IO.basename ~~ /".json" $$/ ?? from-json($trigger.IO.slurp) !! EVALFILE($trigger);
+    %trigger = sparky-trigger-format() eq "json" ?? from-json($trigger.IO.slurp) !! EVALFILE($trigger);
   }
 
   if $make-report {
@@ -324,7 +324,7 @@ sub MAIN (
 
   if $trigger {
     say "moving trigger to {$build-cache-dir}/{$trigger.IO.basename} ...";
-    my %t = $trigger.IO.basename ~~ /".json" $$/ ?? from-json( $trigger.IO.slurp) !!  EVALFILE($trigger);
+    my %t = sparky-trigger-format() eq "json"  ?? from-json( $trigger.IO.slurp) !!  EVALFILE($trigger);
     %t<sparrowdo> = %sparrowdo-config;
     unlink $trigger;
     "{$build-cache-dir}/{$trigger.IO.basename}".IO.spurt(%t.perl);

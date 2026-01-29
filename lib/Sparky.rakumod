@@ -43,6 +43,12 @@ sub sparky-api-token is export {
 
 }
 
+sub sparky-trigger-format is export {
+
+  get-sparky-conf()<SPARKY_TRIGGER_FORMAT> || "raku";
+
+}
+
 sub sparky-auth is export {
   get-sparky-conf()<auth> || %(
     default => True,
@@ -417,7 +423,7 @@ sub find-triggers ($root) is export {
       for dir("{$dir}/.triggers/") -> $file {
         say ">> load trigger from file $file ...";
         my %trigger;
-        if $file.IO.basename ~~ /".json" $$/  {
+        if sparky-trigger-format() eq "json"  {
            say "load trigger in JSON format";
            %trigger = from-json($file.IO.slurp) 
         } else {
