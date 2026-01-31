@@ -282,7 +282,6 @@ sub MAIN (
     %sparrowdo-config<tags> ~= ",SPARKY_JOB_ID={$trigger.IO.basename}" if $trigger;
     %sparrowdo-config<tags> ~= ",SPARKY_WORKER=docker" if %sparrowdo-config<docker>;
     %sparrowdo-config<tags> ~= ",SPARKY_WORKER=localhost" if %sparrowdo-config<localhost>;
-    %sparrowdo-config<tags> ~= ",SPARKY_WORKER=host" if %sparrowdo-config<host>;
     %sparrowdo-config<tags> ~= ",SPARKY_TCP_PORT={sparky-tcp-port()}";
     %sparrowdo-config<tags> ~= ",SPARKY_API_TOKEN={sparky-api-token()}" if sparky-api-token();
     %sparrowdo-config<tags> ~= ",SPARKY_USE_TLS=1" if sparky-use-tls();
@@ -295,6 +294,8 @@ sub MAIN (
     $sparrowdo-run ~= ",SPARKY_API_TOKEN={sparky-api-token()}" if sparky-api-token();
     $sparrowdo-run ~= ",SPARKY_USE_TLS" if sparky-use-tls();
   }
+
+  %sparrowdo-config<tags> ~= ",SPARKY_HOST={sparky-host()}" if sparky-host() ne "0.0.0.0";
 
   if %sparrowdo-config<verbose> {
     $sparrowdo-run ~= " --verbose";
