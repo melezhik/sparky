@@ -295,7 +295,7 @@ sub MAIN (
     $sparrowdo-run ~= ",SPARKY_USE_TLS" if sparky-use-tls();
   }
 
-  %sparrowdo-config<tags> ~= ",SPARKY_HOST={sparky-host()}" if sparky-host() ne "0.0.0.0";
+  $sparrowdo-run ~= ",SPARKY_HOST={sparky-host()}" if sparky-host() ne "0.0.0.0";
 
   if %sparrowdo-config<verbose> {
     $sparrowdo-run ~= " --verbose";
