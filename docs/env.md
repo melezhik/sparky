@@ -37,3 +37,9 @@ Sets timeout for sparky workers, see [Running daemon](#running-daemon) section.
 ## SPARKY_JOB_TIMEOUT
 
 How many seconds wait till a job is considered as timeouted (used in Sparky Job API calls).
+
+
+## SPARKY_JOB_API_DEBUG
+
+Enable this if you want to see low level debug messages from Sparky Job Api calls
+
