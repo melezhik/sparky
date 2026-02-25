@@ -185,7 +185,7 @@ function connect() {
     var html = ansi_up.ansi_to_html(`${e.data}`);
     //log.innerHTML += '<tr><td>' + html + '</td></tr>' + "\n";
     //log.innerHTML += "\n";
-    log.innerHTML += html + "<br>\n";
+    log.innerHTML += html + "\n";
   };
 
   ws.onclose = function(e) {
