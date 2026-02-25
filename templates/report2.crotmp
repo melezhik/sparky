@@ -43,7 +43,7 @@
     </div>
     <div class="panel-block">
       <div id="Report" class="content-tab">
-        <pre id="log" style="white-space: pre-wrap;"></pre>
+        <pre id="log"></pre>
       </div>
       <div id="Artifacts" class="content-tab" style="display:none">
       <?{.artifacts.elems == 0}>
@@ -61,7 +61,7 @@
       </div>
       <div id="SysReport" class="content-tab" style="display:none">
         <?.sys-report>
-        <pre style="white-space: pre-wrap;"><.sys-report></pre>
+        <pre><.sys-report></pre>
         </?>
         <!.sys-report>
         no data
@@ -69,7 +69,7 @@
       </div>
       <div id="RecentData" class="content-tab" style="display:none">
         <?.rd>
-        <pre id="rd" style="white-space: pre-wrap;"><.rd></pre>
+        <pre id="rd"><.rd></pre>
         </?>
         <!.rd>
         no data
@@ -185,7 +185,7 @@ function connect() {
     var html = ansi_up.ansi_to_html(`${e.data}`);
     //log.innerHTML += '<tr><td>' + html + '</td></tr>' + "\n";
     //log.innerHTML += "\n";
-    log.innerHTML += html + "\n";
+    log.innerHTML += html + "<br>\n";
   };
 
   ws.onclose = function(e) {
