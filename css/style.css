@@ -1,3 +1,6 @@
-a[href] {
-  color: black;
+pre {
+
+  white-space: pre-line;
+  width: 100%;
+
 }
