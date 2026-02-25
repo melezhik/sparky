@@ -61,10 +61,10 @@
       </div>
       <div id="SysReport" class="content-tab" style="display:none">
         <?.sys-report>
-        <pre><.sys-report></pre>
+        <pre id="sysr"><.sys-report></pre>
         </?>
         <!.sys-report>
-        no data
+        <pre id="sysr">no data</pre>
         </!>
       </div>
       <div id="RecentData" class="content-tab" style="display:none">
@@ -164,7 +164,15 @@
 var ansi_up = new AnsiUp;
 
 var log = document.getElementById('log');
+let w = window.screen.availWidth
+log.style.width = `${w}px`
+
 var rd = document.getElementById('rd');
+rd.style.width = `${w}px`
+
+var sysr = document.getElementById('sysr');
+sysr.style.width = `${w}px`
+
 var text_rd = ansi_up.ansi_to_html(rd.innerText);
 
 rd.innerHTML = text_rd;
