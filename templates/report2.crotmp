@@ -42,38 +42,40 @@
         </nav>
     </div>
     <div class="panel-block">
-      <div id="Report" class="content-tab">
-        <pre id="log"></pre>
-      </div>
-      <div id="Artifacts" class="content-tab" style="display:none">
-      <?{.artifacts.elems == 0}>
-      no artifacts found
-      </?>
-      <@artifacts: $i>
-        <$i.name></a>
-        &nbsp;|&nbsp;
-        <$i.size>
-        &nbsp;|&nbsp;
-        <a href="<.http-root>/file_view/<.project>/<.job_id>/<$i.name>">view</a>
-        &nbsp;|&nbsp;
-        <a href="<.http-root>/file/<.project>/<.job_id>/<$i.name>">download</a><br>
-      </@>
-      </div>
-      <div id="SysReport" class="content-tab" style="display:none">
-        <?.sys-report>
-        <pre id="sysr"><.sys-report></pre>
+      <div class="container">
+        <div id="Report" class="content-tab">
+          <pre id="log"></pre>
+        </div>
+        <div id="Artifacts" class="content-tab" style="display:none">
+        <?{.artifacts.elems == 0}>
+        no artifacts found
         </?>
-        <!.sys-report>
-        <pre id="sysr">no data</pre>
-        </!>
-      </div>
-      <div id="RecentData" class="content-tab" style="display:none">
-        <?.rd>
-        <pre id="rd"><.rd></pre>
-        </?>
-        <!.rd>
-        no data
-        </!>
+        <@artifacts: $i>
+          <$i.name></a>
+          &nbsp;|&nbsp;
+          <$i.size>
+          &nbsp;|&nbsp;
+          <a href="<.http-root>/file_view/<.project>/<.job_id>/<$i.name>">view</a>
+          &nbsp;|&nbsp;
+          <a href="<.http-root>/file/<.project>/<.job_id>/<$i.name>">download</a><br>
+        </@>
+        </div>
+        <div id="SysReport" class="content-tab" style="display:none">
+          <?.sys-report>
+          <pre id="sysr"><.sys-report></pre>
+          </?>
+          <!.sys-report>
+          <pre id="sysr">no data</pre>
+          </!>
+        </div>
+        <div id="RecentData" class="content-tab" style="display:none">
+          <?.rd>
+          <pre id="rd"><.rd></pre>
+          </?>
+          <!.rd>
+          no data
+          </!>
+        </div>
       </div>
     </div>
 
