@@ -2,6 +2,11 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+  - Use percentages instead
+    of absolute number
+    to restrict width
+    for report
+
 0.2.28 2026-02-25T16:50:00Z
 
   - SPARKY_HOST may affect

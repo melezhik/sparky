@@ -168,13 +168,15 @@ var ansi_up = new AnsiUp;
 var log = document.getElementById('log');
 let w = window.screen.availWidth
 //log.style.width = `${w}px`
-log.style.width = "90%"
+log.style.width = "95%"
 
 var rd = document.getElementById('rd');
-rd.style.width = `${w}px`
+//rd.style.width = `${w}px`
+rd.style.width = "95%"
 
 var sysr = document.getElementById('sysr');
-sysr.style.width = `${w}px`
+//sysr.style.width = `${w}px`
+sysr.style.width = "95%"
 
 var text_rd = ansi_up.ansi_to_html(rd.innerText);
 
