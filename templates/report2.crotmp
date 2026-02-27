@@ -167,7 +167,8 @@ var ansi_up = new AnsiUp;
 
 var log = document.getElementById('log');
 let w = window.screen.availWidth
-log.style.width = `${w}px`
+//log.style.width = `${w}px`
+log.style.width = "90%"
 
 var rd = document.getElementById('rd');
 rd.style.width = `${w}px`
