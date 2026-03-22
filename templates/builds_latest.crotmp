@@ -65,9 +65,12 @@ function connect() {
     thd2.appendChild(document.createTextNode('description'));
     var thd3 = document.createElement('td');
     thd3.appendChild(document.createTextNode('state'));
+    var thd4 = document.createElement('td');
+    thd4.appendChild(document.createTextNode('time'));
     th.appendChild(thd1);
     th.appendChild(thd2);
     th.appendChild(thd3);
+    th.appendChild(thd4);
     table.appendChild(th);          
     for (const build of builds) {
       var tr = document.createElement('tr');
@@ -103,9 +106,12 @@ function connect() {
       //console.log(build);
       var td3 = document.createElement('td');
       td3.appendChild(document.createTextNode(build_st_str)); 
+      var td4 = document.createElement('td');
+      td4.appendChild(document.createTextNode(build.dt_ago)); 
       tr.appendChild(td1);
       tr.appendChild(td2);
       tr.appendChild(td3);
+      tr.appendChild(td4);
       table.appendChild(tr);          
     }
     p_cont.appendChild(table) 

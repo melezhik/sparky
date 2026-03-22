@@ -494,6 +494,7 @@ sub create-cro-app ($pool) {
             for @rows -> $b {
               my %b = $b;
               %b<data> = [];
+              %b<dt_ago> = time-ago(%b<dt>);
               my @data = "$reports-dir/{$b<project>}/build-{$b<id>}.txt".IO.lines.tail(3);
               for @data -> $l {
                 my $msg = "{$l}";
