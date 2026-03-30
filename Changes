@@ -2,6 +2,8 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+  - UI improvments (#64)
+
   - Use percentages instead
     of absolute number
     to restrict width
