@@ -24,72 +24,69 @@
           </div>
         </?>
         <form method="post" id="form01">
-          <div cass="field">
+          <table class="table is-borderless">
             <?.render-vars>
               <@vars: $i>
-              <div class="field is-horizontal">
-                <div class="field-label is-normal">
+              <tr>
+                <td style="border: none; vertical-align: middle;">
                   <label class="label"><$i.<name>></label>
-                </div>
-                <div class="field-body">
-                    <div class="field">
-                      <p class="control">
-                        <?{ $i.type eq 'input' }> 
-                          <input class="input is-success" type="text" name="<$i.<name>>" value="<$i.<default>>" placeholder="<$i.<default>>">
-                        </?> 
-                        <?{ $i.type eq 'password' }>
-                          <input class="input is-success" type="password" name="<$i.<name>>" value="<$i.<default>>" placeholder="<$i.<default>>">
-                        </?>
-                        <?{ $i.type eq 'textarea' }>
-                          <?$i.default>
-                          <textarea class="textarea is-success" cols=20 type="textarea" name="<$i.<name>>" placeholder="<$i.<default>>"><$i.<default>></textarea>
-                          </?>
-                          <!$i.default>
-                          <textarea class="textarea is-success" cols=20 type="textarea" name="<$i.<name>>" placeholder=""></textarea>
-                          </!>
-                        </?> 
-                        <?{ $i.type eq 'checkbox' }>
-                          <?$i.default>
-                          <input class="checkbox is-success" checked type="checkbox" name="<$i.<name>>" value="True">
-                          </?>
-                          <!>
-                          <input class="checkbox is-success" type="checkbox" name="<$i.<name>>" value="True">
-                          </!>
-                        </?>
-                        <?{ $i.type eq 'select' }>
-                        <?{ $i.multiple }>
-                        <div class="select is-multiple">
-                          <select name="<$i.<name>>" multiple size="8">
-                        </?>
-                        <!{ $i.multiple }>
-                        <div class="select">
-                          <select name="<$i.<name>>">
-                        </!>
-                        <@$i.values: $s>
-                          <?{ $i.default && $i.default eq $s }>
-                            <option selected="selected"><$s></option>
-                          </?>
-                          <!>
-                            <option><$s></option>
-                          </!>
-                        </@>
-                        </select>
-                        </div>
-                        </?>
-                      </p> <!-- < class="control"> -->     
-                    </div> <!-- <div class="field"> -->
-                </div> <!-- <div class="field-body"> -->
-              <hr>  
-              </div> <!-- <div class="field is-horizontal"> -->
+                </td>
+                <td style="border: none; vertical-align: middle;">
+                  <p class="control">
+                    <?{ $i.type eq 'input' }> 
+                      <input class="input is-success" type="text" name="<$i.<name>>" value="<$i.<default>>" placeholder="<$i.<default>>">
+                    </?> 
+                    <?{ $i.type eq 'password' }>
+                      <input class="input is-success" type="password" name="<$i.<name>>" value="<$i.<default>>" placeholder="<$i.<default>>">
+                    </?>
+                    <?{ $i.type eq 'textarea' }>
+                      <?$i.default>
+                      <textarea class="textarea is-success" cols=20 type="textarea" name="<$i.<name>>" placeholder="<$i.<default>>"><$i.<default>></textarea>
+                      </?>
+                      <!$i.default>
+                      <textarea class="textarea is-success" cols=20 type="textarea" name="<$i.<name>>" placeholder=""></textarea>
+                      </!>
+                    </?> 
+                    <?{ $i.type eq 'checkbox' }>
+                      <?$i.default>
+                      <input class="checkbox is-success" checked type="checkbox" name="<$i.<name>>" value="True">
+                      </?>
+                      <!>
+                      <input class="checkbox is-success" type="checkbox" name="<$i.<name>>" value="True">
+                      </!>
+                    </?>
+                    <?{ $i.type eq 'select' }>
+                    <?{ $i.multiple }>
+                    <div class="select is-multiple">
+                      <select name="<$i.<name>>" multiple size="8">
+                    </?>
+                    <!{ $i.multiple }>
+                    <div class="select">
+                      <select name="<$i.<name>>">
+                    </!>
+                    <@$i.values: $s>
+                      <?{ $i.default && $i.default eq $s }>
+                        <option selected="selected"><$s></option>
+                      </?>
+                      <!>
+                        <option><$s></option>
+                      </!>
+                    </@>
+                    </select>
+                    </div>
+                    </?><!-- type eq 'select'  -->
+                  </p> <!-- < class="control"> -->     
+                </td> <!-- <td> -->
               </@> <!-- <@vars: $i> -->
-             <hr>
-             <div class="field is-grouped">
-              <div class="control">
-                <button class="button is-info is-rounded is-small">
-                  Submit
-                </button>
-              </div> <!-- <div class="control"> -->
-          </div> <!-- <div cass="field"> -->
+             </tr>
+             <tr>
+                <td colspan=2 style="border: none; vertical-align: middle;">
+                  <button class="button is-info is-rounded is-small">
+                    Submit
+                  </button>
+                </td>
+              </tr>
+          </table> <!-- <table> -->
         </form> <!-- <form method="post" id="form01"> -->
         </?> 
       </div> <!-- <div class="panel-block"> --> 
