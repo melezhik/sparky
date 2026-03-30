@@ -49,10 +49,10 @@
                     </?> 
                     <?{ $i.type eq 'checkbox' }>
                       <?$i.default>
-                      <input class="checkbox is-success" checked type="checkbox" name="<$i.<name>>" value="True">
+                      <input style="min-height:15px;min-width:15px;" class="checkbox is-success" checked type="checkbox" name="<$i.<name>>" value="True">
                       </?>
                       <!>
-                      <input class="checkbox is-success" type="checkbox" name="<$i.<name>>" value="True">
+                      <input style="min-height:15px;min-width:15px;" class="checkbox is-success" type="checkbox" name="<$i.<name>>" value="True">
                       </!>
                     </?>
                     <?{ $i.type eq 'select' }>
