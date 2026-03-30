@@ -27,13 +27,13 @@
           <div cass="field">
             <?.render-vars>
               <@vars: $i>
-              <div class="field">
-                <!-- <div class="field-label is-normal"> -->
+              <div class="field is-horizontal">
+                <div class="field-label is-normal">
                   <label class="label"><$i.<name>></label>
-                <!-- </div> -->
-                <!-- <div class="field-body"> -->
-                    <!-- <div class="field"> -->
-                      <div class="control">
+                </div>
+                <div class="field-body">
+                    <div class="field">
+                      <p class="control">
                         <?{ $i.type eq 'input' }> 
                           <input class="input is-success" type="text" name="<$i.<name>>" value="<$i.<default>>" placeholder="<$i.<default>>">
                         </?> 
@@ -76,11 +76,11 @@
                         </select>
                         </div>
                         </?>
-                      </div> <!-- <div class="control"> -->     
-                    <!-- </div> <!-- <div class="field"> -->
-                <!-- </div> <!-- <div class="field-body"> -->
+                      </p> <!-- < class="control"> -->     
+                    </div> <!-- <div class="field"> -->
+                </div> <!-- <div class="field-body"> -->
               <hr>  
-              </div> <!-- <div class="field"> -->
+              </div> <!-- <div class="field is-horizontal"> -->
               </@> <!-- <@vars: $i> -->
              <hr>
              <div class="field is-grouped">
