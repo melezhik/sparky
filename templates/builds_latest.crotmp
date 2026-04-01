@@ -165,7 +165,7 @@ connect();
 
 
   function clearBuilds() {
-    setCookie('build_new_since',latest_build_id);
+    setCookie('build_new_since',latest_build_id,10);
     //document.getElementById('notification').innerHTML = `<small>Builds are fresh since ID: ${latest_build_id}</small>`;
 
   }

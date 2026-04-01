@@ -553,7 +553,7 @@ sub create-cro-app ($pool) {
  
   }
 
-  get -> 'builds_latest', :$message, :$level, :$user is cookie, :$token is cookie {
+  get -> 'builds_latest', :$message, :$level, :$user is cookie, :$token is cookie, :$build_new_since? is cookie {
   
     template 'templates/builds_latest.crotmp', {
       css => css(), 
