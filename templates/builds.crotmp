@@ -17,6 +17,11 @@
           <td>Time</td>
         </tr>
         <@builds: $i>
+        <?{$i.id == .build_new_since}>
+        <tr>
+          <td colspan=5>&#x2702;</td>
+        </tr>
+        </?>
         <tr>
           <td>
             <a href='<.http-root>/project/<$i.project>'><$i.project></a>

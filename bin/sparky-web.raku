@@ -516,7 +516,7 @@ sub create-cro-app ($pool) {
     }
   }
 
-  get -> 'builds', :$user is cookie, :$token is cookie {
+  get -> 'builds', :$user is cookie, :$token is cookie, :$build_new_since? is cookie {
 
     my $dbh = $pool ?? $pool.get-connection() !! get-dbh();
 
@@ -547,6 +547,7 @@ sub create-cro-app ($pool) {
       navbar => navbar($user,$token),
       http-root => sparky-http-root(),
       builds => @builds,
+      build_new_since => $build_new_since || 0,
 
     }
  

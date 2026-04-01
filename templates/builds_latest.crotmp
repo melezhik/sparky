@@ -14,9 +14,8 @@
         Latest builds
       </p>
       <div class="panel-block">
-        <a class="button is-info is-rounded is-small" onclick="clearBuilds()">Clear</a>
+        <a class="button is-info is-rounded is-small" onclick="clearBuilds()">Cut</a>
       </div>
-      <div class="notification is-success is-light" id="notification"></div>
       <?{.level eq 'info' && .message}>
         <span class="control">
           <pre class="notification has-text-success"><.message></pre>
@@ -87,10 +86,15 @@ function connect() {
     } 
 
     for (const build of builds) {
-      var tr = document.createElement('tr');
-      if (build.id <= build_new_since) {
-        tr.className = "gray"; 
+      if (build.id == build_new_since) {
+        var tr_s = document.createElement('tr');
+        var td_s = document.createElement('td');
+        td_s.setAttribute("colspan",4);
+        td_s.appendChild(document.createTextNode('\u2702'));
+        tr_s.appendChild(td_s);
+        table.appendChild(tr_s);
       }
+      var tr = document.createElement('tr');
       var td1 = document.createElement('td');
       var a = document.createElement('a');
       a.setAttribute("href","/report/" + build.project + "/" + build.id);
@@ -161,8 +165,8 @@ connect();
 
 
   function clearBuilds() {
-    setCookie('build_new_since',latest_build_id,10000);
-    document.getElementById('notification').innerHTML = `<small>Builds are fresh since ID: ${latest_build_id}</small>`;
+    setCookie('build_new_since',latest_build_id);
+    //document.getElementById('notification').innerHTML = `<small>Builds are fresh since ID: ${latest_build_id}</small>`;
 
   }
 
