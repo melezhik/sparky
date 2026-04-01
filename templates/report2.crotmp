@@ -27,7 +27,6 @@
         <a class="button is-warning is-rounded is-small" onclick="Terminate()">Terminate</a>
       </div>
       <div class="notification is-success is-light" id="notification"></div>
-      </div>
     </nav>
     <div class="panel-block">
         <nav class="tabs is-boxed">
