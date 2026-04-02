@@ -265,7 +265,7 @@ sub MAIN (
       }      
       my $shared-var = get-template-var(%shared-vars<vars>,$var_id);
       if defined($shared-var) {
-        if $shared-var.isa(Str) or $shared-var.isa(Rat) or $shared-var.isa(Int) or or $shared-var.isa(Bool) {
+        if $shared-var.isa(Str) or $shared-var.isa(Rat) or $shared-var.isa(Int) or $shared-var.isa(Bool) {
           %sparrowdo-config<tags>.=subst("%{$var_id}%",$shared-var,:g);
         } elsif $shared-var.isa(Hash)  {
           my @tags;

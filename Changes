@@ -2,6 +2,11 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.2.31 2026-04-02T14:00:00Z
+
+  - Fix syntax error
+    in sparky runner
+
 0.2.30 2026-04-02T14:00:00Z
 
   - Forgot to bump
