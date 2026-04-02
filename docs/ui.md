@@ -154,11 +154,11 @@ by using `%name%` syntax:
 vars:
   -
       name: Name
-      default: %name%
+      default: "%name%"
       type: input
   -
       name: LastName
-      default: %surname%
+      default: "%surname%"
       type: input
 ```
 
@@ -195,7 +195,7 @@ vars:
       name: Topping
       default: "%default_topping%"
       type: select
-      values: %toppings%
+      values: "%toppings%"
 ```
 
 `vars.yaml`:
@@ -245,7 +245,7 @@ Tag variables in `sparky.yaml` could use template variables:
 ```
 sparrowdo:
   tags: |
-    Name=%user.name%,
+    Name=%user.name%",
     LastName=%user.surname%
 ```
 
@@ -263,6 +263,6 @@ vars:
   -
       name: Colors
       type: select
-      values: %colors%
+      values: "%colors%"
       fallback: [ "yellow", "green" ]
 ```
