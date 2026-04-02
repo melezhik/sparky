@@ -2,6 +2,10 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+0.2.29 2026-04-02T14:00:00Z 
+
+  - UI - add fallback
+
   - UI improvments (#64)
 
   - Use percentages instead
