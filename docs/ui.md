@@ -100,7 +100,7 @@ vars:
     group: [ tea ]
 
   -
-    name: Topic
+    name: Topping
     default: "milk"
     type: select
     values: [milk, cream]
@@ -114,7 +114,7 @@ vars:
     group: [ coffee ]
 
   -
-    name: Topic  
+    name: Topping  
     default: "milk"
     type: select
     values: [milk, cream, cinnamon]
@@ -164,6 +164,8 @@ vars:
 
 This approach allows to reduce code duplication when developing Sparky job UIs.
 
+### Host specific template variables
+
 To specify host (*) specific file, use template file located at 
 `SPARKY_ROOT/templates/hosts/$hostname/` directory
 
@@ -181,7 +183,32 @@ this variable could be overridden by `HOSTNAME` environment variable
 
 Host specific variables always override variable specified at `SPARKY_ROOT/templates/vars.yaml`
 
+### Template variables scope
+
+Template variables can be used only in `default`, `value` or `values` expressions.
+
+`sparky.yaml`:
+
+```yaml
+vars:
+  -
+      name: Topping
+      default: "%default_topping%"
+      type: select
+      values: %toppings%
+```
+
+`vars.yaml`:
+
+```yaml
+vars:
+  default_topping: "milk"
+  toppings: [ milk, cream, cinnamon ]
+```
+
 ---
+
+### Nested template variables
 
 To create nested variables use dot notation:
 
@@ -224,7 +251,7 @@ sparrowdo:
 
 ## Fallback
 
-Fallback allows to set default if template variable does not exist:
+Fallback allows to set default value if template variable does not exist:
 
 ```yaml
 vars:
@@ -233,4 +260,9 @@ vars:
     default: "%language%"
     fallback: Raku
     type: input
+  -
+      name: Colors
+      type: select
+      values: %colors%
+      fallback: [ "yellow", "green" ]
 ```

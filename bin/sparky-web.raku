@@ -1037,22 +1037,25 @@ sub create-cro-app ($pool) {
             # apply vars from host vars first
             my $host-var = get-template-var(%host-vars<vars>,$var_id);
             if defined($host-var) {
-              if $host-var.isa(Str) or $host-var.isa(Rat) or $host-var.isa(Int) {
+              if $host-var.isa(Str) or $host-var.isa(Rat) or $host-var.isa(Int) or $host-var.isa(Bool) {
                 $v<default>.=subst("%{$var_id}%",$host-var,:g);
               } else {
                 $v<default> = $host-var;
               }
-              say "project/$project: default - insert default %{$var_id}% from host vars";
+              say "project/$project: name={$v<name>} default -> insert %{$var_id}% from host vars";
               next;
             }
             my $shared-var = get-template-var(%shared-vars<vars>,$var_id);
             if defined($shared-var) {
-              if $shared-var.isa(Str) or $shared-var.isa(Rat) or $shared-var.isa(Int) {
+              if $shared-var.isa(Str) or $shared-var.isa(Rat) or $shared-var.isa(Int) or $shared-var.isa(Bool)  {
                 $v<default>.=subst("%{$var_id}%",$shared-var,:g);
               } else {
                 $v<default> = $shared-var;
               }
-              say "project/$project: default - insert default %{$var_id}% from shared vars";
+              say "project/$project: name={$v<name>} default -> insert %{$var_id}% from shared vars";
+            } else {
+              say "project/$project: name={$v<name>} default -> insert %{$var_id}% from fallback";
+              $v<default> = $v<fallback>;
             }
           }
         }
@@ -1068,17 +1071,20 @@ sub create-cro-app ($pool) {
               } else {
                 $v<value> = $host-var;
               }
-              say "project/$project: value - insert value %{$var_id}% from host vars";
+              say "project/$project: name={$v<name>} value -> insert %{$var_id}% from host vars";
               next;
             }
             my $shared-var = get-template-var(%shared-vars<vars>,$var_id);
             if defined($shared-var) {
-            if $shared-var.isa(Str) or $shared-var.isa(Rat) or $shared-var.isa(Int)  {
-              $v<value>.=subst("%{$var_id}%",$shared-var,:g);
+              if $shared-var.isa(Str) or $shared-var.isa(Rat) or $shared-var.isa(Int) or $shared-var.isa(Bool) {
+                $v<value>.=subst("%{$var_id}%",$shared-var,:g);
+              } else {
+                $v<value> = $shared-var;
+              }
+              say "project/$project: name={$v<name>} value -> insert %{$var_id}% from shared vars";
             } else {
-              $v<value> = $shared-var;
-            }
-            say "project/$project: value - insert value %{$var_id}% from shared vars";
+              say "project/$project: name={$v<name>} value -> insert %{$var_id}% from fallback";
+              $v<value> = $v<fallback>;
             }
           }
         }
@@ -1088,46 +1094,50 @@ sub create-cro-app ($pool) {
             # apply vars from host vars first
             my $host-var = get-template-var(%host-vars<vars>,$var_id);
             if defined($host-var) {
-              if $host-var.isa(Str) or $host-var.isa(Rat) or $host-var.isa(Int) {
+              if $host-var.isa(Str) or $host-var.isa(Rat) or $host-var.isa(Int) or $host-var.isa(Bool) {
                 $v<values>.=subst("%{$var_id}%",$host-var,:g);
               } else {
                 $v<values> = $host-var.isa(List) ?? $host-var.sort !! $host-var;
               }
-              say "project/$project: values - insert values %{$var_id}% from host vars";
+              say "project/$project:  name={$v<name>} values - insert %{$var_id}% from host vars";
               next;
             }
             my $shared-var = get-template-var(%shared-vars<vars>,$var_id);
             if defined($shared-var) {
-              if $shared-var.isa(Str) or $shared-var.isa(Rat) or $shared-var.isa(Int) {
+              if $shared-var.isa(Str) or $shared-var.isa(Rat) or $shared-var.isa(Int) or $shared-var.isa(Bool) {
                 $v<values>.=subst("%{$var_id}%",$shared-var,:g);
               } else {
                 $v<values> = $shared-var.isa(List) ?? $shared-var.sort !! $shared-var;
               }
-              say "project/$project: values - insert values %{$var_id}% from shared vars";
+              say "project/$project:  name={$v<name>} values - insert %{$var_id}% from shared vars";
+            } else {
+              say "project/$project: name={$v<name>} values -> insert %{$var_id}% from fallback";
+              $v<values> = $v<fallback>;
             }
           }
         }
-        }
 
-        template 'templates/build.crotmp', {
-          http-root => sparky-http-root(),
-          sparky-tcp-port => sparky-tcp-port(),
-          group_vars => $group ?? [] !!  %project-conf<group_vars> || [],
-          render-vars => $group ?? True !! (%project-conf<group_vars> ?? False !! True),
-          css =>css(), 
-          navbar => navbar($user, $token), 
-          project => $project, 
-          allow-manual-run => %project-conf<allow_manual_run> || False,
-          disabled => %project-conf<disabled> || False,
-          project-conf-str => $project-conf-str || "configuration not found",
-          project-conf => %project-conf || {},
-          vars => @vars,
-          scenario-code => "$root/$project/sparrowfile".IO ~~ :e ?? "$root/$project/sparrowfile".IO.slurp !! "scenario not found", 
-          error => $error
-        }
-      } else {
-        not-found();
-      }
+      } # if "$root/$project/sparrowfile".IO ~~ :f {
+
+      template 'templates/build.crotmp', %(
+        http-root => sparky-http-root(),
+        sparky-tcp-port => sparky-tcp-port(),
+        group_vars => $group ?? [] !!  %project-conf<group_vars> || [],
+        render-vars => $group ?? True !! (%project-conf<group_vars> ?? False !! True),
+        css =>css(), 
+        navbar => navbar($user, $token), 
+        project => $project, 
+        allow-manual-run => %project-conf<allow_manual_run> || False,
+        disabled => %project-conf<disabled> || False,
+        project-conf-str => $project-conf-str || "configuration not found",
+        project-conf => %project-conf || {},
+        vars => @vars,
+        scenario-code => "$root/$project/sparrowfile".IO ~~ :e ?? "$root/$project/sparrowfile".IO.slurp !! "scenario not found", 
+        error => $error
+      );
+    } else {
+      not-found();
+    }
 
     } else {
 
