@@ -47,7 +47,7 @@ Sparky job now gets html controls for input parameters:
 
 ![build parameters](https://raw.githubusercontent.com/melezhik/sparky/master/images/sparky-web-ui-build-with-params.jpeg)
  
-Whini scenario those parameters are available through `tags()` function:
+Within scenario those parameters are available through `tags()` function:
 
 ```raku
 say "Name param passed: ", tags()<Name>;
@@ -220,4 +220,17 @@ sparrowdo:
   tags: |
     Name=%user.name%,
     LastName=%user.surname%
+```
+
+## Fallback
+
+Fallback allows to set default if template variable does not exist:
+
+```yaml
+vars:
+  -
+    name: Language
+    default: "%language%"
+    fallback: Raku
+    type: input
 ```
