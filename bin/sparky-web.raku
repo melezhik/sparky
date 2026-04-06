@@ -1054,8 +1054,12 @@ sub create-cro-app ($pool) {
               }
               say "project/$project: name={$v<name>} default -> insert %{$var_id}% from shared vars";
             } else {
-              say "project/$project: name={$v<name>} default -> insert %{$var_id}% from fallback";
-              $v<default> = $v<fallback>;
+              if $v<fallback>:exists {
+                say "project/$project: name={$v<name>} default -> insert %{$var_id}% from fallback";
+                $v<default> = $v<fallback>;
+              } else {
+                say "project/$project: name={$v<name>} default -> %{$var_id}% not set!";
+              }
             }
           }
         }
@@ -1083,8 +1087,12 @@ sub create-cro-app ($pool) {
               }
               say "project/$project: name={$v<name>} value -> insert %{$var_id}% from shared vars";
             } else {
-              say "project/$project: name={$v<name>} value -> insert %{$var_id}% from fallback";
-              $v<value> = $v<fallback>;
+              if $v<fallback>:exists {
+                say "project/$project: name={$v<name>} value -> insert %{$var_id}% from fallback";
+                $v<value> = $v<fallback>;
+              } else {
+                say "project/$project: name={$v<name>} value -> %{$var_id}% not set!";
+              }
             }
           }
         }
@@ -1111,8 +1119,12 @@ sub create-cro-app ($pool) {
               }
               say "project/$project:  name={$v<name>} values - insert %{$var_id}% from shared vars";
             } else {
-              say "project/$project: name={$v<name>} values -> insert %{$var_id}% from fallback";
-              $v<values> = $v<fallback>;
+              if $v<fallback>:exists {
+                say "project/$project: name={$v<name>} values -> insert %{$var_id}% from fallback";
+                $v<values> = $v<fallback>;
+              } else {
+                say "project/$project: name={$v<name>} values -> %{$var_id}% not set!";
+              }
             }
           }
         }
