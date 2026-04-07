@@ -10,7 +10,7 @@
     "DBIish::Pool",
     "JSON::Fast",
     "HTTP::Tiny",
-    "Sparrow6:ver<0.0.87+>",
+    "Sparrow6:ver<0.0.88+>",
     "Sparrowdo:ver<0.1.51+>",
     "Sparky-Job-Api:ver<0.0.12+>",
     "Time::Crontab",
