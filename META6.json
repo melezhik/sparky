@@ -11,7 +11,7 @@
     "JSON::Fast",
     "HTTP::Tiny",
     "Sparrow6:ver<0.0.89+>",
-    "Sparrowdo:ver<0.1.51+>",
+    "Sparrowdo:ver<0.1.52+>",
     "Sparky-Job-Api:ver<0.0.12+>",
     "Time::Crontab",
     "File::Directory::Tree",
