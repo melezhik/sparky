@@ -2,6 +2,12 @@ Revision history for Sparky
 
 {{$NEXT}}
 
+  - Bump sparrow/sparrowdo
+    versions
+
+  - Improve fallback
+    logic
+
 0.2.31 2026-04-02T14:00:00Z
 
   - Fix syntax error
