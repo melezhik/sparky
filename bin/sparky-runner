@@ -67,15 +67,17 @@ sub MAIN (
     mkdir $reports-dir;
 
     $dbh = get-dbh( $dir );
+    
+    LEAVE { .close with $db };
 
     my $description = %trigger<description>;
 
-    my $sth = $dbh.prepare(q:to/STATEMENT/);
+    $dbh.execute(q:to/STATEMENT/,$project, 0, $description, $job-id);
       INSERT INTO builds (project, state, description, job_id)
       VALUES ( ?,?,?,? )
     STATEMENT
 
-    $sth.execute($project, 0, $description, $job-id);
+    #$sth.execute($project, 0, $description, $job-id);
 
     # SPEED optimization:
     # we use file cache instead of database
@@ -89,34 +91,32 @@ sub MAIN (
 
     "{$build-state-dir}/{$job-id}".IO.spurt(0);
 
-    $sth = $dbh.prepare(q:to/STATEMENT/);
+    my $sth = $dbh.query(q:to/STATEMENT/,$job-id);
         SELECT max(ID) AS build_id
         FROM builds where job_id = ? 
         STATEMENT
 
-    $sth.execute($job-id);
-
-    my @rows = $sth.allrows();
+    my @rows = $sth.rows();
 
     $build_id = @rows[0][0];
 
-    $sth.finish;
+    #$sth.finish;
 
     $SPARKY-BUILD-ID = $build_id;
 
-    $sth = $dbh.prepare(q:to/STATEMENT/);
+    $sth = $dbh.query(q:to/STATEMENT/,$project);
         SELECT count(*) AS build_cnt
         FROM builds
         WHERE project = ?
         STATEMENT
 
-    $sth.execute($project);
+    #$sth.execute($project);
 
-    @rows = $sth.allrows();
+    @rows = $sth.rows();
 
     my $build_cnt = @rows[0][0];
 
-    $sth.finish;
+    #$sth.finish;
 
     if $build_cnt == 1 {
       $run-first-time = True;
@@ -440,7 +440,8 @@ sub MAIN (
   say "sparky job: state: $state";
 
   if $make-report { 
-    $dbh.do("UPDATE builds SET state = $state WHERE id = $build_id");
+    say "update builds, id = $build_id";
+    $dbh.execute("UPDATE builds SET state = $state WHERE id = $build_id");
   }
   if $state == 1 { 
     say "BUILD SUCCEED $project" ~ '@' ~ $build_id; 
@@ -474,7 +475,7 @@ sub MAIN (
 
     my $all-builds = @rows.elems;
 
-    $sth.finish;
+    #$sth.finish;
 
     my $remove-builds = $all-builds - %config<keep_builds>;
 

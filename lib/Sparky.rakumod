@@ -2,9 +2,10 @@ use v6;
 
 unit module Sparky:ver<0.2.32>;
 use YAMLish;
-use DBIish;
+use Sparky::Sqlite;
 use Time::Crontab;
 use JSON::Fast;
+use Sparky::Sqlite;
 
 my $root = %*ENV<SPARKY_ROOT> || %*ENV<HOME> ~ '/.sparky/projects';
 my %conf;
@@ -110,26 +111,10 @@ multi sub get-dbh ( $dir ) is export {
 
   my %conf = get-sparky-conf();
 
-  if %conf<database> && %conf<database><engine> && %conf<database><engine> !~~ / :i sqlite / {
 
-    $dbh  = DBIish.connect(
-        %conf<database><engine>,
-        host      => %conf<database><host>,
-        port      => %conf<database><port>,
-        database  => %conf<database><name>,
-        user      => %conf<database><user>,
-        password  => %conf<database><pass>,
-    );
+  $dbh  = DB.open("$dir/../db.sqlite3".IO.absolute.Str, False, False  );
 
-    #say "load {%conf<database><engine>} dbh";
-
-  } else {
-
-    $dbh  = DBIish.connect("SQLite", database => "$dir/../db.sqlite3".IO.absolute  );
-
-    say "{DateTime.now} --- load sqlite dbh for: " ~ ("$dir/../db.sqlite3".IO.absolute);
-
-  }
+  say "{DateTime.now} --- load sqlite dbh for: " ~ ("$dir/../db.sqlite3".IO.absolute);
 
   return $dbh
 
