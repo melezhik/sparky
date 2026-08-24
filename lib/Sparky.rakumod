@@ -243,6 +243,7 @@ sub schedule-build ( $dir, %opts? ) is export {
 
   if "{$dir}/.triggers/".IO ~~ :d {
     for dir("{$dir}/.triggers/".sort({.IO.changed})) -> $file {
+      next unless $file.IO ~~ :f;
       $run-by-trigger = True;
       $trigger-file = $file.IO.absolute;
       last;
