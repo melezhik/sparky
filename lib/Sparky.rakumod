@@ -255,7 +255,7 @@ sub schedule-build ( $dir, %opts? ) is export {
 
       if ! build-is-running($dir) {
 
-        say "kick off build for dir=$dir, trigger=$trigger";
+        say "kick off build for dir=$dir, trigger=$trigger-file";
         Proc::Async.new(
           'sparky-runner',
           "--marker=$project",
