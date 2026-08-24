@@ -415,8 +415,10 @@ sub MAIN (
   react {
     whenever $job-channel.Supply -> $event {
         say "sparky job: event received: $event";
-        $status = $event;
-        done();
+        if $status {
+          $status = $event;
+          done();
+        }
     }
   }
 
