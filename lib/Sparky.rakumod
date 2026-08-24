@@ -249,7 +249,7 @@ sub schedule-build ( $dir, %opts? ) is export {
 
   if $run-by-trigger {
 
-      say "{DateTime.now} --- [$project] build trigerred by file trigger <$trigger-file> ...";
+      say "{DateTime.now} --- [$project] build trigerred by file trigger <$trigger-file>, dir <$dir> ...";
 
       if ! build-is-running($dir) {
 
