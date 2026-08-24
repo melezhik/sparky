@@ -399,9 +399,9 @@ sub find-triggers ($root) is export {
   for dir($root) -> $dir {
 
     next if "$dir".IO ~~ :f;
-    next if $dir.basename eq '.git';
-    next if $dir.basename eq '.reports';
-    next if $dir.basename eq 'db.sqlite3-journal';
+    next if $dir.basename.Str eq '.git';
+    next if $dir.basename.Str eq '.reports';
+    next if $dir.basename.Str eq 'db.sqlite3-journal';
     next unless "$dir/sparrowfile".IO ~~ :f;
 
     my $project = $dir.IO.basename;
