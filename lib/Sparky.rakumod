@@ -214,6 +214,8 @@ sub schedule-build ( $dir, %opts? ) is export {
   #  }
   #}
 
+  say "sub schedule-build for dir: $dir ...";
+
   if "$dir/sparky.yaml".IO ~~ :f {
 
     say "{DateTime.now} --- sparkyd: parse sparky job yaml config from: $dir/sparky.yaml";
