@@ -258,7 +258,7 @@ sub schedule-build ( $dir, %opts? ) is export {
           "--marker=$project",
           "--dir=$dir",
           "--trigger=$trigger-file",
-          #"--make-report"
+          "--make-report"
         ).start;
 
      }
