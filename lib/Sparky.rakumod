@@ -258,11 +258,10 @@ sub schedule-build ( $dir, %opts? ) is export {
 
         say "kick off build for dir=$dir, trigger=$trigger-file";
         Proc::Async.new(
-          'sparky-runner',
-          "--marker=$project",
-          "--dir=$dir",
-          "--trigger=$trigger-file",
-          "--make-report"
+          "/bin/bash",
+          "--login",
+          "-c 'sparky-runner --marker=$project --dir=$dir --trigger=$trigger-file --make-report'",
+          "2>\&1 1>>/tmp/log111.txt"
         ).start;
 
      }
