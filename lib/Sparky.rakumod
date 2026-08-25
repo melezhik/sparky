@@ -255,7 +255,7 @@ sub schedule-build ( $dir, %opts? ) is export {
 
       if ! build-is-running($dir) {
         say "kick off build for dir=$dir, trigger=$trigger-file";
-        say qqx[sparky-runner --marker=$project --dir=$dir --trigger=$trigger-file --make-report 2>\&1 1>>/tmp/log111.txt &"];
+        say qqx[sparky-runner --marker=$project --dir=$dir --trigger=$trigger-file --make-report 2>\&1 1>>/tmp/log111.txt &];
 
      }
 
