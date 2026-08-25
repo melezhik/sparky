@@ -350,50 +350,53 @@ sub MAIN (
 
   update-sys-report($report-file-sys,"sparrowdo command:\n$sparrowdo-run-sanitized");
 
-  say "GO GO GO";
+  say "GO GO GO, dir: $run-dir";
   chdir($run-dir);
-  my $proc = Proc::Async.new(:enc<utf8-c8>,@sparrowdo-run);
 
-  my $exit-code = -1000;
+  #my $proc = Proc::Async.new(@sparrowdo-run);
+  my $proc = run @sparrowdo-run;
 
+  my $exit-code = $proc.exitcode;
+
+  
   my @stdout;
   my @stderr;
 
-  react {
+  #react {
 
-        whenever $proc.stdout().lines { # split input on \r\n, \n, and \r 
+        #whenever $proc.stdout().lines { # split input on \r\n, \n, and \r 
 
-          my $line = chomp($_);
+         # my $line = chomp($_);
 
-          push @stdout, $_;
-          say @stdout[-1];
+          #push @stdout, $_;
+          #say @stdout[-1];
 
-        }
+        #}
 
-        whenever $proc.stderr.lines { # split input on \r\n, \n, and \r
+        #whenever $proc.stderr.lines { # split input on \r\n, \n, and \r
 
 
-          push @stderr, $_;
-          say @stderr[-1];
+          #push @stderr, $_;
+          #say @stderr[-1];
 
-        }
+        #}
 
-        whenever $proc.ready {
+        #whenever $proc.ready {
             #say ‘PID: ’, $_ # Only in Rakudo 2018.04 and newer, otherwise Nil 
-        }
+        #}
 
-        whenever $proc.start {
+        #whenever $proc.start {
 
-            $exit-code = .exitcode;
+         #   $exit-code = .exitcode;
 
-            done # gracefully jump from the react block
+            #done # gracefully jump from the react block
 
-        }
-    }
+        #}
+    #}
 
    if $make-report {
     say "save result to report: $report-file";    
-    $report-file.IO.spurt(@stdout.join("\n") ~ @stderr.join("\n"));
+    $report-file.IO.spurt($proc.out.slurp);
    }
 
 
