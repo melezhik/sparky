@@ -111,8 +111,7 @@ multi sub get-dbh ( $dir ) is export {
 
   my %conf = get-sparky-conf();
 
-
-  $dbh  = DB.open("$dir/../db.sqlite3".IO.absolute.Str, False, False  );
+  $dbh  = DB.open("/root/.sparky/projects/db.sqlite3".IO.absolute.Str, False, False  );
 
   say "{DateTime.now} --- load sqlite dbh for: " ~ ("$dir/../db.sqlite3".IO.absolute);
 
