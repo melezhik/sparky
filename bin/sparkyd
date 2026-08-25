@@ -1,10 +1,12 @@
-#!/usr/bin/env raku
+#!/usr/bin/env /home/ubuntu/projects/rakupp/rakupp/bin/rakupp
+
+#/usr/bin/env raku
 
 use Sparky;
 
 sub MAIN (
-  Str  :$root = %*ENV<HOME> ~ '/.sparky/projects', 
-  Str  :$work-root = %*ENV<HOME> ~ '/.sparky/work', 
+  Str  :$root = %*ENV<HOME> ~ '/.dsci/.sparky/projects', 
+  Str  :$work-root = %*ENV<HOME> ~ '/.dsci/.sparky/work', 
   Int  :$timeout = %*ENV<SPARKY_TIMEOUT> || 10,
 )
 
@@ -16,6 +18,7 @@ sub MAIN (
 
     for dir($root) -> $dir {
 
+      #say $dir;
       next if "$dir".IO ~~ :f;
       next if $dir.basename eq '.git';
       next if $dir.basename eq '.reports';

@@ -1,4 +1,6 @@
-#!/usr/bin/env raku
+#!/usr/bin/env /home/ubuntu/projects/rakupp/rakupp/bin/rakupp
+
+#/usr/bin/env raku
 
 use Sparky;
 use Data::Dump;

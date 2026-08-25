@@ -7,7 +7,7 @@ use Time::Crontab;
 use JSON::Fast;
 use Sparky::Sqlite;
 
-my $root = %*ENV<SPARKY_ROOT> || %*ENV<HOME> ~ '/.sparky/projects';
+my $root = %*ENV<SPARKY_ROOT> || %*ENV<HOME> ~ '/.dsci/.sparky/projects';
 my %conf;
 
 sub sparky-http-root is export {
@@ -111,7 +111,7 @@ multi sub get-dbh ( $dir ) is export {
 
   my %conf = get-sparky-conf();
 
-  $dbh  = DB.open("/root/.sparky/projects/db.sqlite3".IO.absolute.Str, False, False  );
+  $dbh  = DB.open("$dir/../db.sqlite3".IO.absolute.Str, False, False  );
 
   say "{DateTime.now} --- load sqlite dbh for: " ~ ("$dir/../db.sqlite3".IO.absolute);
 
@@ -452,6 +452,6 @@ sub job-state ($root,$project,$job-id) is export {
 
 sub cache-root is export {
 
-  "{%*ENV<HOME>}/.sparky/";
+  "{%*ENV<HOME>}/.dsci/.sparky/";
 
 }
