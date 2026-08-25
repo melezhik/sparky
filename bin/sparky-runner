@@ -299,9 +299,9 @@ sub MAIN (
 
   #@sparrowdo-run[-1] = @sparrowdo-run[-1] ~  ",SPARKY_HOST={sparky-host()}" if sparky-host() ne "0.0.0.0";
 
-  #if %sparrowdo-config<verbose> {
+  if %sparrowdo-config<verbose> {
     push @sparrowdo-run, "--verbose";
-  #}
+  }
 
   if %sparrowdo-config<debug> {
     push @sparrowdo-run, "--debug";
