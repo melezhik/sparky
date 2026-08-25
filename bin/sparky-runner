@@ -334,6 +334,12 @@ sub MAIN (
   }
 
   my $report-file = "$reports-dir/build-$build_id.txt";
+
+  if $make-report {
+      say "create initial file: $report-file";
+      $report-file.IO.spurt("build started ...");
+   }
+
   my $report-file-sys = "$reports-dir/build-$build_id.syslog";
 
   update-sys-report($report-file-sys,"job ready to start");
@@ -359,8 +365,8 @@ sub MAIN (
   my $exit-code = $proc.exitcode;
 
   
-  my @stdout;
-  my @stderr;
+  #my @stdout;
+  #my @stderr;
 
   #react {
 
@@ -396,7 +402,7 @@ sub MAIN (
 
    if $make-report {
     say "save result to report: $report-file";    
-    $report-file.IO.spurt($proc.out.slurp);
+    $report-file.IO.spurt($proc.out.slurp ~ $proc.err.slurp );
    }
 
 
@@ -423,15 +429,9 @@ sub MAIN (
     $SPARKY-BUILD-STATE = "OK"; 
     "{$build-state-dir}/{$job-id}".IO.spurt(1);
   } else {
-    if $status eq "TERMINATE" {
-      say "BUILD TERMINATED $project" ~ '@' ~ $build_id;
-      $SPARKY-BUILD-STATE = "TERMINATED"; 
-      "{$build-state-dir}/{$job-id}".IO.spurt(-11);
-    } else {
       say "BUILD FAILED $project" ~ '@' ~ $build_id;
       $SPARKY-BUILD-STATE = "FAILED"; 
       "{$build-state-dir}/{$job-id}".IO.spurt(-1);
-    }
   }
 
   # remove old builds
