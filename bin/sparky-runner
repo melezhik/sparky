@@ -288,7 +288,6 @@ sub MAIN (
     %sparrowdo-config<tags> ~= ",SPARKY_API_TOKEN={sparky-api-token()}" if sparky-api-token();
     %sparrowdo-config<tags> ~= ",SPARKY_USE_TLS=1" if sparky-use-tls();
     push @sparrowdo-run, "--tags=" ~ %sparrowdo-config<tags>.subst("\n","___nl___",:g).subst(/\s+/,"___space___",:g);
-    say "KKKKKK0000", @sparrowdo-run;
   } elsif $trigger {
     push @sparrowdo-run, "--tags=SPARKY_PROJECT={$project},SPARKY_JOB_ID={$trigger.IO.basename},SPARKY_TCP_PORT={sparky-tcp-port()}";
     @sparrowdo-run[-1] =~ ",SPARKY_WORKER=docker" if %sparrowdo-config<docker>;
@@ -298,15 +297,11 @@ sub MAIN (
     @sparrowdo-run[-1] =~ ",SPARKY_USE_TLS" if sparky-use-tls();
   }
 
-  say "KKKKKK1", @sparrowdo-run;
+  #@sparrowdo-run[-1] = @sparrowdo-run[-1] ~  ",SPARKY_HOST={sparky-host()}" if sparky-host() ne "0.0.0.0";
 
-  @sparrowdo-run[-1] = @sparrowdo-run[-1] ~  ",SPARKY_HOST={sparky-host()}" if sparky-host() ne "0.0.0.0";
-
-  say "KKKKKK2", @sparrowdo-run;
-
-  if %sparrowdo-config<verbose> {
+  #if %sparrowdo-config<verbose> {
     push @sparrowdo-run, "--verbose";
-  }
+  #}
 
   if %sparrowdo-config<debug> {
     push @sparrowdo-run, "--debug";
@@ -338,7 +333,6 @@ sub MAIN (
     "{$build-cache-dir}/{$trigger.IO.basename}".IO.spurt(%t.perl);
   }
 
-  my $job-channel = Channel.new;
   my $report-file = "$reports-dir/build-$build_id.txt";
   my $report-file-sys = "$reports-dir/build-$build_id.syslog";
 
@@ -356,7 +350,8 @@ sub MAIN (
 
   update-sys-report($report-file-sys,"sparrowdo command:\n$sparrowdo-run-sanitized");
 
-  $proc = Proc::Async.new(:enc<utf8-c8>,@sparrowdo-run);
+  say "GO GO GO";
+  my $proc = Proc::Async.new(:enc<utf8-c8>,@sparrowdo-run, :cwd($run-dir));
 
   my $exit-code = -1000;
 
