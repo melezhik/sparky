@@ -254,14 +254,8 @@ sub schedule-build ( $dir, %opts? ) is export {
       say "{DateTime.now} --- [$project] build trigerred by file trigger <$trigger-file>, dir <$dir> ...";
 
       if ! build-is-running($dir) {
-
         say "kick off build for dir=$dir, trigger=$trigger-file";
-        Proc::Async.new(
-          "/bin/bash",
-          "--login",
-          "-c 'sparky-runner --marker=$project --dir=$dir --trigger=$trigger-file --make-report'",
-          "2>\&1 1>>/tmp/log111.txt"
-        ).start;
+        say qqx[sparky-runner --marker=$project --dir=$dir --trigger=$trigger-file --make-report 2>\&1 1>>/tmp/log111.txt &"];
 
      }
 
