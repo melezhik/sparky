@@ -351,7 +351,8 @@ sub MAIN (
   update-sys-report($report-file-sys,"sparrowdo command:\n$sparrowdo-run-sanitized");
 
   say "GO GO GO";
-  my $proc = Proc::Async.new(:enc<utf8-c8>,@sparrowdo-run, :cwd($run-dir));
+  chdir($run-dir);
+  my $proc = Proc::Async.new(:enc<utf8-c8>,@sparrowdo-run);
 
   my $exit-code = -1000;
 
@@ -365,6 +366,7 @@ sub MAIN (
           my $line = chomp($_);
 
           push @stdout, $_;
+          say @stdout[-1];
 
         }
 
@@ -372,6 +374,7 @@ sub MAIN (
 
 
           push @stderr, $_;
+          say @stderr[-1];
 
         }
 
