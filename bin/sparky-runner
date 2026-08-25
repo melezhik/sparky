@@ -133,7 +133,7 @@ sub MAIN (
 
   }
 
-  my $sparrowdo-run = "sparrowdo --prefix=$project";
+  my @sparrowdo-run =  ( "sparrowdo", "--prefix=$project" );
 
   my %sparrowdo-config = %config<sparrowdo> || Hash.new;
 
@@ -198,53 +198,53 @@ sub MAIN (
   }
 
   if %sparrowdo-config<docker> {
-    $sparrowdo-run ~= " --docker=" ~ %sparrowdo-config<docker>;
+    push @sparrowdo-run, "--docker=" ~ %sparrowdo-config<docker>;
   } elsif %sparrowdo-config<host> {
-    $sparrowdo-run ~= " --host=" ~ %sparrowdo-config<host>;
+    push @sparrowdo-run, "--host=" ~ %sparrowdo-config<host>;
   } else {
     %sparrowdo-config<localhost> = True;
-    $sparrowdo-run ~= " --localhost";
+    push @sparrowdo-run, "--localhost";
   }
 
   if %sparrowdo-config<image> {
-    $sparrowdo-run ~= " --image=" ~ %sparrowdo-config<image>;
+    push @sparrowdo-run, "--image=" ~ %sparrowdo-config<image>;
   }
 
   if %sparrowdo-config<repo> {
-    $sparrowdo-run ~= " --repo=" ~ %sparrowdo-config<repo>;
+    push @sparrowdo-run, "--repo=" ~ %sparrowdo-config<repo>;
   }
 
   if %sparrowdo-config<sync> {
-    $sparrowdo-run ~= " --sync=" ~ %sparrowdo-config<sync>;
+    push @sparrowdo-run, "--sync=" ~ %sparrowdo-config<sync>;
   }
 
   if %sparrowdo-config<no_sudo> {
-    $sparrowdo-run ~= " --no_sudo";
+    push @sparrowdo-run, "--no_sudo";
   }
 
   if %sparrowdo-config<conf> {
-    $sparrowdo-run ~= " --conf=" ~ %sparrowdo-config<conf>;
+    push @sparrowdo-run, "--conf=" ~ %sparrowdo-config<conf>;
   }
 
   if %sparrowdo-config<no_index_update> and ! $run-first-time {
-    $sparrowdo-run ~= " --no_index_update";
+    push @sparrowdo-run, "--no_index_update";
   }
 
   if %sparrowdo-config<ssh_user> {
-    $sparrowdo-run ~= " --ssh_user=" ~ %sparrowdo-config<ssh_user>;
+    push @sparrowdo-run, "--ssh_user=" ~ %sparrowdo-config<ssh_user>;
   }
 
   if  %sparrowdo-config<ssh_private_key> {
-    $sparrowdo-run ~= " --ssh_private_key=" ~ %sparrowdo-config<ssh_private_key>;
+    push @sparrowdo-run, "--ssh_private_key=" ~ %sparrowdo-config<ssh_private_key>;
   }
 
   if %sparrowdo-config<ssh_port> {
-    $sparrowdo-run ~= " --ssh_port=" ~ %sparrowdo-config<ssh_port>;
+    push @sparrowdo-run, "--ssh_port=" ~ %sparrowdo-config<ssh_port>;
   }
 
 
   if %sparrowdo-config<secretsfile> {
-    $sparrowdo-run ~= " --secretsfile=" ~ %sparrowdo-config<secretsfile>;
+    push @sparrowdo-run, "--secretsfile=" ~ %sparrowdo-config<secretsfile>;
   }
 
   if %sparrowdo-config<tags> {
@@ -287,32 +287,37 @@ sub MAIN (
     %sparrowdo-config<tags> ~= ",SPARKY_TCP_PORT={sparky-tcp-port()}";
     %sparrowdo-config<tags> ~= ",SPARKY_API_TOKEN={sparky-api-token()}" if sparky-api-token();
     %sparrowdo-config<tags> ~= ",SPARKY_USE_TLS=1" if sparky-use-tls();
-    $sparrowdo-run ~= " --tags=" ~ %sparrowdo-config<tags>.subst("\n","___nl___",:g).subst(/\s+/,"___space___",:g);
+    push @sparrowdo-run, "--tags=" ~ %sparrowdo-config<tags>.subst("\n","___nl___",:g).subst(/\s+/,"___space___",:g);
+    say "KKKKKK0000", @sparrowdo-run;
   } elsif $trigger {
-    $sparrowdo-run ~= " --tags=SPARKY_PROJECT={$project},SPARKY_JOB_ID={$trigger.IO.basename},SPARKY_TCP_PORT={sparky-tcp-port()}";
-    $sparrowdo-run ~= ",SPARKY_WORKER=docker" if %sparrowdo-config<docker>;
-    $sparrowdo-run ~= ",SPARKY_WORKER=localhost" if %sparrowdo-config<localhost>;
-    $sparrowdo-run ~= ",SPARKY_WORKER=host" if %sparrowdo-config<host>;
-    $sparrowdo-run ~= ",SPARKY_API_TOKEN={sparky-api-token()}" if sparky-api-token();
-    $sparrowdo-run ~= ",SPARKY_USE_TLS" if sparky-use-tls();
+    push @sparrowdo-run, "--tags=SPARKY_PROJECT={$project},SPARKY_JOB_ID={$trigger.IO.basename},SPARKY_TCP_PORT={sparky-tcp-port()}";
+    @sparrowdo-run[-1] =~ ",SPARKY_WORKER=docker" if %sparrowdo-config<docker>;
+    @sparrowdo-run[-1] =~ ",SPARKY_WORKER=localhost" if %sparrowdo-config<localhost>;
+    @sparrowdo-run[-1] =~ ",SPARKY_WORKER=host" if %sparrowdo-config<host>;
+    @sparrowdo-run[-1] =~ ",SPARKY_API_TOKEN={sparky-api-token()}" if sparky-api-token();
+    @sparrowdo-run[-1] =~ ",SPARKY_USE_TLS" if sparky-use-tls();
   }
 
-  $sparrowdo-run ~= ",SPARKY_HOST={sparky-host()}" if sparky-host() ne "0.0.0.0";
+  say "KKKKKK1", @sparrowdo-run;
+
+  @sparrowdo-run[-1] = @sparrowdo-run[-1] ~  ",SPARKY_HOST={sparky-host()}" if sparky-host() ne "0.0.0.0";
+
+  say "KKKKKK2", @sparrowdo-run;
 
   if %sparrowdo-config<verbose> {
-    $sparrowdo-run ~= " --verbose";
+    push @sparrowdo-run, "--verbose";
   }
 
   if %sparrowdo-config<debug> {
-    $sparrowdo-run ~= " --debug";
+    push @sparrowdo-run, "--debug";
   }
 
-  $sparrowdo-run ~= " --color"; # enable color output
+  push @sparrowdo-run, "--color"; # enable color output
 
   %sparrowdo-config<bootstrap> = True if %sparrowdo-config<bootstrap>;
 
   if  %sparrowdo-config<bootstrap> {
-    $sparrowdo-run ~= " --bootstrap";
+    push @sparrowdo-run, "--bootstrap";
   }
 
   say "merged sparrowdo configuration: {Dump(%sparrowdo-config)}";
@@ -339,101 +344,68 @@ sub MAIN (
 
   update-sys-report($report-file-sys,"job ready to start");
 
-  unless qx[uname -s 2>/dev/null || :].chomp eq 'Darwin' {
-    $sparrowdo-run = "script -q -e -c '$sparrowdo-run' "
-  }
-
   my $sparrowdo-run-sanitized;
 
   if sparky-api-token() {
-    $sparrowdo-run-sanitized = $sparrowdo-run.subst("{sparky-api-token()}","******");
+    $sparrowdo-run-sanitized = @sparrowdo-run.join(" ").subst("{sparky-api-token()}","******");
   } else {
-    $sparrowdo-run-sanitized = $sparrowdo-run;
+    $sparrowdo-run-sanitized = @sparrowdo-run.join(" ");
   }
 
-
-  #$sparrowdo-run-sanitized = $sparrowdo-run-sanitized.subst(/\s/,"\n",:g);
-
-  #$sparrowdo-run-sanitized = $sparrowdo-run-sanitized.subst(/","/,",\n",:g);
+  say "sparrowdo run: ",@sparrowdo-run;
 
   update-sys-report($report-file-sys,"sparrowdo command:\n$sparrowdo-run-sanitized");
 
+  $proc = Proc::Async.new(:enc<utf8-c8>,@sparrowdo-run);
 
+  my $exit-code = -1000;
 
-  if $make-report {
-    $sparrowdo-run  ~=  " 1>$report-file";
-  }
-  $sparrowdo-run ~= ' 2>&1 & pid=$!;';
-  $sparrowdo-run ~= ' echo $pid > ' ~ "{$build-state-dir}/{$job-id}.pid;";
-  $sparrowdo-run ~=  ' wait $pid;';
-  $sparrowdo-run ~=  ' echo $? > ' ~ "{$build-state-dir}/{$job-id}.exit-code";
-
-  start { 
-    update-sys-report($report-file-sys,"job started");
-    say ">>>>>>>>> sparrowdo-run: $sparrowdo-run";
-    shell("export SP6_FORMAT_COLOR=1 && cd $run-dir && $sparrowdo-run" ~ ' 2>&1');
-    if "{$build-state-dir}/{$job-id}.pid".IO ~~ :f {
-      my $pid = "{$build-state-dir}/{$job-id}.pid".IO.slurp.chomp;
-      update-sys-report($report-file-sys,"job pid file: {$build-state-dir}/{$job-id}.pid");
-      update-sys-report($report-file-sys,"job pid: $pid");
-    }
-    say "sparky job: job finished";
-    update-sys-report($report-file-sys,"job finished");
-    if "{$build-state-dir}/{$job-id}.exit-code".IO ~~ :f {
-      my $ex-code = "{$build-state-dir}/{$job-id}.exit-code".IO.slurp.chomp;
-      update-sys-report($report-file-sys,"job exit code: $ex-code");
-      if Int($ex-code) == 0 {
-        $job-channel.send("OK");
-      } else {
-        $job-channel.send("FAIL");
-      }
-    } else {
-        $job-channel.send("FAIL");
-    } 
-  };
-  start {
-    my $cnt = 0;
-    while True {
-      if "{$build-state-dir}/{$job-id}.terminate".IO ~~ :f {
-        say "sparky job: job terminated";
-        unlink("{$build-state-dir}/{$job-id}.terminate");
-        update-sys-report($report-file-sys,"job terminated by request");
-        terminate-job("{$build-state-dir}/{$job-id}.pid");
-        $job-channel.send("TERMINATE");
-      } elsif $cnt >= 21600 {
-        # kill sparky job by timeout
-        # in 6 hours
-        update-sys-report($report-file-sys,"job terminated by timeout");
-        terminate-job("{$build-state-dir}/{$job-id}.pid");
-        $job-channel.send("TERMINATE");
-      }
-      sleep(2);
-      $cnt++;
-    }
-  }
-
-  my $status = "UNKNOWN";
+  my @stdout;
+  my @stderr;
 
   react {
-    whenever $job-channel.Supply -> $event {
-        say "sparky job: event received: $event";
-        if $event {
-          $status = $event;
-          done();
+
+        whenever $proc.stdout().lines { # split input on \r\n, \n, and \r 
+
+          my $line = chomp($_);
+
+          push @stdout, $_;
+
+        }
+
+        whenever $proc.stderr.lines { # split input on \r\n, \n, and \r
+
+
+          push @stderr, $_;
+
+        }
+
+        whenever $proc.ready {
+            #say ‘PID: ’, $_ # Only in Rakudo 2018.04 and newer, otherwise Nil 
+        }
+
+        whenever $proc.start {
+
+            $exit-code = .exitcode;
+
+            done # gracefully jump from the react block
+
         }
     }
-  }
 
-  my $state;
+   if $make-report {
+    say "save result to report: $report-file";    
+    $report-file.IO.spurt(@stdout.join("\n") ~ @stderr.join("\n"));
+   }
 
-  say "sparky job: status: $status";
 
-  if $status eq "OK" {
+   my $state;
+
+   say "sparky job finished, exit code:: {$exit-code}";
+
+   if $exit-code == 0 {
     $state = 1;
     update-sys-report($report-file-sys,"job succeeded");
-  } elsif $status eq "TERMINATE" {
-    $state = -11;
-    update-sys-report($report-file-sys,"job terminated");
   } else {
     $state = -1;
     update-sys-report($report-file-sys,"job failed");

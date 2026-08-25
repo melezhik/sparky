@@ -252,13 +252,15 @@ sub schedule-build ( $dir, %opts? ) is export {
   if $run-by-trigger {
 
       say "{DateTime.now} --- [$project] build trigerred by file trigger <$trigger-file>, dir <$dir> ...";
-
-      if ! build-is-running($dir) {
-        say "kick off build for dir=$dir, trigger=$trigger-file";
-        say qqx[sparky-runner --marker=$project --dir=$dir --trigger=$trigger-file --make-report &];
-
-     }
-
+      start {
+          run 
+          "sparky-runner",
+          "--marker=$project",
+          "--dir=$dir",
+          "--trigger=$trigger-file",
+          "--make-report";
+      }
+      return;
   }
 
   # schedulling cron jobs

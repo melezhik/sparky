@@ -13,7 +13,6 @@ sub MAIN (
 {
 
   my %flappers;
-
   while True {
 
     for dir($root) -> $dir {
@@ -41,7 +40,7 @@ sub MAIN (
       if %flappers{$dir}:exists &&  %flappers{$dir} >= 5 && sparky-with-flapper() {
         say "{DateTime.now} --- scm: ! project {$dir.basename} marked as a flapper and skipped from scheduling";
       } else { 
-        my $status = schedule-build($dir);
+        my $status  = schedule-build($dir);
         if defined($status) {
           # mark project a flapper
           # if more then 3 timeouts happened
