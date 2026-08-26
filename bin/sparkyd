@@ -1,21 +1,23 @@
-#!/usr/bin/env raku
+#!/usr/bin/env /home/ubuntu/projects/rakupp/rakupp/bin/rakupp
+
+#/usr/bin/env raku
 
 use Sparky;
 
 sub MAIN (
-  Str  :$root = %*ENV<HOME> ~ '/.sparky/projects', 
-  Str  :$work-root = %*ENV<HOME> ~ '/.sparky/work', 
+  Str  :$root = %*ENV<HOME> ~ '/.dsci/.sparky/projects', 
+  Str  :$work-root = %*ENV<HOME> ~ '/.dsci/.sparky/work', 
   Int  :$timeout = %*ENV<SPARKY_TIMEOUT> || 10,
 )
 
 {
 
   my %flappers;
-
   while True {
 
     for dir($root) -> $dir {
 
+      #say $dir;
       next if "$dir".IO ~~ :f;
       next if $dir.basename eq '.git';
       next if $dir.basename eq '.reports';
@@ -38,7 +40,7 @@ sub MAIN (
       if %flappers{$dir}:exists &&  %flappers{$dir} >= 5 && sparky-with-flapper() {
         say "{DateTime.now} --- scm: ! project {$dir.basename} marked as a flapper and skipped from scheduling";
       } else { 
-        my $status = schedule-build($dir);
+        my $status  = schedule-build($dir);
         if defined($status) {
           # mark project a flapper
           # if more then 3 timeouts happened
