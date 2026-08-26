@@ -357,10 +357,12 @@ sub MAIN (
   update-sys-report($report-file-sys,"sparrowdo command:\n$sparrowdo-run-sanitized");
 
   say "GO GO GO, dir: $run-dir";
+
   chdir($run-dir);
 
   #my $proc = Proc::Async.new(@sparrowdo-run);
-  my $proc = run @sparrowdo-run;
+
+  my $proc = run @sparrowdo-run, :out, :err;
 
   my $exit-code = $proc.exitcode;
 
@@ -401,8 +403,12 @@ sub MAIN (
     #}
 
    if $make-report {
-    say "save result to report: $report-file";    
-    $report-file.IO.spurt($proc.out.slurp ~ $proc.err.slurp );
+    say "save result to report: $report-file";
+    my $out = $proc.out.slurp;
+    my $err = $proc.err.slurp;
+    $out = $out ~ "stderr\n"  ~ $err if $err;
+    $report-file.IO.spurt($out ~ "---");
+
    }
 
 
