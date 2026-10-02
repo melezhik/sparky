@@ -12,7 +12,7 @@ use Sparky::Security;
 use Sparky::HTML;
 use Sparky::Utils;
 use YAMLish;
-use Text::Markdown;
+#use Text::Markdown;
 use Sparky::Job;
 use Sparky::Utils;
 use JSON::Fast;
@@ -1164,7 +1164,8 @@ sub create-cro-app ($pool) {
     template 'templates/about.crotmp', {
       css => css(), 
       navbar => navbar(), 
-      data => parse-markdown("README.md".IO.slurp).to_html,
+      #data => parse-markdown("README.md".IO.slurp).to_html,
+      data => "README.md".IO.slurp,
     }
 
   }
