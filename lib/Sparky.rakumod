@@ -2,11 +2,12 @@ use v6;
 
 unit module Sparky:ver<0.2.32>;
 use YAMLish;
-use DBIish;
+use Sparky::Sqlite;
 use Time::Crontab;
 use JSON::Fast;
+use Sparky::Sqlite;
 
-my $root = %*ENV<SPARKY_ROOT> || %*ENV<HOME> ~ '/.sparky/projects';
+my $root = %*ENV<SPARKY_ROOT> || %*ENV<HOME> ~ '/.dsci/.sparky/projects';
 my %conf;
 
 sub sparky-http-root is export {
@@ -110,26 +111,9 @@ multi sub get-dbh ( $dir ) is export {
 
   my %conf = get-sparky-conf();
 
-  if %conf<database> && %conf<database><engine> && %conf<database><engine> !~~ / :i sqlite / {
+  $dbh  = DB.open("$dir/../db.sqlite3".IO.absolute.Str, False, False  );
 
-    $dbh  = DBIish.connect(
-        %conf<database><engine>,
-        host      => %conf<database><host>,
-        port      => %conf<database><port>,
-        database  => %conf<database><name>,
-        user      => %conf<database><user>,
-        password  => %conf<database><pass>,
-    );
-
-    #say "load {%conf<database><engine>} dbh";
-
-  } else {
-
-    $dbh  = DBIish.connect("SQLite", database => "$dir/../db.sqlite3".IO.absolute  );
-
-    say "{DateTime.now} --- load sqlite dbh for: " ~ ("$dir/../db.sqlite3".IO.absolute);
-
-  }
+  say "{DateTime.now} --- load sqlite dbh for: " ~ ("$dir/../db.sqlite3".IO.absolute);
 
   return $dbh
 
@@ -229,6 +213,8 @@ sub schedule-build ( $dir, %opts? ) is export {
   #  }
   #}
 
+  say "sub schedule-build for dir: $dir ...";
+
   if "$dir/sparky.yaml".IO ~~ :f {
 
     say "{DateTime.now} --- sparkyd: parse sparky job yaml config from: $dir/sparky.yaml";
@@ -256,6 +242,7 @@ sub schedule-build ( $dir, %opts? ) is export {
 
   if "{$dir}/.triggers/".IO ~~ :d {
     for dir("{$dir}/.triggers/".sort({.IO.changed})) -> $file {
+      next unless $file.IO ~~ :f;
       $run-by-trigger = True;
       $trigger-file = $file.IO.absolute;
       last;
@@ -264,20 +251,16 @@ sub schedule-build ( $dir, %opts? ) is export {
 
   if $run-by-trigger {
 
-      say "{DateTime.now} --- [$project] build trigerred by file trigger <$trigger-file> ...";
-
-      if ! build-is-running($dir) {
-
-        Proc::Async.new(
-          'sparky-runner',
+      say "{DateTime.now} --- [$project] build trigerred by file trigger <$trigger-file>, dir <$dir> ...";
+      start {
+          run 
+          "sparky-runner",
           "--marker=$project",
           "--dir=$dir",
           "--trigger=$trigger-file",
-          "--make-report"
-        ).start;
-
-     }
-
+          "--make-report";
+      }
+      return;
   }
 
   # schedulling cron jobs
@@ -412,9 +395,9 @@ sub find-triggers ($root) is export {
   for dir($root) -> $dir {
 
     next if "$dir".IO ~~ :f;
-    next if $dir.basename eq '.git';
-    next if $dir.basename eq '.reports';
-    next if $dir.basename eq 'db.sqlite3-journal';
+    next if $dir.IO.basename.Str eq '.git';
+    next if $dir.IO.basename.Str eq '.reports';
+    next if $dir.IO.basename.Str eq 'db.sqlite3-journal';
     next unless "$dir/sparrowfile".IO ~~ :f;
 
     my $project = $dir.IO.basename;
@@ -471,6 +454,6 @@ sub job-state ($root,$project,$job-id) is export {
 
 sub cache-root is export {
 
-  "{%*ENV<HOME>}/.sparky/";
+  "{%*ENV<HOME>}/.dsci/.sparky/";
 
 }
